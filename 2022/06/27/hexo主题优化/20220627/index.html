@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="theme-color" content="#3367D6"/>
+  <link rel="apple-touch-icon" href="/icons-192.png">
+  <link rel="manifest" href="/manifest.json">
+  
+  <meta name="generator" content="Hexo 6.2.0">
+
+  
+    <meta name="description" content="昨天今天明天">
+  
+
+  
+
+  
+    <meta name="author" content="水帝">
+  
+
+  
+
+  
+
+  <title>有关flex-block主题的美化.1 | Touma</title>
+
+  
+
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@1.1.3/index.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlightjs@9.16.2/styles/monokai.css">
+  
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+</head>
+<body>
+  <div class="root-container" style="background-image: url(null)">
+    
+<!-- header container -->
+<header class="header-container post">
+  
+    <div class="post-image" style="background-image: url(https://s2.loli.net/2022/06/29/boFA6HVuqt14nUB.jpg)"></div>
+  
+
+  <!-- navbar -->
+<nav class="navbar">
+  <div class="navbar-content">
+    <!-- logo -->
+    <div class="navbar-logo">
+      <a href="/">
+        
+          Touma
+        
+      </a>
+    </div>
+    <!-- link -->
+    <div class="navbar-link">
+      <div class="navbar-btn">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <ul class="navbar-list">
+        
+          <li class="navbar-list-item"><a href="/">首页</a></li>
+        
+          <li class="navbar-list-item"><a href="/links">友链</a></li>
+        
+          <li class="navbar-list-item"><a href="/about">关于</a></li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+    <div class="header-content">
+      <div class="post-text layout-block">
+        <div class="layout-margin">
+          <h1 class="title-wrap">有关flex-block主题的美化.1</h1>
+          <h2 class="title-sub-wrap">
+            <strong>水帝</strong>
+            <span>发布于</span>
+            <time  class="article-date" datetime="2022-06-27T02:16:04.000Z" itemprop="datePublished">2022-06-27</time>
+          </h2>
+          <h2>
+              <span class="post-count">📖2.6k字</span>
+              <span class="post-count">⏱10分</span>
+            <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
+              👀<span id="busuanzi_value_page_pv"></span>次
+          </h2>
+          <ul class="wrap-list dark">
+  
+    <li><a href="/categories/hexo%E4%B8%BB%E9%A2%98%E4%BC%98%E5%8C%96/">📒 hexo主题优化</a></li>
+  
+</ul>
+          <ul class="wrap-list dark">
+  
+    <li><a href="/tags/css/">🏷️ css</a></li>
+  
+    <li><a href="/tags/html/">🏷️ html</a></li>
+  
+    <li><a href="/tags/hexo/">🏷️ hexo</a></li>
+  
+</ul>
+        </div>
+      </div>
+    </div>
+  
+
+  
+  
+  
+</header>
+
+    <!-- 文章 -->
+
+<!-- 文章内容 -->
+<div class="body-container">
+  <article class="content-container layout-block post-container">
+    <div class="article-info">
+      
+      
+      
+      
+      <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
+        <p>由于本博客所用框架<a target="_blank" rel="noopener" href="https://github.com/miiiku/hexo-theme-flexblock"><strong>flex-block</strong></a>的自定义方面比较少，但又想多添加一些功能，于是对比较底层的代码进行更改来优化此主题(因为此主题的对应板块的字体颜色大小等已经有配置，所以下面字体除非特殊，都不额外设置)，请注意本文的设置可能并不适用于所有的主题</p>
+<h2 id="1-网站运行时间的统计"><a href="#1-网站运行时间的统计" class="headerlink" title="1. 网站运行时间的统计"></a>1. 网站运行时间的统计</h2><p>这个其实不难，在对应themes的 &#x2F;layout&#x2F;_partial&#x2F;footer.ejs 的合适位置加一个段落：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&lt;p&gt;<br>    &lt;span id=&quot;timeDate&quot;&gt;载入天数...&lt;/span&gt;&lt;span id=&quot;times&quot;&gt;载入时分秒...&lt;/span&gt;<br>    &lt;script&gt;<br>    var now = new Date(); <br>    function createtime() &#123; <br>        var grt= new Date(&quot;06/24/2022 20:26:16&quot;);//在此处修改你的建站时间，格式：月/日/年 时:分:秒<br>        now.setTime(now.getTime()+250); <br>        days = (now - grt ) / 1000 / 60 / 60 / 24; <br>        dnum = Math.floor(days); <br>        hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); <br>        hnum = Math.floor(hours); <br>        if(String(hnum).length ==1 )&#123;hnum = &quot;0&quot; + hnum;&#125;<br>            minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum); <br>        mnum = Math.floor(minutes); <br>        if(String(mnum).length ==1 )&#123;mnum = &quot;0&quot; + mnum;&#125; <br>        seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum); <br>        snum = Math.round(seconds); <br>        if(String(snum).length ==1 )&#123;snum = &quot;0&quot; + snum;&#125; <br>        document.getElementById(&quot;timeDate&quot;).innerHTML = &quot;本站已运行 &quot;+dnum+&quot; 天 &quot;; <br>        document.getElementById(&quot;times&quot;).innerHTML = hnum + &quot; 小时 &quot; + mnum + &quot; 分 &quot; + snum + &quot; 秒&quot;; <br>    &#125; <br>    setInterval(&quot;createtime()&quot;,250);<br>    &lt;/script&gt;<br>&lt;/p&gt;<br></code></pre></td></tr></table></figure>
+<p>那么得到最后的效果如下：</p>
+
+    <figure class="figure-image">
+      <img src="/2022/06/27/hexo%E4%B8%BB%E9%A2%98%E4%BC%98%E5%8C%96/20220627/1.png" alt loading="lazy">
+      <figcaption></figcaption>
+    </figure>
+  
+
+<h2 id="2-不蒜子统计访问量"><a href="#2-不蒜子统计访问量" class="headerlink" title="2. 不蒜子统计访问量"></a>2. 不蒜子统计访问量</h2><p><a target="_blank" rel="noopener" href="http://busuanzi.ibruce.info/">不蒜子</a>是一个很简单的统计器，相比其他统计用的代码很少，首先</p>
+<h3 id="2-1-网页底部访问量和访问人数"><a href="#2-1-网页底部访问量和访问人数" class="headerlink" title="2.1 网页底部访问量和访问人数"></a>2.1 网页底部访问量和访问人数</h3><p>也是在对应themes的 &#x2F;layout&#x2F;_partial&#x2F;footer.ejs加入如下代码(直接用官网的就可以，我加了一点emoji😇)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&lt;p&gt;<br>    &lt;script async src=&quot;//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js&quot;&gt;&lt;/script&gt; //安装脚本<br>    浏览量：&lt;span id=&quot;busuanzi_value_site_pv&quot;&gt;&lt;i class=&quot;fa fa-spinner fa-spin&quot;&gt;&lt;/i&gt;&lt;/span&gt;👀 | 访客数：&lt;span id=&quot;busuanzi_value_site_uv&quot;&gt;&lt;i class=&quot;fa fa-spinner fa-spin&quot;&gt;&lt;/i&gt;&lt;/span&gt;👦<br>&lt;/p&gt; //可以和之前的写在一段里面<br></code></pre></td></tr></table></figure>
+<p>那么最后得到效果如下：</p>
+
+    <figure class="figure-image">
+      <img src="/2022/06/27/hexo%E4%B8%BB%E9%A2%98%E4%BC%98%E5%8C%96/20220627/2.png" alt loading="lazy">
+      <figcaption></figcaption>
+    </figure>
+  
+<p>顺便提醒一下，利用hexo s本地浏览这个数据的时候会显示错误，就像上图一样，此时它统计的应该是不蒜子官网的访问数据</p>
+<h3 id="2-2-文章header处阅读量"><a href="#2-2-文章header处阅读量" class="headerlink" title="2.2 文章header处阅读量"></a>2.2 文章header处阅读量</h3><p>本来是想在主页或者其他的地方，也就是文章还是摘要状态的时候显示阅读量，但不蒜子好像不提供这种功能</p>
+
+    <figure class="figure-image">
+      <img src="/2022/06/27/hexo%E4%B8%BB%E9%A2%98%E4%BC%98%E5%8C%96/20220627/3.png" alt loading="lazy">
+      <figcaption></figcaption>
+    </figure>
+  
+<p>无奈只能在文章内部添加对应的阅读量(以后可能会想办法实现，先立个flag在这吧)<br>那么在&#x2F;layout&#x2F;_partial&#x2F;header.ejs中添加如下代码(我的是添加在h2内的)：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">//由于已经在网页底部添加了对于脚本代码，这里就不需要写了<br>👀&lt;span id=&quot;busuanzi_value_page_pv&quot;&gt;&lt;/span&gt;次<br></code></pre></td></tr></table></figure>
+<p>关于具体效果和下面的3一起展示(因为2和3是同时做的)</p>
+<h2 id="3-文章字数和对应的阅读时间"><a href="#3-文章字数和对应的阅读时间" class="headerlink" title="3. 文章字数和对应的阅读时间"></a>3. 文章字数和对应的阅读时间</h2><p>文章字数和阅读时间还是挺重要的，可以一眼就对文章长度有个了解，而且文章只有一个阅读量实在有点孤零零<br>和上面不蒜子不同，字数的统计可以在外面的摘要中显示，那么还是分为两部分<br>等下差点忘了😜，在开始之前要安装hexo的插件WordCount，可以直接运行下面代码  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">npm i --save hexo-wordcount<br></code></pre></td></tr></table></figure>
+<p>现在可以开始了🤪</p>
+<h3 id="3-1-card处"><a href="#3-1-card处" class="headerlink" title="3.1 card处"></a>3.1 card处</h3><p>在&#x2F;layout&#x2F;_partial&#x2F;article-list(不同的主题文件名应该不同，就是描述文章摘要card的那个文件)内适当加入如下代码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&lt;div style=&quot;margin-right: 10px;&quot;&gt;<br>    &lt;span class=&quot;post-count&quot;&gt;📖&lt;%= wordcount(post.content) %&gt;字&lt;/span&gt;<br>    &lt;span class=&quot;post-count&quot;&gt;⏱&lt;%= min2read(post.content) %&gt;分&lt;/span&gt;<br>&lt;/div&gt;<br></code></pre></td></tr></table></figure>
+<p>得到的结果为：</p>
+
+    <figure class="figure-image">
+      <img src="/2022/06/27/hexo%E4%B8%BB%E9%A2%98%E4%BC%98%E5%8C%96/20220627/5.png" alt loading="lazy">
+      <figcaption></figcaption>
+    </figure>
+  
+
+<h3 id="3-2-文章内header处"><a href="#3-2-文章内header处" class="headerlink" title="3.2 文章内header处"></a>3.2 文章内header处</h3><p>在&#x2F;layout&#x2F;_partial&#x2F;header.ejs的适当位置加入如下代码(建议和上面的不蒜子阅读量放在同一行)：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&lt;span class=&quot;post-count&quot;&gt;📖&lt;%= wordcount(page.content) %&gt;字&lt;/span&gt;<br>&lt;span class=&quot;post-count&quot;&gt;⏱&lt;%= min2read(page.content) %&gt;分&lt;/span&gt;<br></code></pre></td></tr></table></figure>
+<p>好吧代码内容和上面差不多🙃<br>那么得到的效果为：</p>
+
+    <figure class="figure-image">
+      <img src="/2022/06/27/hexo%E4%B8%BB%E9%A2%98%E4%BC%98%E5%8C%96/20220627/4.png" alt loading="lazy">
+      <figcaption></figcaption>
+    </figure>
+  
+
+<h2 id="4-背景图的改变"><a href="#4-背景图的改变" class="headerlink" title="4.背景图的改变"></a>4.背景图的改变</h2><p>原本的主题是只有一个banner，但我想在整个网页的背后加一个背景，最后试出来发现好像不是很好看😶<br>不确定能不能对背景进行例如虚化之类的进行改进，但还是把具体过程写出来(初学者很多地方可能不对，见谅)：<br>首先是在对应theme的source\css_partial下建立一个root.styl，那么和root，也就是最底层(这里只是背景图)的设置都在这里<br>别忘了在source\css\style.styl添加</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">@import &quot;_partial/root&quot;<br></code></pre></td></tr></table></figure>
+<p>保证可以正常加载<br>然后将source\css_partial\content.styl内的root_container移到root.styl内并填写相关设置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">.root-container&#123;<br>    background-color: var(--theme-bg-primary);<br>    background-repeat: no-repeat;//保证滚动的时候图片不动<br>    background-attachment:fixed;<br>    background-position:50% 50%;<br>&#125;//这是一开始我的设置<br></code></pre></td></tr></table></figure>
+<p>然后就是themes\flex-block\layout\layout.ejs内的背景图片设置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">在&lt;body&gt;的&lt;div class=&quot;root-container&quot;&gt;内更改为：<br>&lt;div class=&quot;root-container&quot; style=&quot;&lt;%= `background-image: url($&#123;theme.background&#125;)` %&gt;&quot;&gt;<br></code></pre></td></tr></table></figure>
+<p>最后在theme下的_config.yml文件内新定义background元素，由于我暂时没用，所以暂时是空<br>此时效果和没写上面代码一样，但可以直接在_config.yml内定义背景图即可<br>用法和banner相同，如果是本地的就直接把图片放在theme&#x2F;(你的主题名)&#x2F;下就好，然后引用时直接&#x2F; ,前面不要加.<br>如果要背景的话建议用简单一点的，本主题的banner和card上都可以放上图片，背景再花一点就不大好看了<br>当然看客官您的选择🤪</p>
+<h2 id="5-顶部导航栏的更改"><a href="#5-顶部导航栏的更改" class="headerlink" title="5.顶部导航栏的更改"></a>5.顶部导航栏的更改</h2><p>原本这个主题的导航栏是固定在整个网页的最上面的，但是我想让它改为固定在整个页面的最上面，也就是无论怎么动都是在屏幕最上面那里，而不是会因为下拉而消失<br>首先最简单的改为固定页面上，那么先将对应主题的source\css_partial\nav.styl内的.navbar的position改为fixed</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">position: fixed<br></code></pre></td></tr></table></figure>
+<p>css对position的描述分别如下：<br>1、absolute(绝对定位)，其位置相对于最近已定位的父元素，如果元素没有已定位的父元素那么它的位置相对于<br>2、static(默认的静态定位)，即没有定位，遵循正常的文档流对象，静态定位的元素不受top、left、right、bottom影响。<br>3、relative(相对定位)，其位置相对其正常时的位置。相对定位元素经常被用来作为绝对定位元素的容器块。<br>4、fixed，元素的位置相对于浏览器窗口，是固定位置。即使窗口是滚动的它也不会移动。<br>5、sticky(粘性定位)，基于用户滚动位置来定位，在未滚动出目标区域时，它的行为就像position:relative;它的表现就像 position:fixed;，它会固定在目标位置。元素定位表现为在跨越特定阈值前为相对定位，之后为固定定位。<br>明显需要将原本的改为fixed<br>但是改完之后发现顶部的navbar栏显示不正确，右侧的首页&#x2F;友链&#x2F;关于显示不正确<br>这里是因为下面.navbar-content内display: flex所代表这一块所用为弹性块，但当外部为fixed时会产生冲突<br>只需要将.navbar内新增如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">width: 100% //fixed 和下面不冲突<br></code></pre></td></tr></table></figure>
+<p>那么发现顶部的.navbar可以达到我们想要的结果<br>好吧并不是，还有几点要解决，首先是透明度问题，我希望在拉出一定距离之后可以把之前的透明改为不透明<br>在对本主题的back-to-top部分进行观察之后，也根据这个写法写了针对.navbar部分的代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">transition: all 0.5s ease-out<br>&amp;.show &#123;<br>background-color: #3e3e5f //用的是暗蓝色，当然自己选颜色也可以，比如粉色也不错😋<br>transform: translate3d(0, 0, 0)//图片渲染的时候触发gpu加速<br>transition: all 0.5s ease-out//和上面那个transition一样，代表过渡时间<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>同样的，按照原本的back-to-top部分，在对应主题下source\js\script.js部分添加如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">const navigationbar = document.querySelector(&quot;.navbar&quot;)<br>const Navigationbar = (top) =&gt; &#123;<br>    let Top = top || getScrollTop()<br>    if (Top &gt;= 100) &#123;<br>        navigationbar.classList.add(&quot;show&quot;)<br>    &#125; else &#123;<br>        navigationbar.classList.remove(&quot;show&quot;)<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>最后就是在主题下source\js\script.js加入如下代码<br>这段代码就是当下拉100之后会改变navbar内的属性，其中getScrollTop()的作用是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">function getScrollTop () &#123;<br>  return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;<br>&#125;//返回当前滚动条距离顶部高度<br></code></pre></td></tr></table></figure>
+<p>最后就是对滑动页面这个事件的监听,也加在这个文件内</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">window.addEventListener(&quot;scroll&quot;, function () &#123;<br>    Navigationbar()<br>&#125;, &#123; passive: true &#125;);<br>//true是保证这次监听不会影响原本的事件，原本是保证在滑动过程不会发生卡顿，但本例子实际上影响不大<br></code></pre></td></tr></table></figure>
+<p>到这里就已经实现了navbar固定在浏览器顶端并且下拉会变颜色了<br>但可以看见右边作者那里被下来的navbar挡住了😂，那么需要对本主题下source\css_partial\page.styl进行修改<br>右边导航栏为.widget-info，那么就改这个，正好它的position是sticky，那么就改下面用来定位的top就好<br>上面navbar的高度为54，那么就将top改为54：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">top: 54px;<br></code></pre></td></tr></table></figure>
+<p>完成！</p>
+<p>这篇的内容好像够多了，那么就分篇吧，而且我以后很可能还会选择继续优化的<br>那么感谢您的阅读，请允许我先行搁笔</p>
+
+      </section>
+
+      
+      
+        <nav class="article-nav">
+          
+          
+            <div class="article-nav-item layout-padding">
+  <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
+    
+      <div class="card-cover" background-image-lazy data-img="https://s2.loli.net/2022/06/25/7hkSNDaBEg1WbAJ.jpg"></div>
+    
+    <div class="card-text">
+      
+        <a href="/2022/06/24/%E9%9A%8F%E7%AC%94/2022-06-24/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">一切的开始</h2>
+        </a>
+      
+      <div class="card-text--row">Older</div>
+    </div>
+  </article>
+</div>
+          
+        </nav>
+      
+
+      <section class="page-message-container layout-padding">
+        
+
+
+  
+  
+
+  
+  
+
+
+      </section>
+    </div>
+    <div class="widget-info">
+      <section class="widget-author widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-body">
+    
+      <img src="/touma2.jpg" class="soft-size--round soft-style--box" alt="水帝">
+    
+    
+      <h2>水帝</h2>
+    
+    
+
+    <div class="count-box">
+      <div class="count-box--item">
+        <svg class="icon icon-article" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M240.51564747 647.74217627h196.07203239c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806V165.10332731c0-33.18142087-30.16492806-60.32985613-60.32985612-60.32985611H245.04038668C225.43318342 104.7734712 210.35071939 119.85593522 210.35071939 139.46313845V617.57724821c0 16.59071043 13.57421762 30.16492806 30.16492808 30.16492806z m663.62841731-452.47392089v482.63884894c0 33.18142087-27.14843525 60.32985613-60.32985612 60.32985613H180.18579134c-33.18142087 0-60.32985613-27.14843525-60.32985612-60.32985613V195.26825538c-49.77213131 0-90.49478418 40.72265287-90.49478417 90.49478417v452.4739209c0 49.77213131 40.72265287 90.49478418 90.49478417 90.49478417h286.56681657c16.59071043 0 30.16492806 13.57421762 30.16492807 30.16492807s13.57421762 30.16492806 30.16492805 30.16492806h90.49478418c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806s13.57421762-30.16492806 30.16492807-30.16492807h286.56681657c49.77213131 0 90.49478418-40.72265287 90.49478417-90.49478417V285.76303955c0-49.77213131-40.72265287-90.49478418-90.49478417-90.49478417zM587.41232014 647.74217627h191.54729318c19.60720323 0 34.68966726-15.08246403 34.68966729-34.68966727V134.93839925c0-16.59071043-13.57421762-30.16492806-30.16492808-30.16492805H617.57724821c-30.16492806 0-60.32985613 27.14843525-60.32985612 60.32985611v452.4739209c0 16.59071043 13.57421762 30.16492806 30.16492805 30.16492806z" fill="currentColor"></path>
+</svg>
+        <span>2</span>
+      </div>
+      <div class="count-box--item">
+        <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M900.3614811 257.09082106h-339.81629553l-67.96326003-101.9448889c-19.41807444-29.12711113-48.54518557-43.69066667-82.52681443-43.69066667H123.6385189c-53.39970333 0-97.09036999 43.69066667-97.09037113 97.09036999v582.54222222c0 53.39970333 43.69066667 97.09036999 97.09037113 97.09037002h776.7229622c53.39970333 0 97.09036999-43.69066667 97.09037113-97.09037002V354.18119104c0-53.39970333-43.69066667-97.09036999-97.09037113-97.09036998z m-97.09036999 242.72592554H220.72888889c-24.27259221 0-48.54518557-24.27259221-48.54518556-48.54518556s24.27259221-48.54518557 48.54518556-48.54518444h582.54222222c24.27259221 0 48.54518557 24.27259221 48.54518556 48.54518444s-24.27259221 48.54518557-48.54518556 48.54518556z" fill="currentColor"></path>
+</svg>
+        2
+      </div>
+      <div class="count-box--item">
+        <svg class="icon icon-tags" viewBox="0 0 1098 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M283.42180005 272q0-28.38857157-20.09142843-48.48000001t-48.47999998-20.09142842-48.48000002 20.09142842-20.09142846 48.48000001 20.09142846 48.48 48.48000002 20.09142843 48.47999998-20.09142843 20.09142843-48.48zM855.0332285 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.03999997 263.58857157q-20.9142853 19.81714313-48.75428534 19.81714312-28.38857157 0-48.20571468-19.81714312l-383.04-383.58857157q-20.36571468-19.81714313-34.55999999-54.10285688t-14.19428534-62.6742853l0-222.85714313q0-27.84000002 20.36571469-48.20571469t48.2057147-20.36571466l222.85714313 0q28.38857157 0 62.6742853 14.19428529t54.65142842 34.55999999l383.04000001 382.49142843q19.81714313 20.9142853 19.81714314 48.75428532zM1060.74751475 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.04 263.58857157q-20.9142853 19.81714313-48.75428531 19.81714312-19.26857155 0-31.61142843-7.47428531t-28.38857159-24.13714314l251.79428534-251.7942853q19.81714313-19.81714313 19.81714308-48.20571469 0-27.84000002-19.81714308-48.75428531l-383.04000001-382.49142845q-20.36571468-20.36571468-54.65142842-34.55999999t-62.67428532-14.19428534l120 0q28.38857157 0 62.67428532 14.19428534t54.65142842 34.55999999l383.03999998 382.49142845q19.81714313 20.9142853 19.81714314 48.75428531z" fill="currentColor"></path>
+</svg>
+        3
+      </div>
+    </div>
+  </div>
+</section>
+
+      
+<section class="widget-toc widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-toc" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M134.50666666 767.46666668H460.8c27.73333333 0 50.24000001 22.50666668 50.24000001 50.23999999v50.13333333c0 27.73333333-22.50666668 50.24000001-50.24000001 50.24000001H134.50666666c-27.73333333 0-50.24000001-22.50666668-50.23999999-50.24000001v-50.13333333c0.10666668-27.73333333 22.50666668-50.24000001 50.24000001-50.24000001zM84.37333332 541.65333333h326.18666669c27.73333333 0 50.24000001 22.39999999 50.23999999 50.13333334v50.24000001c0 27.73333333-22.50666668 50.24000001-50.24000002 50.23999999H84.37333332c-27.73333333 0-50.24000001-22.50666668-50.23999999-50.23999999v-50.24000001c0-27.73333333 22.50666668-50.13333334 50.24000001-50.13333334zM134.50666666 315.83999999H460.8c27.73333333 0 50.24000001 22.50666668 50.24000001 50.24000001v50.24000001c0 27.73333333-22.50666668 50.13333334-50.24000001 50.13333333H134.50666666c-27.73333333 0-50.24000001-22.39999999-50.23999999-50.13333333v-50.24000001c0.10666668-27.84000001 22.50666668-50.24000001 50.24000001-50.23999999zM209.81333332 89.91999999h326.18666671c27.73333333 0 50.24000001 22.39999999 50.23999997 50.13333335v50.23999999c0 27.73333333-22.50666668 50.24000001-50.24000001 50.24000001H209.81333332c-27.73333333 0-50.24000001-22.50666668-50.23999999-50.24000001v-50.24000001c0-27.73333333 22.50666668-50.13333334 50.24000001-50.13333333zM692.05333333 623.36l274.66666669 176.00000002c23.36000001 14.93333333 30.08 45.97333334 15.14666666 69.33333332L954.77333334 910.93333333c-14.93333333 23.25333334-45.97333334 30.08-69.33333335 15.14666667l-274.66666666-176c-23.36000001-14.93333333-30.08-45.97333334-15.14666667-69.33333333l27.09333334-42.24000001c14.93333333-23.36000001 46.08000001-30.08 69.33333333-15.14666666z" fill="currentColor"></path>
+</svg>
+    <span>TOC</span>
+  </div>
+  <div class="widget-body">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E7%BD%91%E7%AB%99%E8%BF%90%E8%A1%8C%E6%97%B6%E9%97%B4%E7%9A%84%E7%BB%9F%E8%AE%A1"><span class="toc-text">1. 网站运行时间的统计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E4%B8%8D%E8%92%9C%E5%AD%90%E7%BB%9F%E8%AE%A1%E8%AE%BF%E9%97%AE%E9%87%8F"><span class="toc-text">2. 不蒜子统计访问量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E7%BD%91%E9%A1%B5%E5%BA%95%E9%83%A8%E8%AE%BF%E9%97%AE%E9%87%8F%E5%92%8C%E8%AE%BF%E9%97%AE%E4%BA%BA%E6%95%B0"><span class="toc-text">2.1 网页底部访问量和访问人数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E6%96%87%E7%AB%A0header%E5%A4%84%E9%98%85%E8%AF%BB%E9%87%8F"><span class="toc-text">2.2 文章header处阅读量</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E6%96%87%E7%AB%A0%E5%AD%97%E6%95%B0%E5%92%8C%E5%AF%B9%E5%BA%94%E7%9A%84%E9%98%85%E8%AF%BB%E6%97%B6%E9%97%B4"><span class="toc-text">3. 文章字数和对应的阅读时间</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-card%E5%A4%84"><span class="toc-text">3.1 card处</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E6%96%87%E7%AB%A0%E5%86%85header%E5%A4%84"><span class="toc-text">3.2 文章内header处</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E8%83%8C%E6%99%AF%E5%9B%BE%E7%9A%84%E6%94%B9%E5%8F%98"><span class="toc-text">4.背景图的改变</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E9%A1%B6%E9%83%A8%E5%AF%BC%E8%88%AA%E6%A0%8F%E7%9A%84%E6%9B%B4%E6%94%B9"><span class="toc-text">5.顶部导航栏的更改</span></a></li></ol>
+  </div>
+</section>
+
+
+      
+<section class="widet-notice widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-notice" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M512 945.02305225v28.15620663a24.27259221 24.27259221 0 0 1-24.27259221 24.27259335H394.0352a48.54518557 48.54518557 0 0 1-41.74885888-23.78714112l-110.68302222-184.47170332a132.04290333 132.04290333 0 0 1-17.47626667-48.54518557h118.4502511a200.97706667 200.97706667 0 0 1 76.21594113 14.56355556l20.38897777 133.49925888a48.54518557 48.54518557 0 0 0 36.40888888 27.67075555l16.01991111 2.91271112a24.27259221 24.27259221 0 0 1 20.38897778 25.72894889zM997.45185223 463.45481443a194.18074112 194.18074112 0 0 1-38.8361489 116.50844445 24.75804445 24.75804445 0 0 1-36.4088889 0l-34.95253333-34.95253333a24.27259221 24.27259221 0 0 1-2.91271111-30.58346667 97.09036999 97.09036999 0 0 0 0-106.79940665 24.27259221 24.27259221 0 0 1 2.91271111-30.58346666l34.95253333-34.95253334a24.75804445 24.75804445 0 0 1 18.93262223-7.28177777 26.2144 26.2144 0 0 1 17.47626667 9.70903665A194.18074112 194.18074112 0 0 1 997.45185223 463.45481443z m-194.18074112-388.36148111v776.72296335a48.54518557 48.54518557 0 0 1-48.54518556 48.54518443h-28.64165888a48.54518557 48.54518557 0 0 1-33.98163001-14.07810332l-145.63555556-143.20829668A291.27111111 291.27111111 0 0 0 342.57730333 657.63555556H172.18370333a145.63555556 145.63555556 0 0 1-145.63555556-145.63555556v-97.09036999a145.63555556 145.63555556 0 0 1 145.63555556-145.63555556h170.3936a291.27111111 291.27111111 0 0 0 206.31703779-85.43952668l145.63555555-143.20829554a48.54518557 48.54518557 0 0 1 33.98162888-14.07810446H754.72592555a48.54518557 48.54518557 0 0 1 48.54518556 48.54518555z" fill="currentColor"></path>
+</svg>
+    <span>NOTICE</span>
+  </div>
+  <div class="widget-body">
+    <p>博客还在建设，客官请稍等</p>
+  </div>
+</section>
+
+
+      <section class="widget-categorys widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M900.3614811 257.09082106h-339.81629553l-67.96326003-101.9448889c-19.41807444-29.12711113-48.54518557-43.69066667-82.52681443-43.69066667H123.6385189c-53.39970333 0-97.09036999 43.69066667-97.09037113 97.09036999v582.54222222c0 53.39970333 43.69066667 97.09036999 97.09037113 97.09037002h776.7229622c53.39970333 0 97.09036999-43.69066667 97.09037113-97.09037002V354.18119104c0-53.39970333-43.69066667-97.09036999-97.09037113-97.09036998z m-97.09036999 242.72592554H220.72888889c-24.27259221 0-48.54518557-24.27259221-48.54518556-48.54518556s24.27259221-48.54518557 48.54518556-48.54518444h582.54222222c24.27259221 0 48.54518557 24.27259221 48.54518556 48.54518444s-24.27259221 48.54518557-48.54518556 48.54518556z" fill="currentColor"></path>
+</svg>
+    <span>CATEGORYS</span>
+  </div>
+  <div class="widget-body">
+    <ul class="categorys-list">
+      
+        <li class="categorys-list-item">
+          <a href="/categories/hexo%E4%B8%BB%E9%A2%98%E4%BC%98%E5%8C%96/">
+            hexo主题优化 (1)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
+          <a href="/categories/%E9%9A%8F%E7%AC%94/">
+            随笔 (1)
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+</section>
+
+      <section class="widget-tags widget-item  layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-tags" viewBox="0 0 1098 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M283.42180005 272q0-28.38857157-20.09142843-48.48000001t-48.47999998-20.09142842-48.48000002 20.09142842-20.09142846 48.48000001 20.09142846 48.48 48.48000002 20.09142843 48.47999998-20.09142843 20.09142843-48.48zM855.0332285 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.03999997 263.58857157q-20.9142853 19.81714313-48.75428534 19.81714312-28.38857157 0-48.20571468-19.81714312l-383.04-383.58857157q-20.36571468-19.81714313-34.55999999-54.10285688t-14.19428534-62.6742853l0-222.85714313q0-27.84000002 20.36571469-48.20571469t48.2057147-20.36571466l222.85714313 0q28.38857157 0 62.6742853 14.19428529t54.65142842 34.55999999l383.04000001 382.49142843q19.81714313 20.9142853 19.81714314 48.75428532zM1060.74751475 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.04 263.58857157q-20.9142853 19.81714313-48.75428531 19.81714312-19.26857155 0-31.61142843-7.47428531t-28.38857159-24.13714314l251.79428534-251.7942853q19.81714313-19.81714313 19.81714308-48.20571469 0-27.84000002-19.81714308-48.75428531l-383.04000001-382.49142845q-20.36571468-20.36571468-54.65142842-34.55999999t-62.67428532-14.19428534l120 0q28.38857157 0 62.67428532 14.19428534t54.65142842 34.55999999l383.03999998 382.49142845q19.81714313 20.9142853 19.81714314 48.75428531z" fill="currentColor"></path>
+</svg>
+    <span>TAGS</span>
+  </div>
+  <div class="widget-body">
+    <div class="tags-cloud">
+      <a href="/tags/css/" style="font-size: 10px;" class="tags-cloud-0">css</a> <a href="/tags/hexo/" style="font-size: 10px;" class="tags-cloud-0">hexo</a> <a href="/tags/html/" style="font-size: 10px;" class="tags-cloud-0">html</a>
+    </div>
+  </div>
+</section>
+    </div>
+  </article>
+</div>
+
+    <!-- footer container -->
+<footer id="footer" class="footer">
+  <div class="footer-container">
+     
+    <p>&copy; 2022 <a href="/" target="_blank">水帝</a></p>
+
+    
+
+    <p>Powered by <a href="https://hexo.io" target="_blank" rel="noopener noreferrer">Hexo</a> Theme - <a href="https://github.com/miiiku/flex-block" target="_blank" rel="noopener noreferrer author">flex-block</a></p>
+    <p>
+      <span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+      <script>
+        var now = new Date(); 
+        function createtime() { 
+            var grt= new Date("06/24/2022 20:26:16");//在此处修改你的建站时间，格式：月/日/年 时:分:秒
+            now.setTime(now.getTime()+250); 
+            days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days); 
+            hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours); 
+            if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum); 
+            mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;} 
+            seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum); 
+            snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;} 
+            document.getElementById("timeDate").innerHTML = "本站已运行 "+dnum+" 天 "; 
+            document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒"; 
+        } 
+      setInterval("createtime()",250);
+      </script>
+    </p>
+	  <p>已经记载了2篇文章</p>
+    <p>
+      <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+      浏览量：<span id="busuanzi_value_site_pv"><i class="fa fa-spinner fa-spin"></i></span>👀 | 访客数：<span id="busuanzi_value_site_uv"><i class="fa fa-spinner fa-spin"></i></span>👦
+    </p>
+    <p>
+      <a href="javascript:;" id="theme-light">🌞 浅色</a>
+      <a href="javascript:;" id="theme-dark">🌛 深色</a>
+      <a href="javascript:;" id="theme-auto">🤖️ 自动</a>
+    </p>
+  </div>
+</footer>
+
+  </div>
+  <div class="back-to-top-fixed soft-size--round soft-style--box">
+    <svg class="icon icon-back-to-top" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+      <path d="M725.333333 426.666667c-12.8 0-21.333333-4.266667-29.866667-12.8l-213.333333-213.333333c-17.066667-17.066667-17.066667-42.666667 0-59.733333s42.666667-17.066667 59.733333 0l213.333333 213.333333c17.066667 17.066667 17.066667 42.666667 0 59.733333C746.666667 422.4 738.133333 426.666667 725.333333 426.666667z"></path>
+      <path d="M298.666667 426.666667c-12.8 0-21.333333-4.266667-29.866667-12.8-17.066667-17.066667-17.066667-42.666667 0-59.733333l213.333333-213.333333c17.066667-17.066667 42.666667-17.066667 59.733333 0s17.066667 42.666667 0 59.733333l-213.333333 213.333333C320 422.4 311.466667 426.666667 298.666667 426.666667z"></path>
+      <path d="M512 896c-25.6 0-42.666667-17.066667-42.666667-42.666667L469.333333 170.666667c0-25.6 17.066667-42.666667 42.666667-42.666667s42.666667 17.066667 42.666667 42.666667l0 682.666667C554.666667 878.933333 537.6 896 512 896z"></path>
+    </svg>
+  </div>
+
+  
+  <!-- aplayer -->
+
+
+<!-- dplayer -->
+
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+  
+  <!-- 尾部用户自定义相关内容 -->
+</body>
+</html>
