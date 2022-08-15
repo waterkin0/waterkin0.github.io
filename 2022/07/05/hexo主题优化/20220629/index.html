@@ -24,7 +24,7 @@
 
   
 
-  <title>我的小伙伴们 | Touma</title>
+  <title>有关flex-block主题的美化.2 | Touma</title>
 
   
 
@@ -45,9 +45,9 @@
   <div class="root-container" style="background-image: url(null)">
     
 <!-- header container -->
-<header class="header-container">
+<header class="header-container post">
   
-    <div class="post-image" style="background-image: url(https://s2.loli.net/2022/06/25/zXiNgHKce5wMnGF.jpg)"></div>
+    <div class="post-image" style="background-image: url(https://s2.loli.net/2022/06/25/7wvBY8CcJosWTy6.jpg)"></div>
   
 
   <!-- navbar -->
@@ -97,62 +97,107 @@
 
   
   
-
-  
-  
     <div class="header-content">
-      <div class="post-text layout-block layout-padding">
-        <h1 class="title-wrap">我的小伙伴们</h1>
-        
-          <h2 class="title-sub-wrap">哈喽</h2>
-        
+      <div class="post-text layout-block">
+        <div class="layout-margin">
+          <h1 class="title-wrap">有关flex-block主题的美化.2</h1>
+          <h2 class="title-sub-wrap">
+            <strong>水帝</strong>
+            <span>发布于</span>
+            <time  class="article-date" datetime="2022-07-05T13:37:45.000Z" itemprop="datePublished">2022-07-05</time>
+          </h2>
+          <h2>
+              <span class="post-count">📖908字</span>
+              <span class="post-count">⏱3分</span>
+            <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
+              👀<span id="busuanzi_value_page_pv"></span>次
+          </h2>
+          <ul class="wrap-list dark">
+  
+    <li><a href="/categories/hexo%E4%B8%BB%E9%A2%98%E4%BC%98%E5%8C%96/">📒 hexo主题优化</a></li>
+  
+</ul>
+          <ul class="wrap-list dark">
+  
+    <li><a href="/tags/css/">🏷️ css</a></li>
+  
+    <li><a href="/tags/html/">🏷️ html</a></li>
+  
+    <li><a href="/tags/hexo/">🏷️ hexo</a></li>
+  
+</ul>
+        </div>
       </div>
     </div>
+  
+
+  
   
   
 </header>
 
-    <!-- 分页(其他自定义页面) -->
+    <!-- 文章 -->
 
-<!-- 自定义页面 -->
-
+<!-- 文章内容 -->
 <div class="body-container">
   <article class="content-container layout-block post-container">
     <div class="article-info">
       
+      
+      
+      
+      <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
+        <p>那么就接着<a href="/2022/06/27/hexo%E4%B8%BB%E9%A2%98%E4%BC%98%E5%8C%96/20220627">上次的文章</a>写</p>
+<h2 id="6-导航栏新增栏位"><a href="#6-导航栏新增栏位" class="headerlink" title="6.导航栏新增栏位"></a>6.导航栏新增栏位</h2><p>(<strong>注意本分类仅针对本主题，不同主题的改写方法可能不一样</strong>)<br>其实在这个主题的1.0版本中，上面是有分类和标签一栏的，但在后续更新之后作者将其去掉了<br>但我本人还是想有一个分类的栏，方便查看，那么就试着实现一下吧：<br>首先在这里对应主题中的menu中添加</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">分类: /categories<br></code></pre></td></tr></table></figure>
+<p>那么此时在页面顶端就已经有多的一栏就是分类了，当然我原本这里已经自动排版了，就不用额外去写了<br>作者在本主题留下了对于主题内的layout_partial\page.ejs来为使用者自定义用，当然写在其他地方应该也可以<br>那么就在这个文件中对分类的页面进行定义，但在这之前还有事情要做：<br>在指令栏输入：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">hexo new page categories<br></code></pre></td></tr></table></figure>
+<p>此时在hexo的source文件夹内会出现categories文件夹，在里面的index.md写入如下内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">---<br>title: 分类<br>date: 2022-07-05 14:52:58<br>subtitle: 物以群分<br>cover: <br>layout: categories<br>---<br></code></pre></td></tr></table></figure>
+<p>注意其实只要改layout就好，其他的自行改变就可以，注意cover如果用的本地图片最好写成绝对地址，因为笔者用的图床，所以没测试过用本地的会咋样<br>然后就是在_data里面新建categories.yml文件，并按下面的格式写入内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">- &#123; &quot;name&quot; : &quot; &quot;, &quot;cover&quot; : &quot; &quot; &#125;<br></code></pre></td></tr></table></figure>
+<p>内容需要自定义分类名和对应的封面图，注意name的值一定要是已经有的分类名，如果没匹配上就不会显示<br>其实还可以具体加其他的东西，比如加个分类的概括describe之类的，但对应的也要在接下来的layout_partial\page.ejs文件内进行改动<br>那么现在在layout_partial\page.ejs内增加如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&lt;%# 输出自定义分类内容 %&gt;<br>&lt;% if (page.layout === &quot;categories&quot;) &#123; %&gt;<br>  &lt;div class=&quot;content-container layout-block article-list&quot;&gt;<br>    &lt;% site.categories.each(function(categorie) &#123; %&gt;<br>      &lt;div class=&quot;article-item layout-padding&quot;&gt;<br>        &lt;% site.data.categories.forEach(function(categorie_name) &#123; %&gt;<br>          &lt;% if (categorie.name == categorie_name.name) &#123; %&gt;<br>            &lt;article class=&quot;card-container article-card content-padding--large soft-size--large soft-style--box&quot;&gt;<br>              &lt;% if (categorie_name.cover) &#123; %&gt;<br>                &lt;div class=&quot;card-cover&quot; background-image-lazy style=&quot;&lt;%= `background-image: url($&#123;categorie_name.cover&#125;)` %&gt;&quot;&gt;&lt;/div&gt;<br>              &lt;% &#125; %&gt;<br>              &lt;div class=&quot;card-text&quot;&gt;<br>                &lt;a href=&quot;&lt;%= url_for(&#x27;/categories/&#x27;+categorie.name) %&gt;&quot; itemprop=&quot;url&quot;&gt;<br>                  &lt;h2 class=&quot;card-text--title&quot;&gt;&lt;%= categorie.name %&gt;&lt;/h2&gt;<br>                  &lt;%# &lt;h3&gt;&lt;%= categorie_name.describe %&gt;&lt;/h3&gt; //需要describe就加上就可以%&gt; <br>                  &lt;h3&gt;共&lt;%= categorie.length %&gt;篇文章&lt;/h3&gt;<br>                &lt;/a&gt;<br>              &lt;/div&gt;<br>            &lt;/article&gt;<br>          &lt;% &#125; %&gt;<br>        &lt;% &#125;) %&gt;<br>      &lt;/div&gt;<br>    &lt;% &#125;) %&gt;<br>  &lt;/div&gt;<br>&lt;% &#125; %&gt;<br></code></pre></td></tr></table></figure>
+<p>然后发现其实上面有一行空白的，那是文章内容，但我们分类页面不需要写啥内容<br>(当然如果你想写个啥介绍之类的，在categories&#x2F;index.md内写入内容即可)<br>所以需要进行处理，将上面的输出markdown内容写一个判断条件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&lt;% if (page.layout === &quot;links&quot;||page.layout === &quot;messages&quot;) &#123; %&gt;<br>  &lt;%# 输出Markdown内容 %&gt;<br>  .....<br>&lt;% &#125; %&gt;<br></code></pre></td></tr></table></figure>
+<p>这里判断layout的属性，只有links和messages需要输出这个<br>同理，在下面的侧边栏输出，就没必要输出categories和tags内容了，也用上面的办法将其包裹即可<br>到这里分类页面就创建完成了</p>
+<h2 id="7-打字效果"><a href="#7-打字效果" class="headerlink" title="7.打字效果"></a>7.打字效果</h2>
+      </section>
+
+      
+      
+        <nav class="article-nav">
+          
+          
+            <div class="article-nav-item layout-padding">
+  <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
+    
+    <div class="card-text">
+      
+        <a href="/2022/07/05/%E9%9A%8F%E7%AC%94/20220704/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">20220704</h2>
+        </a>
+      
+      <div class="card-text--row">Older</div>
+    </div>
+  </article>
+</div>
+          
+        </nav>
+      
+
+      <section class="page-message-container layout-padding">
         
-        <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-          <h1 id="欢迎诸位"><a href="#欢迎诸位" class="headerlink" title="欢迎诸位"></a>欢迎诸位</h1><p>各位大佬们的链接，可以看看哦</p>
 
-        </section>
-      
 
-      
-      
-        <section class="page-link-container">
-          
-            <div class="link-item layout-padding">
-              <a href="https://yulelanmei.github.io/" title="蓝莓的麦田" class="content-padding--primary soft-size--primary soft-style--box" target="_blank" rel="noopener noreferrer">
-                
-                <img src="https://s2.loli.net/2022/06/25/npKfMLYP2UORGEu.jpg" alt="蓝莓的麦田" class="soft-size--round soft-style--box">
-                
-                <div>
-                  <h4 class="text-ellipsis">蓝莓的麦田</h4>
-                  
-                  <p class="text-ellipsis">yulelanmei</p>
-                  
-                </div>
-              </a>
-            </div>
-          
-        </section>
-      
+  
+  
 
-      
-      
+  
+  
 
-      
-      
+
+      </section>
     </div>
     <div class="widget-info">
       <section class="widget-author widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
@@ -189,6 +234,20 @@
 </section>
 
       
+<section class="widget-toc widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-toc" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M134.50666666 767.46666668H460.8c27.73333333 0 50.24000001 22.50666668 50.24000001 50.23999999v50.13333333c0 27.73333333-22.50666668 50.24000001-50.24000001 50.24000001H134.50666666c-27.73333333 0-50.24000001-22.50666668-50.23999999-50.24000001v-50.13333333c0.10666668-27.73333333 22.50666668-50.24000001 50.24000001-50.24000001zM84.37333332 541.65333333h326.18666669c27.73333333 0 50.24000001 22.39999999 50.23999999 50.13333334v50.24000001c0 27.73333333-22.50666668 50.24000001-50.24000002 50.23999999H84.37333332c-27.73333333 0-50.24000001-22.50666668-50.23999999-50.23999999v-50.24000001c0-27.73333333 22.50666668-50.13333334 50.24000001-50.13333334zM134.50666666 315.83999999H460.8c27.73333333 0 50.24000001 22.50666668 50.24000001 50.24000001v50.24000001c0 27.73333333-22.50666668 50.13333334-50.24000001 50.13333333H134.50666666c-27.73333333 0-50.24000001-22.39999999-50.23999999-50.13333333v-50.24000001c0.10666668-27.84000001 22.50666668-50.24000001 50.24000001-50.23999999zM209.81333332 89.91999999h326.18666671c27.73333333 0 50.24000001 22.39999999 50.23999997 50.13333335v50.23999999c0 27.73333333-22.50666668 50.24000001-50.24000001 50.24000001H209.81333332c-27.73333333 0-50.24000001-22.50666668-50.23999999-50.24000001v-50.24000001c0-27.73333333 22.50666668-50.13333334 50.24000001-50.13333333zM692.05333333 623.36l274.66666669 176.00000002c23.36000001 14.93333333 30.08 45.97333334 15.14666666 69.33333332L954.77333334 910.93333333c-14.93333333 23.25333334-45.97333334 30.08-69.33333335 15.14666667l-274.66666666-176c-23.36000001-14.93333333-30.08-45.97333334-15.14666667-69.33333333l27.09333334-42.24000001c14.93333333-23.36000001 46.08000001-30.08 69.33333333-15.14666666z" fill="currentColor"></path>
+</svg>
+    <span>TOC</span>
+  </div>
+  <div class="widget-body">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E5%AF%BC%E8%88%AA%E6%A0%8F%E6%96%B0%E5%A2%9E%E6%A0%8F%E4%BD%8D"><span class="toc-text">6.导航栏新增栏位</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E6%89%93%E5%AD%97%E6%95%88%E6%9E%9C"><span class="toc-text">7.打字效果</span></a></li></ol>
+  </div>
+</section>
+
+
+      
 <section class="widet-notice widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
   <div class="widget-title">
     <svg class="icon icon-notice" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -201,8 +260,8 @@
   </div>
 </section>
 
-      
-          <section class="widget-categorys widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+
+      <section class="widget-categorys widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
   <div class="widget-title">
     <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M900.3614811 257.09082106h-339.81629553l-67.96326003-101.9448889c-19.41807444-29.12711113-48.54518557-43.69066667-82.52681443-43.69066667H123.6385189c-53.39970333 0-97.09036999 43.69066667-97.09037113 97.09036999v582.54222222c0 53.39970333 43.69066667 97.09036999 97.09037113 97.09037002h776.7229622c53.39970333 0 97.09036999-43.69066667 97.09037113-97.09037002V354.18119104c0-53.39970333-43.69066667-97.09036999-97.09037113-97.09036998z m-97.09036999 242.72592554H220.72888889c-24.27259221 0-48.54518557-24.27259221-48.54518556-48.54518556s24.27259221-48.54518557 48.54518556-48.54518444h582.54222222c24.27259221 0 48.54518557 24.27259221 48.54518556 48.54518444s-24.27259221 48.54518557-48.54518556 48.54518556z" fill="currentColor"></path>
@@ -228,7 +287,7 @@
   </div>
 </section>
 
-          <section class="widget-tags widget-item  layout-margin content-padding--primary soft-size--large soft-style--box">
+      <section class="widget-tags widget-item  layout-margin content-padding--primary soft-size--large soft-style--box">
   <div class="widget-title">
     <svg class="icon icon-tags" viewBox="0 0 1098 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M283.42180005 272q0-28.38857157-20.09142843-48.48000001t-48.47999998-20.09142842-48.48000002 20.09142842-20.09142846 48.48000001 20.09142846 48.48 48.48000002 20.09142843 48.47999998-20.09142843 20.09142843-48.48zM855.0332285 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.03999997 263.58857157q-20.9142853 19.81714313-48.75428534 19.81714312-28.38857157 0-48.20571468-19.81714312l-383.04-383.58857157q-20.36571468-19.81714313-34.55999999-54.10285688t-14.19428534-62.6742853l0-222.85714313q0-27.84000002 20.36571469-48.20571469t48.2057147-20.36571466l222.85714313 0q28.38857157 0 62.6742853 14.19428529t54.65142842 34.55999999l383.04000001 382.49142843q19.81714313 20.9142853 19.81714314 48.75428532zM1060.74751475 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.04 263.58857157q-20.9142853 19.81714313-48.75428531 19.81714312-19.26857155 0-31.61142843-7.47428531t-28.38857159-24.13714314l251.79428534-251.7942853q19.81714313-19.81714313 19.81714308-48.20571469 0-27.84000002-19.81714308-48.75428531l-383.04000001-382.49142845q-20.36571468-20.36571468-54.65142842-34.55999999t-62.67428532-14.19428534l120 0q28.38857157 0 62.67428532 14.19428534t54.65142842 34.55999999l383.03999998 382.49142845q19.81714313 20.9142853 19.81714314 48.75428531z" fill="currentColor"></path>
@@ -241,7 +300,6 @@
     </div>
   </div>
 </section>
-      
     </div>
   </article>
 </div>
