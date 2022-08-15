@@ -42,7 +42,7 @@
 
 </head>
 <body>
-  <div class="root-container" style="background-image: url(null)">
+  <div class="root-container" style="">
     
 <!-- header container -->
 <header class="header-container post">
@@ -107,8 +107,8 @@
             <time  class="article-date" datetime="2022-06-27T02:16:04.000Z" itemprop="datePublished">2022-06-27</time>
           </h2>
           <h2>
-              <span class="post-count">📖2.6k字</span>
-              <span class="post-count">⏱10分</span>
+              <span class="post-count">📖3.3k字</span>
+              <span class="post-count">⏱13分</span>
             <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
               👀<span id="busuanzi_value_page_pv"></span>次
           </h2>
@@ -206,9 +206,20 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">@import &quot;_partial/root&quot;<br></code></pre></td></tr></table></figure>
 <p>保证可以正常加载<br>然后将source\css_partial\content.styl内的root_container移到root.styl内并填写相关设置</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">.root-container&#123;<br>    background-color: var(--theme-bg-primary);<br>    background-repeat: no-repeat;//保证滚动的时候图片不动<br>    background-attachment:fixed;<br>    background-position:50% 50%;<br>&#125;//这是一开始我的设置<br></code></pre></td></tr></table></figure>
-<p>然后就是themes\flex-block\layout\layout.ejs内的背景图片设置</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">在&lt;body&gt;的&lt;div class=&quot;root-container&quot;&gt;内更改为：<br>&lt;div class=&quot;root-container&quot; style=&quot;&lt;%= `background-image: url($&#123;theme.background&#125;)` %&gt;&quot;&gt;<br></code></pre></td></tr></table></figure>
-<p>最后在theme下的_config.yml文件内新定义background元素，由于我暂时没用，所以暂时是空<br>此时效果和没写上面代码一样，但可以直接在_config.yml内定义背景图即可<br>用法和banner相同，如果是本地的就直接把图片放在theme&#x2F;(你的主题名)&#x2F;下就好，然后引用时直接&#x2F; ,前面不要加.<br>如果要背景的话建议用简单一点的，本主题的banner和card上都可以放上图片，背景再花一点就不大好看了<br>当然看客官您的选择🤪</p>
+<p>然后就是themes\flex-block\layout\layout.ejs内的背景图片设置<br>在body内的div class&#x3D;”root-container”内更改为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&lt;div class=&quot;root-container&quot; style=&quot;&lt;%= `background-image: url($&#123;theme.background&#125;)` %&gt;&quot;&gt;<br></code></pre></td></tr></table></figure>
+<p>最后在theme下的_config.yml文件内新定义background元素，由于我暂时没用，所以暂时是空<br>此时效果和没写上面代码一样，但可以直接在_config.yml内定义背景图即可<br>用法和banner相同，如果是本地的就直接把图片放在theme&#x2F;(你的主题名)&#x2F;source下就好，然后引用时直接&#x2F; ,前面不要加.<br>如果要背景的话建议用简单一点的，本主题的banner和card上都可以放上图片，背景再花一点就不大好看了<br>当然看客官您的选择🤪</p>
+<p><strong>以下是我的自定义方案</strong><br>就像现在正在查看的这个网页，整体的页面还是白色背景，右下角添加了一个小画面<br>背景使用ps将这幅小画面放在和网页一样大小的白色底纸上的<br>但如果什么也不修改的话在访问文章时这个小画面会被右边的导航栏和回到顶上的按钮遮住,那么还需要适当的调整透明度(这里对整个页面所有卡片都进行了透明度的更改，一步到位,这样包括文章卡片的背景也会变成有一定透明度的,当然对有图片和文字的地方仍然是不透明的)<br>修改对应主题内source\css_util\theme.styl，这里是对主题底层的颜色的定义<br>修改$light-bg-primary：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">$light-bg-primary = rgba(245,258,250,0.3); //背景,透明度为0.3<br></code></pre></td></tr></table></figure>
+<p>这里的四个值，前三个是rgb表示的颜色，可以自行上网查想要的，然后0.3是透明度<br>但其实还是有点问题，我的主题自带白天和晚上风格的切换，此时背景是白天的，改到晚上就会很奇怪<br>有两种解决办法<br>1.直接去掉风格转换，默认只有一种风格<br>2.多添加一个夜晚用背景<br>第一种很简单，但第二种对于我来说有一定难度，不能做到归档到_config.yml内，所以下面对于第二种的使用看看就好：<br>首先这个自动我觉得可以删去了，我确实不知道这个有啥用，暂时注释掉了这一部分(全部注释，只注释页面上的那个按钮会导致代码出错)<br>由于ejs内无法使用js内的一些例如localStorage的值，所以我无法将_config.yml内的图片直接引用<br>我就用了一个最蠢的办法，将两张图片放在我的图床内，然后直接用图床给的这个网址<br>事实证明这个办法虽然蠢，但可行:<br>在source\js\script.js内的window.addEventListener(“DOMContentLoaded”, function(){内添加</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">const back_ground     = document.querySelector(&quot;.root-container&quot;);<br>if(window.localStorage.getItem(&#x27;theme&#x27;) == &#x27;theme-dark&#x27;)<br>    back_ground.setAttribute(&quot;style&quot;,&quot;background-image: url(https://s2.loli.net/2022/07/13/8OEKadVl4wY3omH.jpg)&quot;)//我的黑暗背景图<br>else<br>    back_ground.setAttribute(&quot;style&quot;,&quot;background-image: url(https://s2.loli.net/2022/07/06/qDeLO1IijPA3EbC.jpg)&quot;)//我的光明背景图<br></code></pre></td></tr></table></figure>
+<p>然后在document.querySelector(‘#theme-light’).addEventListener(‘click’, function () {内添加</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">back_ground.setAttribute(&quot;style&quot;,&quot;background-image: url(https://s2.loli.net/2022/07/06/qDeLO1IijPA3EbC.jpg)&quot;)//我的光明背景图<br></code></pre></td></tr></table></figure>
+<p>最后在document.querySelector(‘#theme-dark’).addEventListener(‘click’, function () {内添加</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">back_ground.setAttribute(&quot;style&quot;,&quot;background-image: url(https://s2.loli.net/2022/07/13/8OEKadVl4wY3omH.jpg)&quot;)//我的黑暗背景图<br></code></pre></td></tr></table></figure>
+<p>别忘了改透明度</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">$dark-bg-primary = rgba(30,35,40,0.4);<br></code></pre></td></tr></table></figure>
+<p>完成！<br>好吧这个办法很蠢，但我也实在想不到其他办法了</p>
 <h2 id="5-顶部导航栏的更改"><a href="#5-顶部导航栏的更改" class="headerlink" title="5.顶部导航栏的更改"></a>5.顶部导航栏的更改</h2><p>原本这个主题的导航栏是固定在整个网页的最上面的，但是我想让它改为固定在整个页面的最上面，也就是无论怎么动都是在屏幕最上面那里，而不是会因为下拉而消失<br>首先最简单的改为固定页面上，那么先将对应主题的source\css_partial\nav.styl内的.navbar的position改为fixed</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">position: fixed<br></code></pre></td></tr></table></figure>
 <p>css对position的描述分别如下：<br>1、absolute(绝对定位)，其位置相对于最近已定位的父元素，如果元素没有已定位的父元素那么它的位置相对于<br>2、static(默认的静态定位)，即没有定位，遵循正常的文档流对象，静态定位的元素不受top、left、right、bottom影响。<br>3、relative(相对定位)，其位置相对其正常时的位置。相对定位元素经常被用来作为绝对定位元素的容器块。<br>4、fixed，元素的位置相对于浏览器窗口，是固定位置。即使窗口是滚动的它也不会移动。<br>5、sticky(粘性定位)，基于用户滚动位置来定位，在未滚动出目标区域时，它的行为就像position:relative;它的表现就像 position:fixed;，它会固定在目标位置。元素定位表现为在跨越特定阈值前为相对定位，之后为固定定位。<br>明显需要将原本的改为fixed<br>但是改完之后发现顶部的navbar栏显示不正确，右侧的首页&#x2F;友链&#x2F;关于显示不正确<br>这里是因为下面.navbar-content内display: flex所代表这一块所用为弹性块，但当外部为fixed时会产生冲突<br>只需要将.navbar内新增如下代码：</p>
@@ -235,10 +246,12 @@
             <div class="article-nav-item layout-padding">
   <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
     
+      <div class="card-cover" background-image-lazy data-img="https://s2.loli.net/2022/07/06/b2BG96m5T8jLsIg.jpg"></div>
+    
     <div class="card-text">
       
-        <a href="/2022/07/05/%E9%9A%8F%E7%AC%94/20220704/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">20220704</h2>
+        <a href="/2022/07/15/hexo%E4%B8%BB%E9%A2%98%E4%BC%98%E5%8C%96/20220715/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">有关flex-block主题的美化.2</h2>
         </a>
       
       <div class="card-text--row">Newer</div>
@@ -295,7 +308,7 @@
         <svg class="icon icon-article" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M240.51564747 647.74217627h196.07203239c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806V165.10332731c0-33.18142087-30.16492806-60.32985613-60.32985612-60.32985611H245.04038668C225.43318342 104.7734712 210.35071939 119.85593522 210.35071939 139.46313845V617.57724821c0 16.59071043 13.57421762 30.16492806 30.16492808 30.16492806z m663.62841731-452.47392089v482.63884894c0 33.18142087-27.14843525 60.32985613-60.32985612 60.32985613H180.18579134c-33.18142087 0-60.32985613-27.14843525-60.32985612-60.32985613V195.26825538c-49.77213131 0-90.49478418 40.72265287-90.49478417 90.49478417v452.4739209c0 49.77213131 40.72265287 90.49478418 90.49478417 90.49478417h286.56681657c16.59071043 0 30.16492806 13.57421762 30.16492807 30.16492807s13.57421762 30.16492806 30.16492805 30.16492806h90.49478418c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806s13.57421762-30.16492806 30.16492807-30.16492807h286.56681657c49.77213131 0 90.49478418-40.72265287 90.49478417-90.49478417V285.76303955c0-49.77213131-40.72265287-90.49478418-90.49478417-90.49478417zM587.41232014 647.74217627h191.54729318c19.60720323 0 34.68966726-15.08246403 34.68966729-34.68966727V134.93839925c0-16.59071043-13.57421762-30.16492806-30.16492808-30.16492805H617.57724821c-30.16492806 0-60.32985613 27.14843525-60.32985612 60.32985611v452.4739209c0 16.59071043 13.57421762 30.16492806 30.16492805 30.16492806z" fill="currentColor"></path>
 </svg>
-        <span>4</span>
+        <span>3</span>
       </div>
       <div class="count-box--item">
         <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -359,7 +372,7 @@
       
         <li class="categorys-list-item">
           <a href="/categories/%E9%9A%8F%E7%AC%94/">
-            随笔 (2)
+            随笔 (1)
           </a>
         </li>
       
@@ -412,15 +425,15 @@
       setInterval("createtime()",250);
       </script>
     </p>
-	  <p>已经记载了4篇文章</p>
+	  <p>已经记载了3篇文章</p>
     <p>
       <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
       浏览量：<span id="busuanzi_value_site_pv"><i class="fa fa-spinner fa-spin"></i></span>👀 | 访客数：<span id="busuanzi_value_site_uv"><i class="fa fa-spinner fa-spin"></i></span>👦
     </p>
     <p>
-      <a href="javascript:;" id="theme-light">🌞 浅色</a>
-      <a href="javascript:;" id="theme-dark">🌛 深色</a>
-      <a href="javascript:;" id="theme-auto">🤖️ 自动</a>
+      <a href="javascript:;" id="theme-light">🌞 光明</a>
+      <a href="javascript:;" id="theme-dark">🌛 黑暗</a>
+      <!-- <a href="javascript:;" id="theme-auto">🤖️ 自动</a> -->
     </p>
   </div>
 </footer>
