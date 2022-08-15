@@ -1,7 +1,7 @@
 @media screen and (min-width: 768px) {
   :root {
     --layout-max-width: 1200px;
-    --layout-padding: 20px;
+    --layout-padding: 10px;
     --content-large-padding: 40px 38px 46px;
     --content-small-padding: 20px 19px 23px;
     --font-large-size: 46px;
@@ -40,7 +40,7 @@
   --soft-shadow: 3px;
 }
 :root.theme-light {
-  --theme-bg-primary: #f5f8fa;
+  --theme-bg-primary: rgba(245,255,250,0.3);
   --theme-bg-high: #fff;
   --theme-bg-shadow: #dddfe1;
   --theme-bg-actvie1: #dddfe1;
@@ -54,7 +54,7 @@
   --theme-border-secondary: #ebedef;
 }
 :root.theme-dark {
-  --theme-bg-primary: #1e2428;
+  --theme-bg-primary: rgba(30,35,40,0.4);
   --theme-bg-high: #303a40;
   --theme-bg-shadow: #0c0e10;
   --theme-bg-actvie1: #1b2024;
@@ -69,7 +69,7 @@
 }
 @media (prefers-color-scheme: light) {
   :root {
-    --theme-bg-primary: #f5f8fa;
+    --theme-bg-primary: rgba(245,255,250,0.3);
     --theme-bg-high: #fff;
     --theme-bg-shadow: #dddfe1;
     --theme-bg-actvie1: #dddfe1;
@@ -85,7 +85,7 @@
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --theme-bg-primary: #1e2428;
+    --theme-bg-primary: rgba(30,35,40,0.4);
     --theme-bg-high: #303a40;
     --theme-bg-shadow: #0c0e10;
     --theme-bg-actvie1: #1b2024;

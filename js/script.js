@@ -3,11 +3,18 @@ window.addEventListener("DOMContentLoaded", function() {
   const navBtn          = document.querySelector(".navbar-btn");
   const navList         = document.querySelector(".navbar-list");
   const backToTopFixed  = document.querySelector(".back-to-top-fixed");
-  const navigationbar   = document.querySelector(".navbar")
+  const navigationbar   = document.querySelector(".navbar");
+  const back_ground     = document.querySelector(".root-container");
   let lastTop           = 0;
   let theme             = window.localStorage.getItem('theme') || '';
 
   theme && html.classList.add(theme)
+
+  if(window.localStorage.getItem('theme') == 'theme-dark')
+    back_ground.setAttribute("style","background-image: url(https://s2.loli.net/2022/07/13/8OEKadVl4wY3omH.jpg)")
+  else
+    back_ground.setAttribute("style","background-image: url(https://s2.loli.net/2022/07/06/qDeLO1IijPA3EbC.jpg)")
+  
 
   const goScrollTop = () => {
     let currentTop = getScrollTop()
@@ -39,28 +46,28 @@ window.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  //toggleBackToTopBtn()
-
   // theme light click
   document.querySelector('#theme-light').addEventListener('click', function () {
     html.classList.remove('theme-dark')
     html.classList.add('theme-light')
-    window.localStorage.setItem('theme', 'theme-light')
+    back_ground.setAttribute("style","background-image: url(https://s2.loli.net/2022/07/06/qDeLO1IijPA3EbC.jpg)")
+    window.localStorage.setItem('theme', 'theme-light')// 保存本地的光/暗主题，保证跟换页面时主题不变
   })
 
   // theme dark click
   document.querySelector('#theme-dark').addEventListener('click', function () {
     html.classList.remove('theme-light')
     html.classList.add('theme-dark')
+    back_ground.setAttribute("style","background-image: url(https://s2.loli.net/2022/07/13/8OEKadVl4wY3omH.jpg)")
     window.localStorage.setItem('theme', 'theme-dark')
   })
 
-  // theme auto click
-  document.querySelector('#theme-auto').addEventListener('click', function() {
-    html.classList.remove('theme-light')
-    html.classList.remove('theme-dark')
-    window.localStorage.setItem('theme', '')
-  })
+  // // theme auto click
+  // document.querySelector('#theme-auto').addEventListener('click', function() {
+  //   html.classList.remove('theme-light')
+  //   html.classList.remove('theme-dark')
+  //   window.localStorage.setItem('theme', '')
+  // })
 
   // mobile nav click
   navBtn.addEventListener("click", function () {
