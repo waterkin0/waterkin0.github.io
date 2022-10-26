@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="theme-color" content="#3367D6"/>
+  <link rel="apple-touch-icon" href="/icons-192.png">
+  <link rel="manifest" href="/manifest.json">
+  
+  <meta name="generator" content="Hexo 6.2.0">
+
+  
+
+  
+
+  
+    <meta name="author" content="水帝">
+  
+
+  
+
+  
+
+  <title>利用遗传算法求解 TSP 问题 | Touma</title>
+
+  
+
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@1.1.3/index.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlightjs@9.16.2/styles/monokai.css">
+  
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+</head>
+<body>
+  <div class="root-container" style="">
+    
+<!-- header container -->
+<header class="header-container post">
+  
+    <div class="post-image" style="background-image: url(https://s2.loli.net/2022/10/26/kc4MOgbC3UGZXiw.png)"></div>
+  
+
+  <!-- navbar -->
+<nav class="navbar">
+  <div class="navbar-content">
+    <!-- logo -->
+    <div class="navbar-logo">
+      <a href="/">
+        
+          Touma
+        
+      </a>
+    </div>
+    <!-- link -->
+    <div class="navbar-link">
+      <div class="navbar-btn">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <ul class="navbar-list">
+        
+          <li class="navbar-list-item"><a href="/">首页</a></li>
+        
+          <li class="navbar-list-item"><a href="/categories">分类</a></li>
+        
+          <li class="navbar-list-item"><a href="/links">友链</a></li>
+        
+          <li class="navbar-list-item"><a href="/about">关于</a></li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+    <div class="header-content">
+      <div class="post-text layout-block">
+        <div class="layout-margin">
+          <h1 class="title-wrap">利用遗传算法求解 TSP 问题</h1>
+          <h2 class="title-sub-wrap">
+            <strong>水帝</strong>
+            <span>发布于</span>
+            <time  class="article-date" datetime="2022-10-18T09:28:08.000Z" itemprop="datePublished">2022-10-18</time>
+          </h2>
+          <h2>
+              <span class="post-count">📖3k字</span>
+              <span class="post-count">⏱13分</span>
+            <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
+              👀<span id="busuanzi_value_page_pv"></span>次
+          </h2>
+          <ul class="wrap-list dark">
+  
+</ul>
+          <ul class="wrap-list dark">
+  
+    <li><a href="/tags/css/">🏷️ css</a></li>
+  
+    <li><a href="/tags/html/">🏷️ html</a></li>
+  
+    <li><a href="/tags/hexo/">🏷️ hexo</a></li>
+  
+</ul>
+        </div>
+      </div>
+    </div>
+  
+
+  
+  
+  
+</header>
+
+    <!-- 文章 -->
+
+<!-- 文章内容 -->
+<div class="body-container">
+  <article class="content-container layout-block post-container">
+    <div class="article-info">
+      
+      
+      
+      
+      <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
+        <h2 id="1-遗传算法"><a href="#1-遗传算法" class="headerlink" title="1.遗传算法"></a>1.遗传算法</h2><p>遗传算法的灵感来自达尔文的进化论，模拟了自然选择，通过N代的遗传、变异、交叉、复制，得出问题的最优解。总体实现较为简单，但其本质是一种高效、并行、全局搜索的方法，能在搜索过程中自动获取和积累有关搜索空间的知识，并自适应地控制搜索过程以求得最佳解</p>
+<p>其中包含的一些重要概念，先在这里提出，后续用例子再仔细解释：</p>
+<h3 id="1-基因和染色体"><a href="#1-基因和染色体" class="headerlink" title="1.基因和染色体"></a>1.基因和染色体</h3><p>既然是问题一般是有解的，那么我们可以把这个可行的解叫做”染色体”，例如问题：</p>
+<blockquote>
+<p>x+y+z&lt;10</p>
+</blockquote>
+<p>那么一个可行解是[1,2,3]，当然还有很多，而其中的一个元素称之为”基因”</p>
+<h3 id="2-适应度函数"><a href="#2-适应度函数" class="headerlink" title="2.适应度函数"></a>2.适应度函数</h3><p>像自然界物竞天择一样，这里也会对这些”染色体”，即可行解进行择优，并淘汰相对较差的解。而进行这项选择的，就是适应度函数。适应度需要评判这个解的适应度，去掉适应度较低的解，保留较好的，在N次之后，整体的解的情况自然会变好</p>
+<h3 id="3-交叉"><a href="#3-交叉" class="headerlink" title="3.交叉"></a>3.交叉</h3><p>上面提到，每次都会有”染色体”淘汰，那么新的怎么产生呢，就是通过交叉，和自然界的染色体一样，一般是通过选择两条”染色体”,一个取一部分并将他们合在一起，例如A取前半段，B取后半段</p>
+<p>但父母不是随机选择的，也是要通过适应度来选择，适应度高的，选为父母的概率也会高，这样优良基因就保存了下来：</p>
+<blockquote>
+<p>染色体被选择为父母的概率 &#x3D; 染色体的适应度 &#x2F; 所有染色体的适应度之和</p>
+</blockquote>
+<h3 id="4-复制"><a href="#4-复制" class="headerlink" title="4.复制"></a>4.复制</h3><p>为了保存最好的那几个染色体，一般会将适应度最好的那几个原封不动的传给下一代</p>
+<h3 id="5-变异"><a href="#5-变异" class="headerlink" title="5.变异"></a>5.变异</h3><p>前面的交叉可以求出最优解，但也有局限，无论多少次交叉，最后得到是所谓最优也是基于一开始给的”染色体”的集合，也就是说，只是将他们向最好的方向重新排列组合罢了，而变异可以突破这个限制，每次在产出一个新染色体时，随机选择其中的基因进行变异，有利于找到全局最优</p>
+<h3 id="一般进行遗传函数的流程"><a href="#一般进行遗传函数的流程" class="headerlink" title="一般进行遗传函数的流程"></a>一般进行遗传函数的流程</h3><p>1.随机生成第一代(可能会根据题目而不同)</p>
+<p>2.计算对应的适应度</p>
+<p>3.根据适应度随机选择，进行交叉，随后突变，再进行复制(有时候顺序不一定)</p>
+<p>4.准备进行下一次进化</p>
+<blockquote>
+<p>进化次数没有固定的值，一般来说越多越好，但也不能让他无限进化，浪费资源，一般可以设定进化次数，或者设定一个误差范围，当结果在这个误差内波动不大的时候，就可以停止进化了</p>
+</blockquote>
+<p>那么接下来一边用例子一边来进行后续解释：</p>
+<h2 id="2-利用遗传算法求解-TSP-问题"><a href="#2-利用遗传算法求解-TSP-问题" class="headerlink" title="2.利用遗传算法求解 TSP 问题"></a>2.利用遗传算法求解 TSP 问题</h2><h3 id="1-TSP-问题"><a href="#1-TSP-问题" class="headerlink" title="1.TSP 问题"></a>1.TSP 问题</h3><p>旅行商问题，即 TSP 问题（Traveling Salesman Problem）又译为旅行推销员问题、货郎担问题，是数学领域中著名问题之一。</p>
+<p>假设有一个旅行商人要拜访n个城市，他必须选择所要走的路径，路径的限制是每个城市只能拜访一次，而且最后要回到原来出发的城市</p>
+<p>整个题是填空，对空的地方进行补全，提供的流程图如下</p>
+
+    <figure class="figure-image">
+      <img src="/2022/10/18/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%AE%9E%E9%AA%8C/20221018/technological process.png" alt="流程图" loading="lazy">
+      <figcaption>流程图</figcaption>
+    </figure>
+  
+
+<p>后续也是根据这个图来进行编码的</p>
+<h3 id="2-代码和具体解析"><a href="#2-代码和具体解析" class="headerlink" title="2.代码和具体解析"></a>2.代码和具体解析</h3><h4 id="1-初始化"><a href="#1-初始化" class="headerlink" title="1.初始化"></a>1.初始化</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;stdio.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;stdlib.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;time.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> cityNum 10</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> popSize 10</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> croRate 0.85</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> mutRate 0.1</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MAX 999</span><br><br><span class="hljs-comment">//定义染色体的结构</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Chrom</span></span><br><span class="hljs-class">&#123;</span><br>    <span class="hljs-type">int</span> cityArr[cityNum];<span class="hljs-comment">//存走过城市的顺序</span><br>    <span class="hljs-type">float</span> adapt;<span class="hljs-comment">//适应度</span><br>    <span class="hljs-type">int</span> dis;<span class="hljs-comment">//根据cityArr的顺序算出的距离</span><br>&#125;;<br><span class="hljs-comment">//下面三行都是后续用的变量</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Chrom</span> <span class="hljs-title">genes</span>[<span class="hljs-title">popSize</span>];</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Chrom</span> <span class="hljs-title">genesNew</span>[<span class="hljs-title">popSize</span>];</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Chrom</span> <span class="hljs-title">temp</span>;</span><br><br><span class="hljs-type">char</span> names[cityNum] = &#123;<span class="hljs-string">&#x27;A&#x27;</span>, <span class="hljs-string">&#x27;B&#x27;</span>, <span class="hljs-string">&#x27;C&#x27;</span>, <span class="hljs-string">&#x27;D&#x27;</span>, <span class="hljs-string">&#x27;E&#x27;</span>, <span class="hljs-string">&#x27;F&#x27;</span>, <span class="hljs-string">&#x27;G&#x27;</span>, <span class="hljs-string">&#x27;H&#x27;</span>, <span class="hljs-string">&#x27;I&#x27;</span>, <span class="hljs-string">&#x27;J&#x27;</span>&#125;;<span class="hljs-comment">//10个城市名称</span><br><br><span class="hljs-comment">//城市之间的距离</span><br><span class="hljs-type">int</span> distance[cityNum][cityNum] = &#123;&#123;<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>&#125;,<br>                                  &#123;<span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>&#125;,<br>                                  &#123;<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>&#125;,<br>                                  &#123;<span class="hljs-number">3</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>&#125;,<br>                                  &#123;<span class="hljs-number">4</span>, <span class="hljs-number">3</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>&#125;,<br>                                  &#123;<span class="hljs-number">5</span>, <span class="hljs-number">4</span>, <span class="hljs-number">3</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>&#125;,<br>                                  &#123;<span class="hljs-number">6</span>, <span class="hljs-number">5</span>, <span class="hljs-number">4</span>, <span class="hljs-number">3</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>&#125;,<br>                                  &#123;<span class="hljs-number">7</span>, <span class="hljs-number">6</span>, <span class="hljs-number">5</span>, <span class="hljs-number">4</span>, <span class="hljs-number">3</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>&#125;,<br>                                  &#123;<span class="hljs-number">8</span>, <span class="hljs-number">7</span>, <span class="hljs-number">6</span>, <span class="hljs-number">5</span>, <span class="hljs-number">4</span>, <span class="hljs-number">3</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>&#125;,<br>                                  &#123;<span class="hljs-number">9</span>, <span class="hljs-number">8</span>, <span class="hljs-number">7</span>, <span class="hljs-number">6</span>, <span class="hljs-number">5</span>, <span class="hljs-number">4</span>, <span class="hljs-number">3</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>&#125;&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>上述是待会要用到的数据以及结构体进行初始化，下面是对第一代进行初始化</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">initGroup</span><span class="hljs-params">()</span> <span class="hljs-comment">//初始化第一代</span><br>&#123;<br>    <span class="hljs-type">int</span> i, j, k;<br>    <span class="hljs-type">int</span> t = <span class="hljs-number">0</span>;<br>    <span class="hljs-type">int</span> flag = <span class="hljs-number">0</span>;<br>    srand(time(<span class="hljs-literal">NULL</span>)); <span class="hljs-comment">//随机数初始化</span><br>    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; popSize; i++)<br>    &#123;<br>        temp.adapt = <span class="hljs-number">0.0f</span>;<br>        temp.dis = <span class="hljs-number">0</span>;<br><br>        <span class="hljs-keyword">for</span> (j = <span class="hljs-number">0</span>; j &lt; cityNum;)<br>        &#123;<br>            t = rand() % cityNum;<br>            flag = <span class="hljs-number">1</span>;<br>            <span class="hljs-keyword">for</span> (k = <span class="hljs-number">0</span>; k &lt; j; k++)<br>            &#123;<br>                <span class="hljs-keyword">if</span> (genes[i].cityArr[k] == t) <span class="hljs-comment">//保证前面已经生成的随机数不重复</span><br>                &#123;<br>                    flag = <span class="hljs-number">0</span>;<br>                    <span class="hljs-keyword">break</span>;<br>                &#125;<br>            &#125;<br>            <span class="hljs-keyword">if</span> (flag)<br>            &#123;<br>                temp.cityArr[j] = t;<br>                genes[i] = temp;<br>                j++;<br>            &#125;<br>        &#125; <span class="hljs-comment">//对genes内进行赋值</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>初始化都很简单易懂，唯一需要注意的就是在初始化时，要保证生成的随机数不会重复</p>
+<h4 id="2-计算路程和适应度popFitness"><a href="#2-计算路程和适应度popFitness" class="headerlink" title="2.计算路程和适应度popFitness()"></a>2.计算路程和适应度popFitness()</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">popFitness</span><span class="hljs-params">()</span><br>&#123;<br>    <span class="hljs-type">int</span> i, n1, n2;<br>    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; popSize; i++)<br>    &#123;<br>        genes[i].dis = <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">1</span>; j &lt; cityNum; j++)<br>        &#123;<br>            n1 = genes[i].cityArr[j - <span class="hljs-number">1</span>];<br>            n2 = genes[i].cityArr[j];<br>            genes[i].dis += distance[n1][n2];<br>        &#125;<br>        genes[i].dis += distance[genes[i].cityArr[<span class="hljs-number">0</span>]][genes[i].cityArr[cityNum - <span class="hljs-number">1</span>]]; <span class="hljs-comment">//回到出发点</span><br>        genes[i].adapt = (<span class="hljs-type">float</span>)<span class="hljs-number">1</span> / genes[i].dis;<br>    &#125; <span class="hljs-comment">//计算对应长度/路程以及适应度</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>popFitness()根据cityArr内的值计算了路程长度及其适应度，在每一次进化和第一次初始化之后需要运行计算</p>
+<h4 id="3-选择函数select"><a href="#3-选择函数select" class="headerlink" title="3.选择函数select()"></a>3.选择函数select()</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">select</span><span class="hljs-params">()</span><br>&#123;<br>    <span class="hljs-type">float</span> biggestSum = <span class="hljs-number">0.0f</span>; <span class="hljs-comment">//适应度之和</span><br>    <span class="hljs-type">float</span> adapt_pro[popSize];<br>    <span class="hljs-type">float</span> pick = <span class="hljs-number">0.0f</span>;<br>    <span class="hljs-type">int</span> i;<br>    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; popSize; i++)<br>    &#123;<br>        biggestSum += genes[i].adapt;<br>    &#125;<br>    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; popSize; i++)<br>    &#123;<br>        adapt_pro[i] = genes[i].adapt / biggestSum;<br>    &#125;<br><br>    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; popSize; i++)<br>    &#123;<br>        pick = (<span class="hljs-type">float</span>)rand() / RAND_MAX;<br>        <span class="hljs-comment">/********** Begin **********/</span><br>    <br>        <span class="hljs-comment">/********** End **********/</span><br>    &#125;<br>    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; popSize; i++)<br>    &#123;<br>        genes[i] = genesNew[i];<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>那么要填的就是上面begin和end之间的地方</p>
+<p>这里求了biggestSum，从第一个for循环可以知道，这个值就是适应度之和，然后根据这个适应度进行随机选择，将本选中的概率存在adapt_pro内，而数组adapt_pro的和是1，pick得到的随机值介于0和1之间，将adapt_pro的值看做每个染色体属于的区域，那么pick落在谁的区域，就选择谁，那么就用累加的方式，判断pick值落在哪个的范围内</p>
+<blockquote>
+<p>例如选择A的概率为0.4，B为0.6，那么可以看做A属于0-0.4，B属于0.6-1，那么pick在谁的区间就选谁</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; popSize; i++)<br>    &#123;<br>        pick = (<span class="hljs-type">float</span>)rand() / RAND_MAX;<br>        <span class="hljs-comment">/********** Begin **********/</span><br>        <span class="hljs-type">float</span> temp = <span class="hljs-number">0.0f</span>;<br>        <span class="hljs-type">int</span> j = <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">while</span> (temp &lt; pick)<br>        &#123;<br>            temp += adapt_pro[j];<br>            j++;<br>        &#125;<br>        j--;<br>        genesNew[i] = genes[j];<br>        <span class="hljs-comment">/********** End **********/</span><br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p>在加完之后需要将j-1，因为始终会多1，因为在检查之后不管是不是都会加一，这样就得到了从原始的染色体中得到新的10个染色体，注意的是，允许重复染色体的存在，其实这一步可以看做交叉的前置，因为下一步中会直接选择奇数和偶数的染色体进行交叉</p>
+<h4 id="4-交叉函数cross"><a href="#4-交叉函数cross" class="headerlink" title="4.交叉函数cross()"></a>4.交叉函数cross()</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">cross</span><span class="hljs-params">()</span> <span class="hljs-comment">//交叉</span><br>&#123;<br>    <span class="hljs-type">float</span> pick;<br>    <span class="hljs-type">int</span> choice1, choice2;<br>    <span class="hljs-type">int</span> pos1, pos2;<br>    <span class="hljs-type">int</span> temp;<br>    <span class="hljs-type">int</span> conflict1[popSize];<br>    <span class="hljs-type">int</span> conflict2[popSize];<br>    <span class="hljs-type">int</span> num1;<br>    <span class="hljs-type">int</span> num2;<br>    <span class="hljs-type">int</span> index1, index2;<br>    <span class="hljs-type">int</span> move = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">while</span> (move &lt; popSize - <span class="hljs-number">1</span>)<br>    &#123;<br>        pick = (<span class="hljs-type">float</span>)rand() / RAND_MAX;<br>        <span class="hljs-keyword">if</span> (pick &gt; croRate)<br>        &#123;<br>            move += <span class="hljs-number">2</span>;<br>            <span class="hljs-keyword">continue</span>;<br>        &#125;<br>        choice1 = move;<br>        choice2 = move + <span class="hljs-number">1</span>;<br>        pos1 = rand() % popSize;<br>        pos2 = rand() % popSize;<br>        <span class="hljs-keyword">while</span> (pos1 &gt; popSize - <span class="hljs-number">2</span> || pos1 &lt; <span class="hljs-number">1</span>)<br>        &#123;<br>            pos1 = rand() % popSize;<br>        &#125;<br>        <span class="hljs-keyword">while</span> (pos2 &gt; popSize - <span class="hljs-number">2</span> || pos2 &lt; <span class="hljs-number">1</span>)<br>        &#123;<br>            pos2 = rand() % popSize;<br>        &#125; <span class="hljs-comment">// 1-8</span><br><br>        <span class="hljs-keyword">if</span> (pos1 &gt; pos2)<br>        &#123;<br>            temp = pos1;<br>            pos1 = pos2;<br>            pos2 = temp;<br>        &#125; <span class="hljs-comment">// pos2 &gt; pos1</span><br><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = pos1; j &lt;= pos2; j++)<br>        &#123;<br>            temp = genes[choice1].cityArr[j];<br>            genes[choice1].cityArr[j] = genes[choice2].cityArr[j];<br>            genes[choice2].cityArr[j] = temp;<br>        &#125; <span class="hljs-comment">//交换pos1和pos2之间的基因</span><br></code></pre></td></tr></table></figure>
+
+<p>从前半部分就可以看出来，这一部分需要进行的是交换操作，在第一部分随机重新赋值之后，其实配对就完成了一部分，这里直接对1,2或者3,4这样两两成对进行交换，根据上面的流程图可以发现，当随机数&gt; croRate就跳过交换环节，所以在整个环节的开头就进行了判断，后续随机得到pos1和pos2，这两个值要求大于等于1小于等于8，并且pos1&lt;pos2,然后交换两者位于pos1和pos2及其之间的基因</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs c">num1 = <span class="hljs-number">0</span>;<br>        num2 = <span class="hljs-number">0</span>;<br><br>        <span class="hljs-keyword">if</span> (pos1 &gt; <span class="hljs-number">0</span> &amp;&amp; pos2 &lt; popSize - <span class="hljs-number">1</span>) <span class="hljs-comment">//处理由于交换产生的冲突，例如重复或者缺失</span><br>        &#123;<br>            <span class="hljs-comment">/********** Begin **********/</span><br>      <br>            <span class="hljs-comment">/********** End **********/</span><br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = pos2 + <span class="hljs-number">1</span>; j &lt; popSize; j++)<br>            &#123;<br>                <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> k = pos1; k &lt;= pos2; k++)<br>                &#123;<br>                    <span class="hljs-comment">/********** Begin **********/</span><br>                <br>                    <span class="hljs-comment">/********** End **********/</span><br>                &#125;<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">if</span> ((num1 == num2) &amp;&amp; num1 &gt; <span class="hljs-number">0</span>)<br>        &#123;<br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; num1; j++)<br>            &#123;<br>                index1 = conflict1[j];<br>                index2 = conflict2[j];<br>                temp = genes[choice1].cityArr[index1];<br>                genes[choice1].cityArr[index1] = genes[choice2].cityArr[index2];<br>                genes[choice2].cityArr[index2] = temp;<br>            &#125;<br>        &#125;<br>        move += <span class="hljs-number">2</span>;<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p>由于前面直接交换了pos1和pos2内的值，那么在染色体内部可能会出现冲突，例如基因的缺失或者重复，那么在这里明显需要处理冲突，下面写好的部分就是在处理，在这里交换了index1和index2处的基因，而index1和index2是从conflict内取出的，那么需要填写的地方就是将冲突的基因处于的位置放入conflict内，从第二个空可以发现，是从pos2+1开始往后遍历，内嵌pos1到pos2的遍历，那么应该是检查pos1到pos2部分和后续产生的冲突，将冲突点放入conflict内即可：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">for (int j = pos2 + 1; j &lt; popSize; j++)<br>&#123;<br>	for (int k = pos1; k &lt;= pos2; k++)<br>	&#123;<br>		/********** Begin **********/<br>		if (genes[choice1].cityArr[j] == genes[choice1].cityArr[k])<br>		&#123;<br>			conflict1[num1] = j;<br>			num1++;<br>		&#125;<br>		if (genes[choice2].cityArr[j] == genes[choice2].cityArr[k])<br>		&#123;<br>			conflict2[num2] = j;<br>			num2++;<br>		&#125;<br>		/********** End **********/<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>同理，这里处理了pos2后续的冲突，那么上面需要处理pos1之前的冲突，写法和上面一样：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/********** Begin **********/</span><br><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; pos1; j++)<br>&#123;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> k = pos1; k &lt;= pos2; k++)<br>    &#123;<br>        <span class="hljs-keyword">if</span> (genes[choice1].cityArr[j] == genes[choice1].cityArr[k])<br>        &#123;<br>            conflict1[num1] = j;<br>            num1++;<br>        &#125;<br>        <span class="hljs-keyword">if</span> (genes[choice2].cityArr[j] == genes[choice2].cityArr[k])<br>        &#123;<br>            conflict2[num2] = j;<br>            num2++;<br>        &#125;<br>    &#125;<br>&#125;<br><span class="hljs-comment">/********** End **********/</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="5-突变函数mutation"><a href="#5-突变函数mutation" class="headerlink" title="5.突变函数mutation()"></a>5.突变函数mutation()</h4><p>突变函数，满足pick &gt; mutRate之后就进行突变，将pos1和pos2两者进行调换，但当调换后的结果会让路程变长，就会取消本次突变：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">mutation</span><span class="hljs-params">()</span> <span class="hljs-comment">//变异</span><br>&#123;<br>    <span class="hljs-type">double</span> pick;<br>    <span class="hljs-type">int</span> pos1, pos2, temp;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; popSize; i++)<br>    &#123;<br>        pick = (<span class="hljs-type">float</span>)rand() / RAND_MAX;<br>        <span class="hljs-keyword">if</span> (pick &gt; mutRate)<br>        &#123;<br>            <span class="hljs-keyword">continue</span>;<br>        &#125;<br>        pos1 = rand() % popSize;<br>        pos2 = rand() % popSize;<br>        <span class="hljs-keyword">while</span> (pos1 &gt; popSize - <span class="hljs-number">1</span>)<br>        &#123;<br>            pos1 = rand() % popSize;<br>        &#125;<br>        <span class="hljs-keyword">while</span> (pos2 &gt; popSize - <span class="hljs-number">1</span>)<br>        &#123;<br>            pos2 = rand() % popSize;<br>        &#125;<br><br>        <span class="hljs-type">int</span> a = genes[i].dis;<br>        temp = genes[i].cityArr[pos1];<br>        genes[i].cityArr[pos1] = genes[i].cityArr[pos2];<br>        genes[i].cityArr[pos2] = temp;<br><br>        popFitness();<br>        <span class="hljs-keyword">if</span> (genes[i].dis &gt; a)<br>        &#123;<br>            temp = genes[i].cityArr[pos1];<br>            genes[i].cityArr[pos1] = genes[i].cityArr[pos2];<br>            genes[i].cityArr[pos2] = temp;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="6-测试函数"><a href="#6-测试函数" class="headerlink" title="6.测试函数"></a>6.测试函数</h4><p>这个自己写一个就可以了，我这里是进化了50次：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">prit</span><span class="hljs-params">()</span><span class="hljs-comment">//输出函数</span><br>&#123;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; popSize; i++)<br>    &#123;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; popSize; j++)<br>            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%d &quot;</span>, genes[i].cityArr[j]);<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%d &quot;</span>, genes[i].dis);<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\n&quot;</span>);<br>    &#125;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\n&quot;</span>);<br>&#125;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span><br>&#123;<br>    initGroup();<br>    popFitness();<br>    prit();<br><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">50</span>; i++)<br>    &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%d\n&quot;</span>, i);<br>        select();<br>        cross();<br>        mutation();<br>        popFitness();<br>        prit();<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>那么运行可以得到：</p>
+
+    <figure class="figure-image">
+      <img src="/2022/10/18/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%AE%9E%E9%AA%8C/20221018/result.png" alt="流程图" loading="lazy">
+      <figcaption>流程图</figcaption>
+    </figure>
+  
+
+<p>可以看到希望的结果-18，当然有时候进化50次不够，那么可以设置更多的进化次数或者当数据稳定时才停止进化</p>
+
+      </section>
+
+      
+      
+        <nav class="article-nav">
+          
+          
+            <div class="article-nav-item layout-padding">
+  <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
+    
+      <div class="card-cover" background-image-lazy data-img="https://s2.loli.net/2022/09/14/JNriGWXUpDe6TzY.jpg"></div>
+    
+    <div class="card-text">
+      
+        <a href="/2022/09/14/%E5%B0%8F%E7%A8%8B%E5%BA%8F/20220914/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">小程序js中常用方法的介绍</h2>
+        </a>
+      
+      <div class="card-text--row">Older</div>
+    </div>
+  </article>
+</div>
+          
+        </nav>
+      
+
+      <section class="page-message-container layout-padding">
+        
+
+
+  
+  
+
+  
+  
+
+
+      </section>
+    </div>
+    <div class="widget-info">
+      <section class="widget-author widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-body">
+    
+      <img src="/touma2.jpg" class="soft-size--round soft-style--box" alt="水帝">
+    
+    
+      <h2>水帝</h2>
+    
+    
+
+    <div class="count-box">
+      <div class="count-box--item">
+        <svg class="icon icon-article" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M240.51564747 647.74217627h196.07203239c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806V165.10332731c0-33.18142087-30.16492806-60.32985613-60.32985612-60.32985611H245.04038668C225.43318342 104.7734712 210.35071939 119.85593522 210.35071939 139.46313845V617.57724821c0 16.59071043 13.57421762 30.16492806 30.16492808 30.16492806z m663.62841731-452.47392089v482.63884894c0 33.18142087-27.14843525 60.32985613-60.32985612 60.32985613H180.18579134c-33.18142087 0-60.32985613-27.14843525-60.32985612-60.32985613V195.26825538c-49.77213131 0-90.49478418 40.72265287-90.49478417 90.49478417v452.4739209c0 49.77213131 40.72265287 90.49478418 90.49478417 90.49478417h286.56681657c16.59071043 0 30.16492806 13.57421762 30.16492807 30.16492807s13.57421762 30.16492806 30.16492805 30.16492806h90.49478418c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806s13.57421762-30.16492806 30.16492807-30.16492807h286.56681657c49.77213131 0 90.49478418-40.72265287 90.49478417-90.49478417V285.76303955c0-49.77213131-40.72265287-90.49478418-90.49478417-90.49478417zM587.41232014 647.74217627h191.54729318c19.60720323 0 34.68966726-15.08246403 34.68966729-34.68966727V134.93839925c0-16.59071043-13.57421762-30.16492806-30.16492808-30.16492805H617.57724821c-30.16492806 0-60.32985613 27.14843525-60.32985612 60.32985611v452.4739209c0 16.59071043 13.57421762 30.16492806 30.16492805 30.16492806z" fill="currentColor"></path>
+</svg>
+        <span>5</span>
+      </div>
+      <div class="count-box--item">
+        <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M900.3614811 257.09082106h-339.81629553l-67.96326003-101.9448889c-19.41807444-29.12711113-48.54518557-43.69066667-82.52681443-43.69066667H123.6385189c-53.39970333 0-97.09036999 43.69066667-97.09037113 97.09036999v582.54222222c0 53.39970333 43.69066667 97.09036999 97.09037113 97.09037002h776.7229622c53.39970333 0 97.09036999-43.69066667 97.09037113-97.09037002V354.18119104c0-53.39970333-43.69066667-97.09036999-97.09037113-97.09036998z m-97.09036999 242.72592554H220.72888889c-24.27259221 0-48.54518557-24.27259221-48.54518556-48.54518556s24.27259221-48.54518557 48.54518556-48.54518444h582.54222222c24.27259221 0 48.54518557 24.27259221 48.54518556 48.54518444s-24.27259221 48.54518557-48.54518556 48.54518556z" fill="currentColor"></path>
+</svg>
+        3
+      </div>
+      <div class="count-box--item">
+        <svg class="icon icon-tags" viewBox="0 0 1098 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M283.42180005 272q0-28.38857157-20.09142843-48.48000001t-48.47999998-20.09142842-48.48000002 20.09142842-20.09142846 48.48000001 20.09142846 48.48 48.48000002 20.09142843 48.47999998-20.09142843 20.09142843-48.48zM855.0332285 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.03999997 263.58857157q-20.9142853 19.81714313-48.75428534 19.81714312-28.38857157 0-48.20571468-19.81714312l-383.04-383.58857157q-20.36571468-19.81714313-34.55999999-54.10285688t-14.19428534-62.6742853l0-222.85714313q0-27.84000002 20.36571469-48.20571469t48.2057147-20.36571466l222.85714313 0q28.38857157 0 62.6742853 14.19428529t54.65142842 34.55999999l383.04000001 382.49142843q19.81714313 20.9142853 19.81714314 48.75428532zM1060.74751475 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.04 263.58857157q-20.9142853 19.81714313-48.75428531 19.81714312-19.26857155 0-31.61142843-7.47428531t-28.38857159-24.13714314l251.79428534-251.7942853q19.81714313-19.81714313 19.81714308-48.20571469 0-27.84000002-19.81714308-48.75428531l-383.04000001-382.49142845q-20.36571468-20.36571468-54.65142842-34.55999999t-62.67428532-14.19428534l120 0q28.38857157 0 62.67428532 14.19428534t54.65142842 34.55999999l383.03999998 382.49142845q19.81714313 20.9142853 19.81714314 48.75428531z" fill="currentColor"></path>
+</svg>
+        5
+      </div>
+    </div>
+  </div>
+</section>
+
+      
+<section class="widget-toc widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-toc" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M134.50666666 767.46666668H460.8c27.73333333 0 50.24000001 22.50666668 50.24000001 50.23999999v50.13333333c0 27.73333333-22.50666668 50.24000001-50.24000001 50.24000001H134.50666666c-27.73333333 0-50.24000001-22.50666668-50.23999999-50.24000001v-50.13333333c0.10666668-27.73333333 22.50666668-50.24000001 50.24000001-50.24000001zM84.37333332 541.65333333h326.18666669c27.73333333 0 50.24000001 22.39999999 50.23999999 50.13333334v50.24000001c0 27.73333333-22.50666668 50.24000001-50.24000002 50.23999999H84.37333332c-27.73333333 0-50.24000001-22.50666668-50.23999999-50.23999999v-50.24000001c0-27.73333333 22.50666668-50.13333334 50.24000001-50.13333334zM134.50666666 315.83999999H460.8c27.73333333 0 50.24000001 22.50666668 50.24000001 50.24000001v50.24000001c0 27.73333333-22.50666668 50.13333334-50.24000001 50.13333333H134.50666666c-27.73333333 0-50.24000001-22.39999999-50.23999999-50.13333333v-50.24000001c0.10666668-27.84000001 22.50666668-50.24000001 50.24000001-50.23999999zM209.81333332 89.91999999h326.18666671c27.73333333 0 50.24000001 22.39999999 50.23999997 50.13333335v50.23999999c0 27.73333333-22.50666668 50.24000001-50.24000001 50.24000001H209.81333332c-27.73333333 0-50.24000001-22.50666668-50.23999999-50.24000001v-50.24000001c0-27.73333333 22.50666668-50.13333334 50.24000001-50.13333333zM692.05333333 623.36l274.66666669 176.00000002c23.36000001 14.93333333 30.08 45.97333334 15.14666666 69.33333332L954.77333334 910.93333333c-14.93333333 23.25333334-45.97333334 30.08-69.33333335 15.14666667l-274.66666666-176c-23.36000001-14.93333333-30.08-45.97333334-15.14666667-69.33333333l27.09333334-42.24000001c14.93333333-23.36000001 46.08000001-30.08 69.33333333-15.14666666z" fill="currentColor"></path>
+</svg>
+    <span>目录</span>
+  </div>
+  <div class="widget-body">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95"><span class="toc-text">1.遗传算法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%9F%BA%E5%9B%A0%E5%92%8C%E6%9F%93%E8%89%B2%E4%BD%93"><span class="toc-text">1.基因和染色体</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E9%80%82%E5%BA%94%E5%BA%A6%E5%87%BD%E6%95%B0"><span class="toc-text">2.适应度函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E4%BA%A4%E5%8F%89"><span class="toc-text">3.交叉</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%A4%8D%E5%88%B6"><span class="toc-text">4.复制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E5%8F%98%E5%BC%82"><span class="toc-text">5.变异</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E8%88%AC%E8%BF%9B%E8%A1%8C%E9%81%97%E4%BC%A0%E5%87%BD%E6%95%B0%E7%9A%84%E6%B5%81%E7%A8%8B"><span class="toc-text">一般进行遗传函数的流程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%88%A9%E7%94%A8%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95%E6%B1%82%E8%A7%A3-TSP-%E9%97%AE%E9%A2%98"><span class="toc-text">2.利用遗传算法求解 TSP 问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-TSP-%E9%97%AE%E9%A2%98"><span class="toc-text">1.TSP 问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BB%A3%E7%A0%81%E5%92%8C%E5%85%B7%E4%BD%93%E8%A7%A3%E6%9E%90"><span class="toc-text">2.代码和具体解析</span></a></li></ol></li></ol>
+  </div>
+</section>
+
+
+      
+<section class="widet-notice widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-notice" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M512 945.02305225v28.15620663a24.27259221 24.27259221 0 0 1-24.27259221 24.27259335H394.0352a48.54518557 48.54518557 0 0 1-41.74885888-23.78714112l-110.68302222-184.47170332a132.04290333 132.04290333 0 0 1-17.47626667-48.54518557h118.4502511a200.97706667 200.97706667 0 0 1 76.21594113 14.56355556l20.38897777 133.49925888a48.54518557 48.54518557 0 0 0 36.40888888 27.67075555l16.01991111 2.91271112a24.27259221 24.27259221 0 0 1 20.38897778 25.72894889zM997.45185223 463.45481443a194.18074112 194.18074112 0 0 1-38.8361489 116.50844445 24.75804445 24.75804445 0 0 1-36.4088889 0l-34.95253333-34.95253333a24.27259221 24.27259221 0 0 1-2.91271111-30.58346667 97.09036999 97.09036999 0 0 0 0-106.79940665 24.27259221 24.27259221 0 0 1 2.91271111-30.58346666l34.95253333-34.95253334a24.75804445 24.75804445 0 0 1 18.93262223-7.28177777 26.2144 26.2144 0 0 1 17.47626667 9.70903665A194.18074112 194.18074112 0 0 1 997.45185223 463.45481443z m-194.18074112-388.36148111v776.72296335a48.54518557 48.54518557 0 0 1-48.54518556 48.54518443h-28.64165888a48.54518557 48.54518557 0 0 1-33.98163001-14.07810332l-145.63555556-143.20829668A291.27111111 291.27111111 0 0 0 342.57730333 657.63555556H172.18370333a145.63555556 145.63555556 0 0 1-145.63555556-145.63555556v-97.09036999a145.63555556 145.63555556 0 0 1 145.63555556-145.63555556h170.3936a291.27111111 291.27111111 0 0 0 206.31703779-85.43952668l145.63555555-143.20829554a48.54518557 48.54518557 0 0 1 33.98162888-14.07810446H754.72592555a48.54518557 48.54518557 0 0 1 48.54518556 48.54518555z" fill="currentColor"></path>
+</svg>
+    <span>NOTICE</span>
+  </div>
+  <div class="widget-body">
+    <p>博客还在建设，客官请稍等</p>
+  </div>
+</section>
+
+
+      <section class="widget-categorys widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M900.3614811 257.09082106h-339.81629553l-67.96326003-101.9448889c-19.41807444-29.12711113-48.54518557-43.69066667-82.52681443-43.69066667H123.6385189c-53.39970333 0-97.09036999 43.69066667-97.09037113 97.09036999v582.54222222c0 53.39970333 43.69066667 97.09036999 97.09037113 97.09037002h776.7229622c53.39970333 0 97.09036999-43.69066667 97.09037113-97.09037002V354.18119104c0-53.39970333-43.69066667-97.09036999-97.09037113-97.09036998z m-97.09036999 242.72592554H220.72888889c-24.27259221 0-48.54518557-24.27259221-48.54518556-48.54518556s24.27259221-48.54518557 48.54518556-48.54518444h582.54222222c24.27259221 0 48.54518557 24.27259221 48.54518556 48.54518444s-24.27259221 48.54518557-48.54518556 48.54518556z" fill="currentColor"></path>
+</svg>
+    <span>CATEGORYS</span>
+  </div>
+  <div class="widget-body">
+    <ul class="categorys-list">
+      
+        <li class="categorys-list-item">
+          <a href="/categories/hexo%E4%B8%BB%E9%A2%98%E4%BC%98%E5%8C%96/">
+            hexo主题优化 (2)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
+          <a href="/categories/%E9%9A%8F%E7%AC%94/">
+            随笔 (1)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
+          <a href="/categories/%E5%B0%8F%E7%A8%8B%E5%BA%8F/">
+            小程序 (1)
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+</section>
+
+      <section class="widget-tags widget-item  layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-tags" viewBox="0 0 1098 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M283.42180005 272q0-28.38857157-20.09142843-48.48000001t-48.47999998-20.09142842-48.48000002 20.09142842-20.09142846 48.48000001 20.09142846 48.48 48.48000002 20.09142843 48.47999998-20.09142843 20.09142843-48.48zM855.0332285 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.03999997 263.58857157q-20.9142853 19.81714313-48.75428534 19.81714312-28.38857157 0-48.20571468-19.81714312l-383.04-383.58857157q-20.36571468-19.81714313-34.55999999-54.10285688t-14.19428534-62.6742853l0-222.85714313q0-27.84000002 20.36571469-48.20571469t48.2057147-20.36571466l222.85714313 0q28.38857157 0 62.6742853 14.19428529t54.65142842 34.55999999l383.04000001 382.49142843q19.81714313 20.9142853 19.81714314 48.75428532zM1060.74751475 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.04 263.58857157q-20.9142853 19.81714313-48.75428531 19.81714312-19.26857155 0-31.61142843-7.47428531t-28.38857159-24.13714314l251.79428534-251.7942853q19.81714313-19.81714313 19.81714308-48.20571469 0-27.84000002-19.81714308-48.75428531l-383.04000001-382.49142845q-20.36571468-20.36571468-54.65142842-34.55999999t-62.67428532-14.19428534l120 0q28.38857157 0 62.67428532 14.19428534t54.65142842 34.55999999l383.03999998 382.49142845q19.81714313 20.9142853 19.81714314 48.75428531z" fill="currentColor"></path>
+</svg>
+    <span>TAGS</span>
+  </div>
+  <div class="widget-body">
+    <div class="tags-cloud">
+      <a href="/tags/css/" style="font-size: 20px;" class="tags-cloud-10">css</a> <a href="/tags/hexo/" style="font-size: 20px;" class="tags-cloud-10">hexo</a> <a href="/tags/html/" style="font-size: 20px;" class="tags-cloud-10">html</a> <a href="/tags/js/" style="font-size: 10px;" class="tags-cloud-0">js</a> <a href="/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/" style="font-size: 10px;" class="tags-cloud-0">小程序</a>
+    </div>
+  </div>
+</section>
+    </div>
+  </article>
+</div>
+
+    <!-- footer container -->
+<footer id="footer" class="footer">
+  <div class="footer-container">
+     
+    <p>&copy; 2022 <a href="/" target="_blank">水帝</a></p>
+
+    
+
+    <p>Powered by <a href="https://hexo.io" target="_blank" rel="noopener noreferrer">Hexo</a> Theme - <a href="https://github.com/miiiku/flex-block" target="_blank" rel="noopener noreferrer author">flex-block</a></p>
+    <p>
+      <span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+      <script>
+        var now = new Date(); 
+        function createtime() { 
+            var grt= new Date("06/24/2022 20:26:16");//在此处修改你的建站时间，格式：月/日/年 时:分:秒
+            now.setTime(now.getTime()+250); 
+            days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days); 
+            hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours); 
+            if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum); 
+            mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;} 
+            seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum); 
+            snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;} 
+            document.getElementById("timeDate").innerHTML = "本站已运行 "+dnum+" 天 "; 
+            document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒"; 
+        } 
+      setInterval("createtime()",250);
+      </script>
+    </p>
+	  <p>已经记载了5篇文章</p>
+    <p>
+      <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+      浏览量：<span id="busuanzi_value_site_pv"><i class="fa fa-spinner fa-spin"></i></span>👀 | 访客数：<span id="busuanzi_value_site_uv"><i class="fa fa-spinner fa-spin"></i></span>👦
+    </p>
+    <p>
+      <a href="javascript:;" id="theme-light">🌞 光明</a>
+      <a href="javascript:;" id="theme-dark">🌛 黑暗</a>
+      <!-- <a href="javascript:;" id="theme-auto">🤖️ 自动</a> -->
+    </p>
+  </div>
+</footer>
+
+  </div>
+  <div class="back-to-top-fixed soft-size--round soft-style--box">
+    <svg class="icon icon-back-to-top" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+      <path d="M725.333333 426.666667c-12.8 0-21.333333-4.266667-29.866667-12.8l-213.333333-213.333333c-17.066667-17.066667-17.066667-42.666667 0-59.733333s42.666667-17.066667 59.733333 0l213.333333 213.333333c17.066667 17.066667 17.066667 42.666667 0 59.733333C746.666667 422.4 738.133333 426.666667 725.333333 426.666667z"></path>
+      <path d="M298.666667 426.666667c-12.8 0-21.333333-4.266667-29.866667-12.8-17.066667-17.066667-17.066667-42.666667 0-59.733333l213.333333-213.333333c17.066667-17.066667 42.666667-17.066667 59.733333 0s17.066667 42.666667 0 59.733333l-213.333333 213.333333C320 422.4 311.466667 426.666667 298.666667 426.666667z"></path>
+      <path d="M512 896c-25.6 0-42.666667-17.066667-42.666667-42.666667L469.333333 170.666667c0-25.6 17.066667-42.666667 42.666667-42.666667s42.666667 17.066667 42.666667 42.666667l0 682.666667C554.666667 878.933333 537.6 896 512 896z"></path>
+    </svg>
+  </div>
+
+  
+  <!-- aplayer -->
+
+
+<!-- dplayer -->
+
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+  
+  <!-- 尾部用户自定义相关内容 -->
+</body>
+</html>
