@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="theme-color" content="#3367D6"/>
+  <link rel="apple-touch-icon" href="/icons-192.png">
+  <link rel="manifest" href="/manifest.json">
+  
+  <meta name="generator" content="Hexo 6.2.0">
+
+  
+
+  
+
+  
+    <meta name="author" content="水帝">
+  
+
+  
+
+  
+
+  <title>利用TCP套接字实现简单的聊天室 | Touma</title>
+
+  
+
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@1.1.3/index.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlightjs@9.16.2/styles/monokai.css">
+  
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+</head>
+<body>
+  <div class="root-container" style="">
+    
+<!-- header container -->
+<header class="header-container post">
+  
+    <div class="post-image" style="background-image: url(https://s2.loli.net/2022/12/04/vCbi4RwfhHtcXUL.jpg)"></div>
+  
+
+  <!-- navbar -->
+<nav class="navbar">
+  <div class="navbar-content">
+    <!-- logo -->
+    <div class="navbar-logo">
+      <a href="/">
+        
+          Touma
+        
+      </a>
+    </div>
+    <!-- link -->
+    <div class="navbar-link">
+      <div class="navbar-btn">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <ul class="navbar-list">
+        
+          <li class="navbar-list-item"><a href="/">首页</a></li>
+        
+          <li class="navbar-list-item"><a href="/categories">分类</a></li>
+        
+          <li class="navbar-list-item"><a href="/links">友链</a></li>
+        
+          <li class="navbar-list-item"><a href="/about">关于</a></li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+    <div class="header-content">
+      <div class="post-text layout-block">
+        <div class="layout-margin">
+          <h1 class="title-wrap">利用TCP套接字实现简单的聊天室</h1>
+          <h2 class="title-sub-wrap">
+            <strong>水帝</strong>
+            <span>发布于</span>
+            <time  class="article-date" datetime="2022-11-29T08:59:36.000Z" itemprop="datePublished">2022-11-29</time>
+          </h2>
+          <h2>
+              <span class="post-count">📖1.7k字</span>
+              <span class="post-count">⏱7分</span>
+            <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
+              👀<span id="busuanzi_value_page_pv"></span>次
+          </h2>
+          <ul class="wrap-list dark">
+  
+    <li><a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">📒 计算机网络</a></li>
+  
+</ul>
+          <ul class="wrap-list dark">
+  
+    <li><a href="/tags/TCP/">🏷️ TCP</a></li>
+  
+    <li><a href="/tags/UDP/">🏷️ UDP</a></li>
+  
+</ul>
+        </div>
+      </div>
+    </div>
+  
+
+  
+  
+  
+</header>
+
+    <!-- 文章 -->
+
+<!-- 文章内容 -->
+<div class="body-container">
+  <article class="content-container layout-block post-container">
+    <div class="article-info">
+      
+      
+      
+      
+      <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
+        <p>通过简单的UDP和TCP程序来介绍套接字程序</p>
+<blockquote>
+<p>本文通过Python编写，基于计算机自顶向下方法第六版的2.7</p>
+</blockquote>
+<h1 id="1-UDP"><a href="#1-UDP" class="headerlink" title="1.UDP"></a>1.UDP</h1><p>UDP比较简单也不是我们的重点，当然也是一切的开始，像典型的网络应用一样，由一对程序，客户端和服务器端组成,本次实验会将两个程序放在一个主机上运行</p>
+<p>这次简单的由客户端发送字符串，服务器将其变为大写后返回</p>
+<h2 id="1-客户端"><a href="#1-客户端" class="headerlink" title="1.客户端"></a>1.客户端</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> socket <span class="hljs-keyword">import</span> *<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_host_ip</span>():<span class="hljs-comment">#返回本机ip函数</span><br>    <span class="hljs-keyword">try</span>:<br>        s = socket(AF_INET,SOCK_DGRAM)<br>        s.connect((<span class="hljs-string">&#x27;8.8.8.8&#x27;</span>,<span class="hljs-number">80</span>))<span class="hljs-comment">#向谷歌发送链接请求，没有正的发送包，但产生了一个包,包的头部就是ip地址</span><br>        ip = s.getsockname()[<span class="hljs-number">0</span>]<br>    <span class="hljs-keyword">finally</span>:<br>        s.close()<br>    <span class="hljs-keyword">return</span> ip<br><br>servername = get_host_ip()<span class="hljs-comment">#获得ip，由于这次服务器和客户端都在一个主机，所以ip就是本机的</span><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;ip: &#x27;</span>+servername)<br>serverport = <span class="hljs-number">12000</span><span class="hljs-comment">#端口号</span><br>clientsocket = socket(AF_INET,SOCK_DGRAM)<span class="hljs-comment">#创建客户的套接字,前者表示网络为IPV4,后者表明它是UDP</span><br>message = <span class="hljs-built_in">input</span>(<span class="hljs-string">&quot;输入小写英文字符:&quot;</span>)<br>clientsocket.sendto(message.encode(),(servername,serverport))<span class="hljs-comment">#传入</span><br>newmessage, serveradd = clientsocket.recvfrom(<span class="hljs-number">2048</span>)<span class="hljs-comment">#回复由两部分组成，前者为处理后的message，后者为服务器的ip和端口，当然这里后者没有用</span><br><span class="hljs-built_in">print</span>(newmessage.decode())<br>clientsocket.close()<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>一些需要注意的点</p>
+<p>1.可能已经注意到了，相比于书上，原本的raw_input变为了input，这是因为python新版已经将raw_iput变为input了，放心用吧</p>
+<p>2.sendto无法直接吃字符串，需要在这里用encode变为二进制的数据</p>
+</blockquote>
+<h2 id="2-服务器端"><a href="#2-服务器端" class="headerlink" title="2.服务器端"></a>2.服务器端</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> socket <span class="hljs-keyword">import</span> *<br><br>serverport = <span class="hljs-number">12000</span><br>clientsocket = socket(AF_INET,SOCK_DGRAM)<span class="hljs-comment">#创建客户的套接字</span><br>clientsocket.bind((<span class="hljs-string">&#x27;&#x27;</span>,<span class="hljs-number">12000</span>))<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;UDP服务器端准备完毕&quot;</span>)<br><span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>    message, clientadd = clientsocket.recvfrom(<span class="hljs-number">2048</span>)<br>    <span class="hljs-comment">#print(message) #这行打开的话就可以看到客户端运行时，这边会打印输入的信息</span><br>    newmessage = message.upper()<span class="hljs-comment">#python自带的小写变大写函数</span><br>    clientsocket.sendto(newmessage,clientadd)<br></code></pre></td></tr></table></figure>
+
+<h1 id="2-TCP"><a href="#2-TCP" class="headerlink" title="2.TCP"></a>2.TCP</h1><h2 id="1-客户端-1"><a href="#1-客户端-1" class="headerlink" title="1.客户端"></a>1.客户端</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> socket <span class="hljs-keyword">import</span> *<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_host_ip</span>():<span class="hljs-comment">#返回本机ip</span><br>    <span class="hljs-keyword">try</span>:<br>        s = socket(AF_INET,SOCK_DGRAM)<br>        s.connect((<span class="hljs-string">&#x27;8.8.8.8&#x27;</span>,<span class="hljs-number">80</span>))<span class="hljs-comment">#向谷歌发送链接请求，没有正的发送包，但产生了一个包,包的头部就是ip地址</span><br>        ip = s.getsockname()[<span class="hljs-number">0</span>]<br>    <span class="hljs-keyword">finally</span>:<br>        s.close()<br>    <span class="hljs-keyword">return</span> ip<br><br>servername = get_host_ip()<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;ip: &#x27;</span>+servername)<br>serverport = <span class="hljs-number">12000</span><br>clientsocket = socket(AF_INET,SOCK_STREAM)<span class="hljs-comment">#创建客户的套接字，后者表明它是TCP</span><br>clientsocket.connect((servername,serverport))<span class="hljs-comment">#开始链接</span><br>message = <span class="hljs-built_in">input</span>(<span class="hljs-string">&quot;输入小写英文字符:&quot;</span>)<br>clientsocket.send(message.encode())<br>newmessage = clientsocket.recv(<span class="hljs-number">2048</span>)<span class="hljs-comment">#recv是TCP，recvfrom是UDP</span><br><span class="hljs-built_in">print</span>(newmessage.decode())<br>clientsocket.close()<br></code></pre></td></tr></table></figure>
+
+<h2 id="2-服务器端-1"><a href="#2-服务器端-1" class="headerlink" title="2.服务器端"></a>2.服务器端</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> socket <span class="hljs-keyword">import</span> *<br><br>serverport = <span class="hljs-number">12000</span><br>clientsocket = socket(AF_INET,SOCK_STREAM)<span class="hljs-comment">#创建客户的套接字</span><br>clientsocket.bind((<span class="hljs-string">&#x27;&#x27;</span>,<span class="hljs-number">12000</span>))<br>clientsocket.listen(<span class="hljs-number">1</span>)<span class="hljs-comment">#定义最大连接数</span><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;TCP服务器端准备完毕&quot;</span>)<br><span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>    connectionsocket,addr = clientsocket.accept()<span class="hljs-comment">#在链接后，通过accept创建新的套接字，专门用于链接好的两端的传输</span><br>    message = connectionsocket.recv(<span class="hljs-number">2048</span>)<br>    <span class="hljs-comment">#print(message)</span><br>    newmessage = message.upper()<br>    connectionsocket.send(newmessage)<br>    connectionsocket.close()<span class="hljs-comment">#关闭此链接，这样其他客户可以链接</span><br></code></pre></td></tr></table></figure>
+
+<h1 id="3-一个案例：聊天室"><a href="#3-一个案例：聊天室" class="headerlink" title="3.一个案例：聊天室"></a>3.一个案例：聊天室</h1><p>既然上面是书上的东西，那么自然还是要写一点自己的东西了，这里写了一个聊天的网络应用，可以支持多个客户端进行聊天</p>
+<p>由于要同时处理多个客户端，所以用到了python内的多线程，多线程在这主要是独立收发以及客户端和服务器之间的连接，这里简单介绍一下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> threading <span class="hljs-keyword">import</span> Thread<br>t = Thread(target= ,args= )<br><span class="hljs-comment">#功能: 创建线程对象</span><br>参数: target 绑定线程函数<br>    args 元组 给线程函数位置传参<br>t.start() <span class="hljs-comment">#开始运行该线程</span><br>t.join() <span class="hljs-comment">#回收线程</span><br></code></pre></td></tr></table></figure>
+
+<p>具体还有其他一些函数，这里用不到，如果想看可以自行去查</p>
+<p>聊天室采用的是TCP，当然用UDP来应该也可以</p>
+<h2 id="1-服务器端"><a href="#1-服务器端" class="headerlink" title="1.服务器端"></a>1.服务器端</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> socket <span class="hljs-keyword">import</span> *<br><span class="hljs-keyword">from</span> threading <span class="hljs-keyword">import</span> Thread<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">TCPServer</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        self.clientsocket = socket(AF_INET,SOCK_STREAM)<span class="hljs-comment">#创建客户的套接字</span><br>        self.clientsocket.bind((<span class="hljs-string">&#x27;&#x27;</span>,<span class="hljs-number">12000</span>))<span class="hljs-comment">#连接到本机端口12000</span><br>        self.clientsocket.listen(<span class="hljs-number">5</span>)<span class="hljs-comment">#定义最大连接数</span><br>        self.data = <span class="hljs-string">&#x27;&#x27;</span>.encode()<span class="hljs-comment">#初值是一个二进制值</span><br>        self.num = <span class="hljs-number">0</span><br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;TCP服务器端准备完毕&quot;</span>)<br>  <br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">run</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>            connectionsocket,addr = self.clientsocket.accept()<span class="hljs-comment">#在链接后，通过accept创建新的套接字，专门用于链接好的两端的传输,阻塞函数</span><br>            self.data = <span class="hljs-string">&quot;&#123;&#125;:&#123;&#125;&gt;&gt;(来自系统)上线了&quot;</span>.<span class="hljs-built_in">format</span>(addr[<span class="hljs-number">0</span>],addr[<span class="hljs-number">1</span>]).encode()<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;&#123;&#125;:&#123;&#125;&gt;&gt;上线了&quot;</span>.<span class="hljs-built_in">format</span>(addr[<span class="hljs-number">0</span>],addr[<span class="hljs-number">1</span>]))<br>            self.num += <span class="hljs-number">1</span><br>            tr = Thread(target=self.recv_data, args=(connectionsocket, addr))   <span class="hljs-comment">#创建线程为客户端服务</span><br>            ts = Thread(target=self.send_data, args=(connectionsocket,))<br>            tr.start()  <span class="hljs-comment">#开启线程</span><br>            ts.start()<br>  <br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">recv_data</span>(<span class="hljs-params">self,connectionsocket,addr</span>):<span class="hljs-comment">#接收数据</span><br>        <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>            <span class="hljs-keyword">try</span>:<br>                data = connectionsocket.recv(<span class="hljs-number">2048</span>)<br>            <span class="hljs-keyword">except</span>:<br>                data =[]<br>            <span class="hljs-keyword">if</span> data:<br>                self.data = <span class="hljs-string">&quot;&#123;&#125;:&#123;&#125;&gt;&gt;&#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(addr[<span class="hljs-number">0</span>],addr[<span class="hljs-number">1</span>], data.decode()).encode()<br>                <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;&#123;&#125;:&#123;&#125;&gt;&gt;&#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(addr[<span class="hljs-number">0</span>],addr[<span class="hljs-number">1</span>], data.decode()))<br>                self.num += <span class="hljs-number">1</span><br>            <span class="hljs-keyword">else</span>: 	<span class="hljs-comment">#客户端断开连接</span><br>                self.data = <span class="hljs-string">&quot;&#123;&#125;:&#123;&#125;&gt;&gt;(来自系统)下线了&quot;</span>.<span class="hljs-built_in">format</span>(addr[<span class="hljs-number">0</span>],addr[<span class="hljs-number">1</span>]).encode()<br>                <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;&#123;&#125;:&#123;&#125;&gt;&gt;下线了&quot;</span>.<span class="hljs-built_in">format</span>(addr[<span class="hljs-number">0</span>],addr[<span class="hljs-number">1</span>]))<br>                self.num += <span class="hljs-number">1</span><br>                <span class="hljs-keyword">break</span><br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">send_data</span>(<span class="hljs-params">self,connectionsocket</span>):<span class="hljs-comment">#发送数据</span><br>        nownum = <span class="hljs-number">0</span><br>        <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>            <span class="hljs-keyword">if</span> nownum != self.num:<br>                <span class="hljs-keyword">try</span>:<br>                    connectionsocket.send(self.data)<br>                <span class="hljs-keyword">except</span>:<br>                    <span class="hljs-keyword">break</span><br>                nownum = self.num<br><br>myserver = TCPServer()<br>myserver.run()<br></code></pre></td></tr></table></figure>
+
+<h2 id="2-客户端"><a href="#2-客户端" class="headerlink" title="2.客户端"></a>2.客户端</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> socket <span class="hljs-keyword">import</span> *<br><span class="hljs-keyword">import</span> sys<br><span class="hljs-keyword">from</span> threading <span class="hljs-keyword">import</span> Thread<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_host</span>():<span class="hljs-comment">#返回本机ip</span><br>    <span class="hljs-keyword">try</span>:<br>        s = socket(AF_INET,SOCK_DGRAM)<br>        s.connect((<span class="hljs-string">&#x27;8.8.8.8&#x27;</span>,<span class="hljs-number">80</span>))<span class="hljs-comment">#向谷歌发送链接请求，没有正的发送包，但产生了一个包,包的头部就是ip地址</span><br>        ip = s.getsockname()[<span class="hljs-number">0</span>]<br>    <span class="hljs-keyword">finally</span>:<br>        s.close()<br>    <span class="hljs-keyword">return</span> ip<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">TCPClient</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        self.ip = get_host()<br>        self.clientsocket = socket(AF_INET,SOCK_STREAM)<span class="hljs-comment">#创建客户的套接字，后者表明它是TCP</span><br>  <br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">run</span>(<span class="hljs-params">self</span>):<br>        self.clientsocket.connect((self.ip, <span class="hljs-number">12000</span>))  <span class="hljs-comment">#连接服务器</span><br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;连接成功! 你的ip是: &quot;</span>+self.ip)<br>        tr = Thread(target=self.recv_data)  <span class="hljs-comment">#创建线程收数据</span><br>        ts = Thread(target=self.send_data)  <span class="hljs-comment">#创建线程发数据</span><br>        tr.start()  <span class="hljs-comment">#开启线程</span><br>        ts.start()<br>  <br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">recv_data</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>            data = self.clientsocket.recv(<span class="hljs-number">2048</span>).decode()<br>            <span class="hljs-keyword">if</span> data:<br>                tempdata = data.split(<span class="hljs-string">&quot;&gt;&gt;&quot;</span>)[<span class="hljs-number">0</span>]<br>                <span class="hljs-keyword">if</span> <span class="hljs-built_in">str</span>(self.clientsocket.getsockname()[<span class="hljs-number">0</span>])+<span class="hljs-string">&#x27;:&#x27;</span>+<span class="hljs-built_in">str</span>(self.clientsocket.getsockname()[<span class="hljs-number">1</span>]) != tempdata:<br>                    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\r&#123;&#125;\n&quot;</span>.<span class="hljs-built_in">format</span>(data),end=<span class="hljs-string">&#x27;&#x27;</span>)<br>                    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;&gt;&gt;&quot;</span>,end=<span class="hljs-string">&#x27;&#x27;</span>)<br>  <br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">send_data</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>            data = <span class="hljs-built_in">input</span>(<span class="hljs-string">&quot;&gt;&gt;&quot;</span>)<br>            self.clientsocket.send(data.encode())<br><br>myclient = TCPClient()<br>myclient.run() <br><br></code></pre></td></tr></table></figure>
+
+<p>因为这个程序很简单嘛，像解码或者加密之类的工作都没有，客户端退出也只能强制关闭，就是多线程+py网络编程简单的举个例子</p>
+<p>可能比较迷惑的点就是服务器用了try，因为当客户端强制退出时会报错，但又不会影响进程，所以干脆用try防止报错了</p>
+<p>以上的两个程序是在同一主机上运行的，所以在客户端去connect的时候ip是自己的地址，如果想连到其他的主机上去，就把这个ip和端口改为那台主机的即可</p>
+<p>那么实现结果如下：<br>服务器端：</p>
+
+    <figure class="figure-image">
+      <img src="/2022/11/29/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/20221129/server.jpg" alt loading="lazy">
+      <figcaption></figcaption>
+    </figure>
+  
+<p>客户端1：</p>
+
+    <figure class="figure-image">
+      <img src="/2022/11/29/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/20221129/client1.jpg" alt loading="lazy">
+      <figcaption></figcaption>
+    </figure>
+  
+<p>客户端2：</p>
+
+    <figure class="figure-image">
+      <img src="/2022/11/29/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/20221129/client2.jpg" alt loading="lazy">
+      <figcaption></figcaption>
+    </figure>
+  
+      </section>
+
+      
+      
+        <nav class="article-nav">
+          
+          
+            <div class="article-nav-item layout-padding">
+  <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
+    
+      <div class="card-cover" background-image-lazy data-img="https://s2.loli.net/2022/10/26/kc4MOgbC3UGZXiw.png"></div>
+    
+    <div class="card-text">
+      
+        <a href="/2022/10/18/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%AE%9E%E9%AA%8C/20221018/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">利用遗传算法求解 TSP 问题</h2>
+        </a>
+      
+      <div class="card-text--row">Older</div>
+    </div>
+  </article>
+</div>
+          
+        </nav>
+      
+
+      <section class="page-message-container layout-padding">
+        
+
+
+  
+  
+
+  
+  
+
+
+      </section>
+    </div>
+    <div class="widget-info">
+      
+<section class="widget-toc widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-toc" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M134.50666666 767.46666668H460.8c27.73333333 0 50.24000001 22.50666668 50.24000001 50.23999999v50.13333333c0 27.73333333-22.50666668 50.24000001-50.24000001 50.24000001H134.50666666c-27.73333333 0-50.24000001-22.50666668-50.23999999-50.24000001v-50.13333333c0.10666668-27.73333333 22.50666668-50.24000001 50.24000001-50.24000001zM84.37333332 541.65333333h326.18666669c27.73333333 0 50.24000001 22.39999999 50.23999999 50.13333334v50.24000001c0 27.73333333-22.50666668 50.24000001-50.24000002 50.23999999H84.37333332c-27.73333333 0-50.24000001-22.50666668-50.23999999-50.23999999v-50.24000001c0-27.73333333 22.50666668-50.13333334 50.24000001-50.13333334zM134.50666666 315.83999999H460.8c27.73333333 0 50.24000001 22.50666668 50.24000001 50.24000001v50.24000001c0 27.73333333-22.50666668 50.13333334-50.24000001 50.13333333H134.50666666c-27.73333333 0-50.24000001-22.39999999-50.23999999-50.13333333v-50.24000001c0.10666668-27.84000001 22.50666668-50.24000001 50.24000001-50.23999999zM209.81333332 89.91999999h326.18666671c27.73333333 0 50.24000001 22.39999999 50.23999997 50.13333335v50.23999999c0 27.73333333-22.50666668 50.24000001-50.24000001 50.24000001H209.81333332c-27.73333333 0-50.24000001-22.50666668-50.23999999-50.24000001v-50.24000001c0-27.73333333 22.50666668-50.13333334 50.24000001-50.13333333zM692.05333333 623.36l274.66666669 176.00000002c23.36000001 14.93333333 30.08 45.97333334 15.14666666 69.33333332L954.77333334 910.93333333c-14.93333333 23.25333334-45.97333334 30.08-69.33333335 15.14666667l-274.66666666-176c-23.36000001-14.93333333-30.08-45.97333334-15.14666667-69.33333333l27.09333334-42.24000001c14.93333333-23.36000001 46.08000001-30.08 69.33333333-15.14666666z" fill="currentColor"></path>
+</svg>
+    <span>目录</span>
+  </div>
+  <div class="widget-body">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-UDP"><span class="toc-text">1.UDP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-text">1.客户端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF"><span class="toc-text">2.服务器端</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-TCP"><span class="toc-text">2.TCP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%AE%A2%E6%88%B7%E7%AB%AF-1"><span class="toc-text">1.客户端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF-1"><span class="toc-text">2.服务器端</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-%E4%B8%80%E4%B8%AA%E6%A1%88%E4%BE%8B%EF%BC%9A%E8%81%8A%E5%A4%A9%E5%AE%A4"><span class="toc-text">3.一个案例：聊天室</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF"><span class="toc-text">1.服务器端</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-text">2.客户端</span></a></li></ol></li></ol>
+  </div>
+</section>
+
+
+      <section class="widget-author widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-body">
+    
+      <img src="/touma2.jpg" class="soft-size--round soft-style--box" alt="水帝">
+    
+    
+      <h2>水帝</h2>
+    
+    
+
+    <div class="count-box">
+      <div class="count-box--item">
+        <svg class="icon icon-article" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M240.51564747 647.74217627h196.07203239c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806V165.10332731c0-33.18142087-30.16492806-60.32985613-60.32985612-60.32985611H245.04038668C225.43318342 104.7734712 210.35071939 119.85593522 210.35071939 139.46313845V617.57724821c0 16.59071043 13.57421762 30.16492806 30.16492808 30.16492806z m663.62841731-452.47392089v482.63884894c0 33.18142087-27.14843525 60.32985613-60.32985612 60.32985613H180.18579134c-33.18142087 0-60.32985613-27.14843525-60.32985612-60.32985613V195.26825538c-49.77213131 0-90.49478418 40.72265287-90.49478417 90.49478417v452.4739209c0 49.77213131 40.72265287 90.49478418 90.49478417 90.49478417h286.56681657c16.59071043 0 30.16492806 13.57421762 30.16492807 30.16492807s13.57421762 30.16492806 30.16492805 30.16492806h90.49478418c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806s13.57421762-30.16492806 30.16492807-30.16492807h286.56681657c49.77213131 0 90.49478418-40.72265287 90.49478417-90.49478417V285.76303955c0-49.77213131-40.72265287-90.49478418-90.49478417-90.49478417zM587.41232014 647.74217627h191.54729318c19.60720323 0 34.68966726-15.08246403 34.68966729-34.68966727V134.93839925c0-16.59071043-13.57421762-30.16492806-30.16492808-30.16492805H617.57724821c-30.16492806 0-60.32985613 27.14843525-60.32985612 60.32985611v452.4739209c0 16.59071043 13.57421762 30.16492806 30.16492805 30.16492806z" fill="currentColor"></path>
+</svg>
+        <span>6</span>
+      </div>
+      <div class="count-box--item">
+        <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M900.3614811 257.09082106h-339.81629553l-67.96326003-101.9448889c-19.41807444-29.12711113-48.54518557-43.69066667-82.52681443-43.69066667H123.6385189c-53.39970333 0-97.09036999 43.69066667-97.09037113 97.09036999v582.54222222c0 53.39970333 43.69066667 97.09036999 97.09037113 97.09037002h776.7229622c53.39970333 0 97.09036999-43.69066667 97.09037113-97.09037002V354.18119104c0-53.39970333-43.69066667-97.09036999-97.09037113-97.09036998z m-97.09036999 242.72592554H220.72888889c-24.27259221 0-48.54518557-24.27259221-48.54518556-48.54518556s24.27259221-48.54518557 48.54518556-48.54518444h582.54222222c24.27259221 0 48.54518557 24.27259221 48.54518556 48.54518444s-24.27259221 48.54518557-48.54518556 48.54518556z" fill="currentColor"></path>
+</svg>
+        5
+      </div>
+      <div class="count-box--item">
+        <svg class="icon icon-tags" viewBox="0 0 1098 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M283.42180005 272q0-28.38857157-20.09142843-48.48000001t-48.47999998-20.09142842-48.48000002 20.09142842-20.09142846 48.48000001 20.09142846 48.48 48.48000002 20.09142843 48.47999998-20.09142843 20.09142843-48.48zM855.0332285 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.03999997 263.58857157q-20.9142853 19.81714313-48.75428534 19.81714312-28.38857157 0-48.20571468-19.81714312l-383.04-383.58857157q-20.36571468-19.81714313-34.55999999-54.10285688t-14.19428534-62.6742853l0-222.85714313q0-27.84000002 20.36571469-48.20571469t48.2057147-20.36571466l222.85714313 0q28.38857157 0 62.6742853 14.19428529t54.65142842 34.55999999l383.04000001 382.49142843q19.81714313 20.9142853 19.81714314 48.75428532zM1060.74751475 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.04 263.58857157q-20.9142853 19.81714313-48.75428531 19.81714312-19.26857155 0-31.61142843-7.47428531t-28.38857159-24.13714314l251.79428534-251.7942853q19.81714313-19.81714313 19.81714308-48.20571469 0-27.84000002-19.81714308-48.75428531l-383.04000001-382.49142845q-20.36571468-20.36571468-54.65142842-34.55999999t-62.67428532-14.19428534l120 0q28.38857157 0 62.67428532 14.19428534t54.65142842 34.55999999l383.03999998 382.49142845q19.81714313 20.9142853 19.81714314 48.75428531z" fill="currentColor"></path>
+</svg>
+        9
+      </div>
+    </div>
+  </div>
+</section>
+
+      
+<section class="widet-notice widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-notice" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M512 945.02305225v28.15620663a24.27259221 24.27259221 0 0 1-24.27259221 24.27259335H394.0352a48.54518557 48.54518557 0 0 1-41.74885888-23.78714112l-110.68302222-184.47170332a132.04290333 132.04290333 0 0 1-17.47626667-48.54518557h118.4502511a200.97706667 200.97706667 0 0 1 76.21594113 14.56355556l20.38897777 133.49925888a48.54518557 48.54518557 0 0 0 36.40888888 27.67075555l16.01991111 2.91271112a24.27259221 24.27259221 0 0 1 20.38897778 25.72894889zM997.45185223 463.45481443a194.18074112 194.18074112 0 0 1-38.8361489 116.50844445 24.75804445 24.75804445 0 0 1-36.4088889 0l-34.95253333-34.95253333a24.27259221 24.27259221 0 0 1-2.91271111-30.58346667 97.09036999 97.09036999 0 0 0 0-106.79940665 24.27259221 24.27259221 0 0 1 2.91271111-30.58346666l34.95253333-34.95253334a24.75804445 24.75804445 0 0 1 18.93262223-7.28177777 26.2144 26.2144 0 0 1 17.47626667 9.70903665A194.18074112 194.18074112 0 0 1 997.45185223 463.45481443z m-194.18074112-388.36148111v776.72296335a48.54518557 48.54518557 0 0 1-48.54518556 48.54518443h-28.64165888a48.54518557 48.54518557 0 0 1-33.98163001-14.07810332l-145.63555556-143.20829668A291.27111111 291.27111111 0 0 0 342.57730333 657.63555556H172.18370333a145.63555556 145.63555556 0 0 1-145.63555556-145.63555556v-97.09036999a145.63555556 145.63555556 0 0 1 145.63555556-145.63555556h170.3936a291.27111111 291.27111111 0 0 0 206.31703779-85.43952668l145.63555555-143.20829554a48.54518557 48.54518557 0 0 1 33.98162888-14.07810446H754.72592555a48.54518557 48.54518557 0 0 1 48.54518556 48.54518555z" fill="currentColor"></path>
+</svg>
+    <span>NOTICE</span>
+  </div>
+  <div class="widget-body">
+    <p>博客还在建设，客官请稍等</p>
+  </div>
+</section>
+
+
+      <section class="widget-categorys widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M900.3614811 257.09082106h-339.81629553l-67.96326003-101.9448889c-19.41807444-29.12711113-48.54518557-43.69066667-82.52681443-43.69066667H123.6385189c-53.39970333 0-97.09036999 43.69066667-97.09037113 97.09036999v582.54222222c0 53.39970333 43.69066667 97.09036999 97.09037113 97.09037002h776.7229622c53.39970333 0 97.09036999-43.69066667 97.09037113-97.09037002V354.18119104c0-53.39970333-43.69066667-97.09036999-97.09037113-97.09036998z m-97.09036999 242.72592554H220.72888889c-24.27259221 0-48.54518557-24.27259221-48.54518556-48.54518556s24.27259221-48.54518557 48.54518556-48.54518444h582.54222222c24.27259221 0 48.54518557 24.27259221 48.54518556 48.54518444s-24.27259221 48.54518557-48.54518556 48.54518556z" fill="currentColor"></path>
+</svg>
+    <span>CATEGORYS</span>
+  </div>
+  <div class="widget-body">
+    <ul class="categorys-list">
+      
+        <li class="categorys-list-item">
+          <a href="/categories/hexo%E4%B8%BB%E9%A2%98%E4%BC%98%E5%8C%96/">
+            hexo主题优化 (2)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
+          <a href="/categories/%E5%B0%8F%E7%A8%8B%E5%BA%8F/">
+            小程序 (1)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
+          <a href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%AE%9E%E9%AA%8C/">
+            人工智能实验 (1)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
+          <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">
+            计算机网络 (1)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
+          <a href="/categories/%E9%9A%8F%E7%AC%94/">
+            随笔 (1)
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+</section>
+
+      <section class="widget-tags widget-item  layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-tags" viewBox="0 0 1098 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M283.42180005 272q0-28.38857157-20.09142843-48.48000001t-48.47999998-20.09142842-48.48000002 20.09142842-20.09142846 48.48000001 20.09142846 48.48 48.48000002 20.09142843 48.47999998-20.09142843 20.09142843-48.48zM855.0332285 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.03999997 263.58857157q-20.9142853 19.81714313-48.75428534 19.81714312-28.38857157 0-48.20571468-19.81714312l-383.04-383.58857157q-20.36571468-19.81714313-34.55999999-54.10285688t-14.19428534-62.6742853l0-222.85714313q0-27.84000002 20.36571469-48.20571469t48.2057147-20.36571466l222.85714313 0q28.38857157 0 62.6742853 14.19428529t54.65142842 34.55999999l383.04000001 382.49142843q19.81714313 20.9142853 19.81714314 48.75428532zM1060.74751475 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.04 263.58857157q-20.9142853 19.81714313-48.75428531 19.81714312-19.26857155 0-31.61142843-7.47428531t-28.38857159-24.13714314l251.79428534-251.7942853q19.81714313-19.81714313 19.81714308-48.20571469 0-27.84000002-19.81714308-48.75428531l-383.04000001-382.49142845q-20.36571468-20.36571468-54.65142842-34.55999999t-62.67428532-14.19428534l120 0q28.38857157 0 62.67428532 14.19428534t54.65142842 34.55999999l383.03999998 382.49142845q19.81714313 20.9142853 19.81714314 48.75428531z" fill="currentColor"></path>
+</svg>
+    <span>TAGS</span>
+  </div>
+  <div class="widget-body">
+    <div class="tags-cloud">
+      <a href="/tags/TCP/" style="font-size: 10px;" class="tags-cloud-0">TCP</a> <a href="/tags/UDP/" style="font-size: 10px;" class="tags-cloud-0">UDP</a> <a href="/tags/c/" style="font-size: 10px;" class="tags-cloud-0">c</a> <a href="/tags/css/" style="font-size: 20px;" class="tags-cloud-10">css</a> <a href="/tags/hexo/" style="font-size: 20px;" class="tags-cloud-10">hexo</a> <a href="/tags/html/" style="font-size: 20px;" class="tags-cloud-10">html</a> <a href="/tags/js/" style="font-size: 10px;" class="tags-cloud-0">js</a> <a href="/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/" style="font-size: 10px;" class="tags-cloud-0">小程序</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;" class="tags-cloud-0">算法</a>
+    </div>
+  </div>
+</section>
+    </div>
+  </article>
+</div>
+
+    <!-- footer container -->
+<footer id="footer" class="footer">
+  <div class="footer-container">
+     
+    <p>&copy; 2022 <a href="/" target="_blank">水帝</a></p>
+
+    
+
+    <p>Powered by <a href="https://hexo.io" target="_blank" rel="noopener noreferrer">Hexo</a> Theme - <a href="https://github.com/miiiku/flex-block" target="_blank" rel="noopener noreferrer author">flex-block</a></p>
+    <p>
+      <span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+      <script>
+        var now = new Date(); 
+        function createtime() { 
+            var grt= new Date("06/24/2022 20:26:16");//在此处修改你的建站时间，格式：月/日/年 时:分:秒
+            now.setTime(now.getTime()+250); 
+            days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days); 
+            hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours); 
+            if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum); 
+            mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;} 
+            seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum); 
+            snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;} 
+            document.getElementById("timeDate").innerHTML = "本站已运行 "+dnum+" 天 "; 
+            document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒"; 
+        } 
+      setInterval("createtime()",250);
+      </script>
+    </p>
+	  <p>已经记载了6篇文章</p>
+    <p>
+      <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+      浏览量：<span id="busuanzi_value_site_pv"><i class="fa fa-spinner fa-spin"></i></span>👀 | 访客数：<span id="busuanzi_value_site_uv"><i class="fa fa-spinner fa-spin"></i></span>👦
+    </p>
+    <p>
+      <a href="javascript:;" id="theme-light">🌞 光明</a>
+      <a href="javascript:;" id="theme-dark">🌛 黑暗</a>
+      <!-- <a href="javascript:;" id="theme-auto">🤖️ 自动</a> -->
+    </p>
+  </div>
+</footer>
+
+  </div>
+  <div class="back-to-top-fixed soft-size--round soft-style--box">
+    <svg class="icon icon-back-to-top" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+      <path d="M725.333333 426.666667c-12.8 0-21.333333-4.266667-29.866667-12.8l-213.333333-213.333333c-17.066667-17.066667-17.066667-42.666667 0-59.733333s42.666667-17.066667 59.733333 0l213.333333 213.333333c17.066667 17.066667 17.066667 42.666667 0 59.733333C746.666667 422.4 738.133333 426.666667 725.333333 426.666667z"></path>
+      <path d="M298.666667 426.666667c-12.8 0-21.333333-4.266667-29.866667-12.8-17.066667-17.066667-17.066667-42.666667 0-59.733333l213.333333-213.333333c17.066667-17.066667 42.666667-17.066667 59.733333 0s17.066667 42.666667 0 59.733333l-213.333333 213.333333C320 422.4 311.466667 426.666667 298.666667 426.666667z"></path>
+      <path d="M512 896c-25.6 0-42.666667-17.066667-42.666667-42.666667L469.333333 170.666667c0-25.6 17.066667-42.666667 42.666667-42.666667s42.666667 17.066667 42.666667 42.666667l0 682.666667C554.666667 878.933333 537.6 896 512 896z"></path>
+    </svg>
+  </div>
+
+  
+  <!-- aplayer -->
+
+
+<!-- dplayer -->
+
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+  
+  <!-- 尾部用户自定义相关内容 -->
+</body>
+</html>
