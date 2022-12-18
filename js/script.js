@@ -22,14 +22,10 @@ window.addEventListener("DOMContentLoaded", function() {
   }
 
   if(IsPC()){
-    headerr.classList.add('highinPC');
+    setTimeout(function(){
+      headerr.classList.add("show");
+    },800);
   }
-  else{
-    headerr.classList.add('highinphone');
-  }
-  setTimeout(function(){
-    headerr.classList.add("show");
-  },800);
 
   if(window.localStorage.getItem('theme') == 'theme-dark')
     back_ground.setAttribute("style","background-image: url(https://s2.loli.net/2022/07/13/8OEKadVl4wY3omH.jpg)")
