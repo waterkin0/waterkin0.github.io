@@ -5,17 +5,37 @@ window.addEventListener("DOMContentLoaded", function() {
   const backToTopFixed  = document.querySelector(".back-to-top-fixed");
   const navigationbar   = document.querySelector(".navbar");
   const back_ground     = document.querySelector(".root-container");
+  const headerr         = document.querySelector(".header-content");
   let lastTop           = 0;
   let theme             = window.localStorage.getItem('theme') || '';
 
   theme && html.classList.add(theme)
+
+  function IsPC(){  
+    var userAgentInfo = navigator.userAgent;
+    var Agents = new Array("Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod");  
+    var flag = true;  
+    for (var v = 0; v < Agents.length; v++) {  
+        if (userAgentInfo.indexOf(Agents[v]) > 0) { flag = false; break; }  
+    }  
+    return flag;  
+  }
+
+  if(IsPC()){
+    headerr.classList.add('highinPC');
+  }
+  else{
+    headerr.classList.add('highinphone');
+  }
+  setTimeout(function(){
+    headerr.classList.add("show");
+  },800);
 
   if(window.localStorage.getItem('theme') == 'theme-dark')
     back_ground.setAttribute("style","background-image: url(https://s2.loli.net/2022/07/13/8OEKadVl4wY3omH.jpg)")
   else
     back_ground.setAttribute("style","background-image: url(https://s2.loli.net/2022/07/06/qDeLO1IijPA3EbC.jpg)")
   
-
   const goScrollTop = () => {
     let currentTop = getScrollTop()
     let speed = Math.floor(-currentTop / 10)

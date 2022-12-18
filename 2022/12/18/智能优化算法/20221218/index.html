@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="theme-color" content="#3367D6"/>
+  <link rel="apple-touch-icon" href="/icons-192.png">
+  <link rel="manifest" href="/manifest.json">
+  
+  <meta name="generator" content="Hexo 6.2.0">
+
+  
+
+  
+
+  
+    <meta name="author" content="水帝">
+  
+
+  
+
+  
+
+  <title>利用遗传算法解决自动组卷问题 | Touma</title>
+
+  
+
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@1.1.3/index.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlightjs@9.16.2/styles/monokai.css">
+  
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+</head>
+<body>
+  <div class="root-container" style="">
+    
+<!-- header container -->
+<header class="header-container post">
+  
+    <div class="post-image" style="background-image: url(https://s2.loli.net/2022/12/18/rfzLmoa38UqhPSY.jpg)"></div>
+  
+  
+
+  <!-- navbar -->
+<nav class="navbar">
+  <div class="navbar-content">
+    <!-- logo -->
+    <div class="navbar-logo">
+      <a href="/">
+        
+          Touma
+        
+      </a>
+    </div>
+    <!-- link -->
+    <div class="navbar-link">
+      <div class="navbar-btn">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <ul class="navbar-list">
+        
+          <li class="navbar-list-item"><a href="/">首页</a></li>
+        
+          <li class="navbar-list-item"><a href="/categories">分类</a></li>
+        
+          <li class="navbar-list-item"><a href="/links">友链</a></li>
+        
+          <li class="navbar-list-item"><a href="/about">关于</a></li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+    <div class="header-content">
+      <div class="post-text layout-block">
+        <div class="layout-margin">
+          <h1 class="title-wrap">利用遗传算法解决自动组卷问题</h1>
+          <h2 class="title-sub-wrap">
+            <strong>水帝</strong>
+            <span>发布于</span>
+            <time  class="article-date" datetime="2022-12-18T02:28:41.000Z" itemprop="datePublished">2022-12-18</time>
+          </h2>
+          <h2>
+              <span class="post-count">📖2.4k字</span>
+              <span class="post-count">⏱10分</span>
+            <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
+              👀<span id="busuanzi_value_page_pv"></span>次
+          </h2>
+          <ul class="wrap-list dark">
+  
+    <li><a href="/categories/%E6%99%BA%E8%83%BD%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/">📒 智能优化算法</a></li>
+  
+</ul>
+          <ul class="wrap-list dark">
+  
+    <li><a href="/tags/%E7%AE%97%E6%B3%95/">🏷️ 算法</a></li>
+  
+    <li><a href="/tags/py/">🏷️ py</a></li>
+  
+</ul>
+        </div>
+      </div>
+    </div>
+  
+
+  
+  
+  
+</header>
+
+    <!-- 文章 -->
+
+<!-- 文章内容 -->
+<div class="body-container">
+  <article class="content-container layout-block post-container">
+    <div class="article-info">
+      
+      
+      
+      
+      <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
+        <p>有关遗传算法的简介<a href="/2022/10/18/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%AE%9E%E9%AA%8C/20221018">上次的文章</a>已经有所讲解了</p>
+<blockquote>
+<p>上次是用的c语言，加上大部分都是实验自带的，这次是要求从零开始，那么为了方便自然用py了</p>
+</blockquote>
+<h2 id="1-自动组卷问题"><a href="#1-自动组卷问题" class="headerlink" title="1.自动组卷问题"></a>1.自动组卷问题</h2><p>自动组卷是根据出卷者给定的约束条件（目前考虑试题总数量、总分、知识点分布、难度系数、题型比例等因素），搜索试题库中与特征参数相匹配的试题，从而抽取最优的试题组合</p>
+<h2 id="2-具体实现"><a href="#2-具体实现" class="headerlink" title="2.具体实现"></a>2.具体实现</h2><h3 id="1-相关数据类型定义"><a href="#1-相关数据类型定义" class="headerlink" title="1.相关数据类型定义"></a>1.相关数据类型定义</h3><p>首先定义的是题目：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Problem</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self,ID,typee,score,diff,points</span>):<br>        self.ID = ID        <span class="hljs-comment">#编号</span><br>        self.typee = typee  <span class="hljs-comment">#分类</span><br>        self.score = score  <span class="hljs-comment">#分数</span><br>        self.diff = diff    <span class="hljs-comment">#难度系数</span><br>        self.points = points<span class="hljs-comment">#知识点</span><br></code></pre></td></tr></table></figure>
+
+<p>一道题需要包含的内容就是上图所示</p>
+<p>然后就是由题目组成的试卷：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Unit</span>:<span class="hljs-comment">#一套试卷</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        self.ProblemList = []<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">allscore</span>(<span class="hljs-params">self</span>):<span class="hljs-comment">#试卷总分</span><br>        allscore = <span class="hljs-number">0</span><br>        <span class="hljs-keyword">try</span>:<br>            <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> self.ProblemList:<br>                allscore += i.score<br>        <span class="hljs-keyword">except</span>:<br>            <span class="hljs-keyword">return</span> <span class="hljs-number">0</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-built_in">round</span>(allscore,<span class="hljs-number">0</span>)<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">Difficulty</span>(<span class="hljs-params">self</span>):<span class="hljs-comment">#试卷难度</span><br>        alldiff = <span class="hljs-number">0</span><br>        allscore = <span class="hljs-number">0</span><br>        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> self.ProblemList:<br>            alldiff += i.diff * i.score<br>            allscore += i.score<br>        <span class="hljs-keyword">return</span>  <span class="hljs-built_in">round</span>(alldiff/allscore,<span class="hljs-number">2</span>)<span class="hljs-comment">#保留两位小数</span><br></code></pre></td></tr></table></figure>
+
+<p>试卷有一系列题组成，为了方便在内部定义计算总分和难度的函数</p>
+<blockquote>
+<p>试卷难度是由总的难度(每道题难度乘分数)&#x2F;总分得到</p>
+</blockquote>
+<p>然后需要的就是目标的试卷，在这里我用了一个类进行描述，命名为example</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">example</span>:<span class="hljs-comment">#期望的卷子</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        self.TotalScore = <span class="hljs-number">100</span><br>        self.Difficulty = <span class="hljs-number">0.72</span><br>        self.points = [<span class="hljs-number">1</span>, <span class="hljs-number">3</span>, <span class="hljs-number">5</span>, <span class="hljs-number">7</span>, <span class="hljs-number">9</span>, <span class="hljs-number">11</span>, <span class="hljs-number">13</span>, <span class="hljs-number">15</span>, <span class="hljs-number">17</span>, <span class="hljs-number">19</span>, <span class="hljs-number">21</span>, <span class="hljs-number">23</span>, <span class="hljs-number">25</span>, <span class="hljs-number">27</span>, <span class="hljs-number">29</span>, <span class="hljs-number">31</span>, <span class="hljs-number">33</span>, <span class="hljs-number">35</span>, <span class="hljs-number">37</span>, <span class="hljs-number">39</span>, <span class="hljs-number">41</span>, <span class="hljs-number">43</span>, <span class="hljs-number">45</span>, <span class="hljs-number">47</span>, <span class="hljs-number">49</span>, <span class="hljs-number">51</span>, <span class="hljs-number">53</span>, <span class="hljs-number">55</span>, <span class="hljs-number">57</span>, <span class="hljs-number">59</span>, <span class="hljs-number">61</span>, <span class="hljs-number">63</span>, <span class="hljs-number">65</span>, <span class="hljs-number">67</span>, <span class="hljs-number">69</span>, <span class="hljs-number">71</span>, <span class="hljs-number">73</span>, <span class="hljs-number">75</span>, <span class="hljs-number">77</span>, <span class="hljs-number">79</span>, <span class="hljs-number">81</span>]<br>        self.EachTypeCount = [<span class="hljs-number">20</span>, <span class="hljs-number">5</span>, <span class="hljs-number">10</span>, <span class="hljs-number">7</span>, <span class="hljs-number">5</span>]<span class="hljs-comment">#20（单选）, 5（多选）, 10（判断）, 7（填空）, 5（问答）</span><br></code></pre></td></tr></table></figure>
+
+<p>如上图所示，这个类定义了我们所期望的试卷的样子，即要求分数为100分，难度系数为0.72,要求知识点覆盖points内的数字，以及不同题类型的数量要满足EachTypeCount内的数字</p>
+<h3 id="2-实现"><a href="#2-实现" class="headerlink" title="2.实现"></a>2.实现</h3><p>我将实现全部放在了show这个类里面，首先是相关数据的定义：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">show</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        self.problems = []<span class="hljs-comment">#题库</span><br>        self.problemsbegin()<br>        self.example = example()<br>        self.units = []<span class="hljs-comment">#种群</span><br>        self.unitbegin(<span class="hljs-number">20</span>)<br></code></pre></td></tr></table></figure>
+
+<p>保存的数据有problems题库，利用后续的problembegin函数对这个题库进行初始化，example内保存目的试卷，后续迭代求适应度会以此为标准，unit代表种群，利用后续的unitsbegin进行初始化，初始默认20张试卷，当然可以自己扩大种群</p>
+<h4 id="1-题库初始化"><a href="#1-题库初始化" class="headerlink" title="1.题库初始化"></a>1.题库初始化</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">problemsbegin</span>(<span class="hljs-params">self</span>):<span class="hljs-comment">#题库初始化</span><br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>,<span class="hljs-number">5001</span>):<br>        typee = <span class="hljs-number">0</span><br>        score = <span class="hljs-number">0</span><br>        diff = <span class="hljs-built_in">round</span>(random.randint(<span class="hljs-number">30</span>,<span class="hljs-number">100</span>) * <span class="hljs-number">0.01</span>,<span class="hljs-number">2</span>)  <span class="hljs-comment">#试题难度系数取0.3到1之间的随机值</span><br>        points = []<br>        count = random.randint(<span class="hljs-number">1</span>,<span class="hljs-number">4</span>) <span class="hljs-comment">#每题1到4个知识点,一共100个知识点</span><br>        <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(count+<span class="hljs-number">1</span>):<br>            point = random.randint(<span class="hljs-number">1</span>,<span class="hljs-number">100</span>)<br>            <span class="hljs-keyword">while</span> point <span class="hljs-keyword">in</span> points:<br>                point = random.randint(<span class="hljs-number">1</span>,<span class="hljs-number">100</span>)<br>            points.append(point)<br>        <span class="hljs-keyword">if</span> i &lt; <span class="hljs-number">1000</span>:<span class="hljs-comment">#单选题1分</span><br>            typee = <span class="hljs-number">1</span><br>            score = <span class="hljs-number">1</span><br>        <span class="hljs-keyword">if</span> <span class="hljs-number">1000</span> &lt;= i &lt; <span class="hljs-number">2000</span>: <span class="hljs-comment">#多选题2分</span><br>            typee = <span class="hljs-number">2</span><br>            score = <span class="hljs-number">2</span><br>        <span class="hljs-keyword">if</span> <span class="hljs-number">2000</span> &lt;= i &lt; <span class="hljs-number">3000</span>: <span class="hljs-comment">#判断题2分</span><br>            typee = <span class="hljs-number">3</span><br>            score = <span class="hljs-number">2</span><br>        <span class="hljs-keyword">if</span> <span class="hljs-number">3000</span> &lt;= i &lt; <span class="hljs-number">4000</span>: <span class="hljs-comment">#填空题1-4分</span><br>            typee = <span class="hljs-number">4</span><br>            score = random.randint(<span class="hljs-number">1</span>,<span class="hljs-number">4</span>)<br>        <span class="hljs-keyword">if</span> <span class="hljs-number">4000</span> &lt;= i &lt; <span class="hljs-number">5000</span>: <span class="hljs-comment">#问答题分数为难度系数*10</span><br>            typee = <span class="hljs-number">5</span><br>            score = <span class="hljs-built_in">round</span>(diff*<span class="hljs-number">10</span>,<span class="hljs-number">1</span>)<br>        temp = Problem(ID=i,typee=typee,score=score,diff=diff,points=points)<br>        self.problems.append(temp)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;题库初始化完毕&quot;</span>+<span class="hljs-built_in">str</span>(<span class="hljs-built_in">len</span>(self.problems)))<br></code></pre></td></tr></table></figure>
+
+<p>上图是对题库进行初始化的函数，初始化5000道题，其中1-1000为选择题，分值为1分，1000-2000位多选题，2分，2000-3000位判断题，2分，3000-4000为填空题，分数为1-4随机,4000-5000为问答题，分数为难度系数*10，对这5000个题进行初始化，随机赋1-4个知识点</p>
+<h4 id="2-种群初始化"><a href="#2-种群初始化" class="headerlink" title="2.种群初始化"></a>2.种群初始化</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">unitbegin</span>(<span class="hljs-params">self,num</span>):<span class="hljs-comment">#种群初始化</span><br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(num):<br>        tempunit = Unit()<br>        <span class="hljs-keyword">while</span> tempunit.allscore() != <span class="hljs-number">100</span>:<span class="hljs-comment">#总分限制</span><br>            tempunit.ProblemList.clear()<br>            <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(self.example.EachTypeCount)):<br>                <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(self.example.EachTypeCount[j]):<br>                    temppro = self.problems[random.randint(<span class="hljs-number">1000</span>*j,<span class="hljs-number">1000</span>*j+<span class="hljs-number">999</span>)]<span class="hljs-comment">#保证题目不重复</span><br>                    <span class="hljs-keyword">while</span> temppro <span class="hljs-keyword">in</span> tempunit.ProblemList:<br>                        temppro = self.problems[random.randint(<span class="hljs-number">1000</span>*j,<span class="hljs-number">1000</span>*j+<span class="hljs-number">999</span>)]<br>                    tempunit.ProblemList.append(temppro)<br>        self.units.append(tempunit)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;种群初始化完毕&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>对种群进行初始化，从题库中按例卷的要求选择对应数量的题目，要求最后分数为100分，这里num为20，也就是种群数量为20</p>
+<h4 id="3-种群个体适应度"><a href="#3-种群个体适应度" class="headerlink" title="3.种群个体适应度"></a>3.种群个体适应度</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">GetKPCoverage</span>(<span class="hljs-params">self,unit</span>):<span class="hljs-comment">#种群个体知识点覆盖率</span><br>    points = []<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> unit.ProblemList:<br>        <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> i.points:<br>            <span class="hljs-keyword">if</span> j <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> points:<br>                points.append(j)<br>    pointnum = <span class="hljs-number">0</span><br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> points:<br>        <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> self.example.points:<br>            <span class="hljs-keyword">if</span> i == j:<br>                pointnum += <span class="hljs-number">1</span><br>    <span class="hljs-keyword">return</span> pointnum/<span class="hljs-built_in">len</span>(self.example.points)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">GetAdaptationDegree</span>(<span class="hljs-params">self,unit</span>):<span class="hljs-comment">#种群个体适应度</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>-(<span class="hljs-number">1</span>-self.GetKPCoverage(unit=unit))*<span class="hljs-number">0.5</span>-<span class="hljs-built_in">abs</span>(self.example.Difficulty-unit.Difficulty())*<span class="hljs-number">0.5</span><br></code></pre></td></tr></table></figure>
+
+<p>上面两个函数都是有关种群个体适应度的计算，其中GetKPCoverage是求得知识点覆盖率，这个值会用于下方的函数，即GetAdaptationDegree，以求得种群个体适应度，其中知识点覆盖率和难度的权重都是0.5，即在这里权重相同</p>
+<h4 id="4-选择"><a href="#4-选择" class="headerlink" title="4.选择"></a>4.选择</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">Select</span>(<span class="hljs-params">self</span>):<span class="hljs-comment">#选择</span><br>    units = []<br>    allAdaptationDegree = <span class="hljs-number">0</span><span class="hljs-comment">#适应度之和</span><br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> self.units:<br>        allAdaptationDegree += self.GetAdaptationDegree(i)<br>    <span class="hljs-keyword">while</span> <span class="hljs-built_in">len</span>(units) != <span class="hljs-built_in">len</span>(self.units):<br>        <span class="hljs-comment">#print(len(units))</span><br>        temprand = random.random()<br>        degree = <span class="hljs-number">0</span><br>        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(self.units)):<span class="hljs-comment">#轮盘赌</span><br>            degree += self.GetAdaptationDegree(self.units[i])/allAdaptationDegree<br>            <span class="hljs-keyword">if</span> degree &gt; temprand:<br>                <span class="hljs-keyword">if</span> self.units[i] <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> units:<span class="hljs-comment">#防止重复选择</span><br>                    units.append(self.units[i])<br>                <span class="hljs-keyword">break</span><br>    <span class="hljs-comment">#print(&quot;选择完成&quot;)</span><br>    <span class="hljs-keyword">return</span> units<br></code></pre></td></tr></table></figure>
+
+<p>遗传算法的选择部分，利用轮盘赌进行选择</p>
+<h4 id="5-交叉"><a href="#5-交叉" class="headerlink" title="5.交叉"></a>5.交叉</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">Cross</span>(<span class="hljs-params">self,units</span>):<span class="hljs-comment">#交叉</span><br>    <span class="hljs-comment">#选出交叉的两个个体</span><br>    result = []<br>    tempadapt = self.units[<span class="hljs-number">0</span>]<span class="hljs-comment">#保留最好的一个</span><br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> self.units:<br>        <span class="hljs-keyword">if</span> self.GetAdaptationDegree(i) &gt;= self.GetAdaptationDegree(tempadapt):<br>            tempadapt = i<br>    result.append(tempadapt)<br>    <span class="hljs-keyword">while</span> <span class="hljs-built_in">len</span>(result) != <span class="hljs-built_in">len</span>(units):<br>        indexone = random.randint(<span class="hljs-number">0</span>,<span class="hljs-built_in">len</span>(units)-<span class="hljs-number">1</span>)<br>        indextwo = random.randint(<span class="hljs-number">0</span>,<span class="hljs-built_in">len</span>(units)-<span class="hljs-number">1</span>)<br>        <span class="hljs-keyword">if</span> indexone != indextwo:<br>            crosspos = random.randint(<span class="hljs-number">0</span>,<span class="hljs-built_in">len</span>(units)-<span class="hljs-number">2</span>)<span class="hljs-comment">#交叉的位置</span><br>            scoreone = units[indexone].ProblemList[crosspos].score + units[indexone].ProblemList[crosspos+<span class="hljs-number">1</span>].score<br>            scoretwo = units[indextwo].ProblemList[crosspos].score + units[indextwo].ProblemList[crosspos+<span class="hljs-number">1</span>].score<br>            <span class="hljs-keyword">if</span> scoreone == scoretwo:<span class="hljs-comment">#保证交叉的两个分数和相同</span><br>                unitone = Unit()<span class="hljs-comment">#创建两个新的个体</span><br>                unittwo = Unit()<br>                unitone.ProblemList = copy.deepcopy(units[indexone].ProblemList)<br>                unittwo.ProblemList = copy.deepcopy(units[indextwo].ProblemList)<br>                <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(crosspos,crosspos+<span class="hljs-number">2</span>):<br>                    unitone.ProblemList[i] = copy.deepcopy(units[indextwo].ProblemList[i])<br>                    unittwo.ProblemList[i] = copy.deepcopy(units[indexone].ProblemList[i])<br>                <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(result) &lt; <span class="hljs-built_in">len</span>(units) <span class="hljs-keyword">and</span> unitone <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> result:<br>                    result.append(unitone)<br>                <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(result) &lt; <span class="hljs-built_in">len</span>(units) <span class="hljs-keyword">and</span> unitone <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> result:<br>                    result.append(unittwo)<br>    <span class="hljs-comment">#print(&quot;交叉完成&quot;)</span><br>    <span class="hljs-keyword">return</span> result<br></code></pre></td></tr></table></figure>
+
+<p>遗传算法的交叉部分，将经过选择得到的种群在这里再次随机选择进行交叉操作，注意交叉过程中交换的题目分数和需要相同，否则将会得到总分不是100的卷子</p>
+<blockquote>
+<p>相比于正常的交叉，这里采用了精英化策略，即保留最好的一个个体直接进入下一代，以减少后续迭代次数</p>
+</blockquote>
+<h4 id="6-变异"><a href="#6-变异" class="headerlink" title="6.变异"></a>6.变异</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">Change</span>(<span class="hljs-params">self,units</span>):<span class="hljs-comment">#变异</span><br>    <span class="hljs-keyword">for</span> unit <span class="hljs-keyword">in</span> units:<br>        temp = <span class="hljs-literal">True</span><br>        <span class="hljs-keyword">while</span> temp:<br>            randpos = random.randint(<span class="hljs-number">0</span>,<span class="hljs-built_in">len</span>(unit.ProblemList)-<span class="hljs-number">1</span>)<br>            randproblem = unit.ProblemList[randpos]<span class="hljs-comment">#被替换的题</span><br>            Validpoints = []<span class="hljs-comment">#被替换题的有效知识点</span><br>            <span class="hljs-keyword">for</span> point <span class="hljs-keyword">in</span> randproblem.points:<br>                <span class="hljs-keyword">if</span> point <span class="hljs-keyword">in</span> self.example.points:<br>                    Validpoints.append(point)<br>            validproblempos = random.randint(<span class="hljs-number">1000</span>*randproblem.typee-<span class="hljs-number">1000</span>,<span class="hljs-number">1000</span>*randproblem.typee-<span class="hljs-number">1</span>)<span class="hljs-comment">#替换题 保证题类型相同</span><br>            <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">100</span>):<br>                <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> (self.arrin(self.problems[validproblempos].points,Validpoints) <span class="hljs-keyword">and</span> self.problems[validproblempos].ID != randproblem.ID <span class="hljs-keyword">and</span> self.problems[validproblempos].score == randproblem.score):<br>                    validproblempos = random.randint(<span class="hljs-number">1000</span>*randproblem.typee-<span class="hljs-number">1000</span>,<span class="hljs-number">1000</span>*randproblem.typee-<span class="hljs-number">1</span>)<br>                <span class="hljs-keyword">else</span>:<br>                    temp = <span class="hljs-literal">False</span><br>                    <span class="hljs-keyword">break</span><br>        unit.ProblemList[randpos] = self.problems[validproblempos]<br>    self.units = copy.deepcopy(units)<br></code></pre></td></tr></table></figure>
+
+<p>遗传算法的变异部分，需要注意的是由于变异有要求，即要求被替换的有效知识点中至少有一个能在替换的知识点中找到，而且要满足同题型和同分数，实际运行过程中发现有时候会陷入死循环，这里是因为有事会不存在满足的条件的题目进行变异，于是这里仅进行100个尝试寻找替换题目进行变异，失败则重新寻找被替换题目进行变异</p>
+<h4 id="7-开始迭代"><a href="#7-开始迭代" class="headerlink" title="7.开始迭代"></a>7.开始迭代</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">showshow</span>(<span class="hljs-params">self</span>):<span class="hljs-comment">#迭代</span><br>    expand = <span class="hljs-number">0.98</span><span class="hljs-comment">#适应度期望值</span><br>    runCount = <span class="hljs-number">500</span><span class="hljs-comment">#最大迭代次数</span><br>    <span class="hljs-keyword">for</span> count <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(runCount+<span class="hljs-number">1</span>):<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;第&quot;</span>+<span class="hljs-built_in">str</span>(count)+<span class="hljs-string">&quot;次迭代&quot;</span>,end=<span class="hljs-string">&quot;&quot;</span>)<br>        tempadapt = <span class="hljs-number">0</span><br>        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> self.units:<br>            <span class="hljs-keyword">if</span> self.GetAdaptationDegree(i) &gt;= tempadapt:<br>                tempadapt = self.GetAdaptationDegree(i)<br>        yp.append(tempadapt)<br>        <span class="hljs-keyword">if</span> tempadapt &gt; expand:<span class="hljs-comment">#满足条件</span><br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;得到结果 适应度为&quot;</span>+<span class="hljs-built_in">str</span>(self.GetAdaptationDegree(i))+<span class="hljs-string">&quot;具体信息如下&quot;</span>)<br>            self.showunit(i)<br>            <span class="hljs-keyword">return</span><br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;未得到结果 最好的适应度为&quot;</span>+<span class="hljs-built_in">str</span>(tempadapt))<br>        units = self.Select()<br>        units = self.Cross(units)<br>        self.Change(units)<br></code></pre></td></tr></table></figure>
+
+<p>最后进行迭代计算，当种群中出现适应度大于0.98的卷子或者迭代次数大于500次时停止迭代</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">Showstart = show()<br>Showstart.showshow()<br></code></pre></td></tr></table></figure>
+
+<h4 id="8-相关辅助函数"><a href="#8-相关辅助函数" class="headerlink" title="8.相关辅助函数"></a>8.相关辅助函数</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">showunit</span>(<span class="hljs-params">self,unit</span>):<span class="hljs-comment">#打印试卷具体信息</span><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;试卷总分为&quot;</span>+<span class="hljs-built_in">str</span>(unit.allscore()))<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;试卷难度为&quot;</span>+<span class="hljs-built_in">str</span>(unit.Difficulty()))<br>    tempnum = <span class="hljs-number">0</span><br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> unit.ProblemList:<br>        <span class="hljs-keyword">if</span> tempnum != i.typee:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;&quot;</span>)<br>            <span class="hljs-keyword">if</span> i.typee == <span class="hljs-number">1</span>:<br>                <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;单选题:&quot;</span>)<br>            <span class="hljs-keyword">if</span> i.typee == <span class="hljs-number">2</span>:<br>                <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;多选题:&quot;</span>)<br>            <span class="hljs-keyword">if</span> i.typee == <span class="hljs-number">3</span>:<br>                <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;判断题:&quot;</span>)<br>            <span class="hljs-keyword">if</span> i.typee == <span class="hljs-number">4</span>:<br>                <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;填空题:&quot;</span>)<br>            <span class="hljs-keyword">if</span> i.typee == <span class="hljs-number">5</span>:<br>                <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;问答题:&quot;</span>)<br>            tempnum = i.typee<br>        <span class="hljs-built_in">print</span>(i.ID,end=<span class="hljs-string">&quot;,&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;\n&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">arrin</span>(<span class="hljs-params">self,arr1,arr2</span>):<span class="hljs-comment">#判读数组包含关系,arr1有一个在arr2即可</span><br>        <span class="hljs-keyword">if</span> arr1 == []:<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">True</span><br>        <span class="hljs-keyword">for</span> one <span class="hljs-keyword">in</span> arr1:<br>            <span class="hljs-keyword">if</span> one <span class="hljs-keyword">in</span> arr2:<br>                <span class="hljs-keyword">return</span> <span class="hljs-literal">True</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="3-实验结果"><a href="#3-实验结果" class="headerlink" title="3.实验结果"></a>3.实验结果</h2><p>运行结果如下：</p>
+
+    <figure class="figure-image">
+      <img src="/2022/12/18/%E6%99%BA%E8%83%BD%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/20221218/1.png" alt="运行结果" loading="lazy">
+      <figcaption>运行结果</figcaption>
+    </figure>
+  
+
+
+    <figure class="figure-image">
+      <img src="/2022/12/18/%E6%99%BA%E8%83%BD%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/20221218/2.png" alt="运行图" loading="lazy">
+      <figcaption>运行图</figcaption>
+    </figure>
+  
+
+<p>可以看到迭代次数在10次左右，而适应度也在很快上升，当然一开始我没有用精英化策略，迭代次数要200次左右，而且有时候运气不好会导致500次迭代结束都没到目标，看来精英化确实可以减少迭代次数</p>
+
+      </section>
+
+      
+      
+        <nav class="article-nav">
+          
+          
+            <div class="article-nav-item layout-padding">
+  <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
+    
+      <div class="card-cover" background-image-lazy data-img="https://s2.loli.net/2022/12/04/vCbi4RwfhHtcXUL.jpg"></div>
+    
+    <div class="card-text">
+      
+        <a href="/2022/11/29/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/20221129/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">利用TCP套接字实现简单的聊天室</h2>
+        </a>
+      
+      <div class="card-text--row">Older</div>
+    </div>
+  </article>
+</div>
+          
+        </nav>
+      
+
+      <section class="page-message-container layout-padding">
+        
+
+
+  
+  
+
+  
+  
+
+
+      </section>
+    </div>
+    <div class="widget-info">
+      
+<section class="widget-toc widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-toc" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M134.50666666 767.46666668H460.8c27.73333333 0 50.24000001 22.50666668 50.24000001 50.23999999v50.13333333c0 27.73333333-22.50666668 50.24000001-50.24000001 50.24000001H134.50666666c-27.73333333 0-50.24000001-22.50666668-50.23999999-50.24000001v-50.13333333c0.10666668-27.73333333 22.50666668-50.24000001 50.24000001-50.24000001zM84.37333332 541.65333333h326.18666669c27.73333333 0 50.24000001 22.39999999 50.23999999 50.13333334v50.24000001c0 27.73333333-22.50666668 50.24000001-50.24000002 50.23999999H84.37333332c-27.73333333 0-50.24000001-22.50666668-50.23999999-50.23999999v-50.24000001c0-27.73333333 22.50666668-50.13333334 50.24000001-50.13333334zM134.50666666 315.83999999H460.8c27.73333333 0 50.24000001 22.50666668 50.24000001 50.24000001v50.24000001c0 27.73333333-22.50666668 50.13333334-50.24000001 50.13333333H134.50666666c-27.73333333 0-50.24000001-22.39999999-50.23999999-50.13333333v-50.24000001c0.10666668-27.84000001 22.50666668-50.24000001 50.24000001-50.23999999zM209.81333332 89.91999999h326.18666671c27.73333333 0 50.24000001 22.39999999 50.23999997 50.13333335v50.23999999c0 27.73333333-22.50666668 50.24000001-50.24000001 50.24000001H209.81333332c-27.73333333 0-50.24000001-22.50666668-50.23999999-50.24000001v-50.24000001c0-27.73333333 22.50666668-50.13333334 50.24000001-50.13333333zM692.05333333 623.36l274.66666669 176.00000002c23.36000001 14.93333333 30.08 45.97333334 15.14666666 69.33333332L954.77333334 910.93333333c-14.93333333 23.25333334-45.97333334 30.08-69.33333335 15.14666667l-274.66666666-176c-23.36000001-14.93333333-30.08-45.97333334-15.14666667-69.33333333l27.09333334-42.24000001c14.93333333-23.36000001 46.08000001-30.08 69.33333333-15.14666666z" fill="currentColor"></path>
+</svg>
+    <span>目录</span>
+  </div>
+  <div class="widget-body">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E8%87%AA%E5%8A%A8%E7%BB%84%E5%8D%B7%E9%97%AE%E9%A2%98"><span class="toc-text">1.自动组卷问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0"><span class="toc-text">2.具体实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%9B%B8%E5%85%B3%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E5%AE%9A%E4%B9%89"><span class="toc-text">1.相关数据类型定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%AE%9E%E7%8E%B0"><span class="toc-text">2.实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E9%A2%98%E5%BA%93%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-text">1.题库初始化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E7%A7%8D%E7%BE%A4%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-text">2.种群初始化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E7%A7%8D%E7%BE%A4%E4%B8%AA%E4%BD%93%E9%80%82%E5%BA%94%E5%BA%A6"><span class="toc-text">3.种群个体适应度</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E9%80%89%E6%8B%A9"><span class="toc-text">4.选择</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E4%BA%A4%E5%8F%89"><span class="toc-text">5.交叉</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-%E5%8F%98%E5%BC%82"><span class="toc-text">6.变异</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-%E5%BC%80%E5%A7%8B%E8%BF%AD%E4%BB%A3"><span class="toc-text">7.开始迭代</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-%E7%9B%B8%E5%85%B3%E8%BE%85%E5%8A%A9%E5%87%BD%E6%95%B0"><span class="toc-text">8.相关辅助函数</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C"><span class="toc-text">3.实验结果</span></a></li></ol>
+  </div>
+</section>
+
+
+      <section class="widget-author widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-body">
+    
+      <img src="/touma2.jpg" class="soft-size--round soft-style--box" alt="水帝">
+    
+    
+      <h2>水帝</h2>
+    
+    
+
+    <div class="count-box">
+      <div class="count-box--item">
+        <svg class="icon icon-article" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M240.51564747 647.74217627h196.07203239c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806V165.10332731c0-33.18142087-30.16492806-60.32985613-60.32985612-60.32985611H245.04038668C225.43318342 104.7734712 210.35071939 119.85593522 210.35071939 139.46313845V617.57724821c0 16.59071043 13.57421762 30.16492806 30.16492808 30.16492806z m663.62841731-452.47392089v482.63884894c0 33.18142087-27.14843525 60.32985613-60.32985612 60.32985613H180.18579134c-33.18142087 0-60.32985613-27.14843525-60.32985612-60.32985613V195.26825538c-49.77213131 0-90.49478418 40.72265287-90.49478417 90.49478417v452.4739209c0 49.77213131 40.72265287 90.49478418 90.49478417 90.49478417h286.56681657c16.59071043 0 30.16492806 13.57421762 30.16492807 30.16492807s13.57421762 30.16492806 30.16492805 30.16492806h90.49478418c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806s13.57421762-30.16492806 30.16492807-30.16492807h286.56681657c49.77213131 0 90.49478418-40.72265287 90.49478417-90.49478417V285.76303955c0-49.77213131-40.72265287-90.49478418-90.49478417-90.49478417zM587.41232014 647.74217627h191.54729318c19.60720323 0 34.68966726-15.08246403 34.68966729-34.68966727V134.93839925c0-16.59071043-13.57421762-30.16492806-30.16492808-30.16492805H617.57724821c-30.16492806 0-60.32985613 27.14843525-60.32985612 60.32985611v452.4739209c0 16.59071043 13.57421762 30.16492806 30.16492805 30.16492806z" fill="currentColor"></path>
+</svg>
+        <span>7</span>
+      </div>
+      <div class="count-box--item">
+        <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M900.3614811 257.09082106h-339.81629553l-67.96326003-101.9448889c-19.41807444-29.12711113-48.54518557-43.69066667-82.52681443-43.69066667H123.6385189c-53.39970333 0-97.09036999 43.69066667-97.09037113 97.09036999v582.54222222c0 53.39970333 43.69066667 97.09036999 97.09037113 97.09037002h776.7229622c53.39970333 0 97.09036999-43.69066667 97.09037113-97.09037002V354.18119104c0-53.39970333-43.69066667-97.09036999-97.09037113-97.09036998z m-97.09036999 242.72592554H220.72888889c-24.27259221 0-48.54518557-24.27259221-48.54518556-48.54518556s24.27259221-48.54518557 48.54518556-48.54518444h582.54222222c24.27259221 0 48.54518557 24.27259221 48.54518556 48.54518444s-24.27259221 48.54518557-48.54518556 48.54518556z" fill="currentColor"></path>
+</svg>
+        6
+      </div>
+      <div class="count-box--item">
+        <svg class="icon icon-tags" viewBox="0 0 1098 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M283.42180005 272q0-28.38857157-20.09142843-48.48000001t-48.47999998-20.09142842-48.48000002 20.09142842-20.09142846 48.48000001 20.09142846 48.48 48.48000002 20.09142843 48.47999998-20.09142843 20.09142843-48.48zM855.0332285 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.03999997 263.58857157q-20.9142853 19.81714313-48.75428534 19.81714312-28.38857157 0-48.20571468-19.81714312l-383.04-383.58857157q-20.36571468-19.81714313-34.55999999-54.10285688t-14.19428534-62.6742853l0-222.85714313q0-27.84000002 20.36571469-48.20571469t48.2057147-20.36571466l222.85714313 0q28.38857157 0 62.6742853 14.19428529t54.65142842 34.55999999l383.04000001 382.49142843q19.81714313 20.9142853 19.81714314 48.75428532zM1060.74751475 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.04 263.58857157q-20.9142853 19.81714313-48.75428531 19.81714312-19.26857155 0-31.61142843-7.47428531t-28.38857159-24.13714314l251.79428534-251.7942853q19.81714313-19.81714313 19.81714308-48.20571469 0-27.84000002-19.81714308-48.75428531l-383.04000001-382.49142845q-20.36571468-20.36571468-54.65142842-34.55999999t-62.67428532-14.19428534l120 0q28.38857157 0 62.67428532 14.19428534t54.65142842 34.55999999l383.03999998 382.49142845q19.81714313 20.9142853 19.81714314 48.75428531z" fill="currentColor"></path>
+</svg>
+        8
+      </div>
+    </div>
+  </div>
+</section>
+
+      
+<section class="widet-notice widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-notice" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M512 945.02305225v28.15620663a24.27259221 24.27259221 0 0 1-24.27259221 24.27259335H394.0352a48.54518557 48.54518557 0 0 1-41.74885888-23.78714112l-110.68302222-184.47170332a132.04290333 132.04290333 0 0 1-17.47626667-48.54518557h118.4502511a200.97706667 200.97706667 0 0 1 76.21594113 14.56355556l20.38897777 133.49925888a48.54518557 48.54518557 0 0 0 36.40888888 27.67075555l16.01991111 2.91271112a24.27259221 24.27259221 0 0 1 20.38897778 25.72894889zM997.45185223 463.45481443a194.18074112 194.18074112 0 0 1-38.8361489 116.50844445 24.75804445 24.75804445 0 0 1-36.4088889 0l-34.95253333-34.95253333a24.27259221 24.27259221 0 0 1-2.91271111-30.58346667 97.09036999 97.09036999 0 0 0 0-106.79940665 24.27259221 24.27259221 0 0 1 2.91271111-30.58346666l34.95253333-34.95253334a24.75804445 24.75804445 0 0 1 18.93262223-7.28177777 26.2144 26.2144 0 0 1 17.47626667 9.70903665A194.18074112 194.18074112 0 0 1 997.45185223 463.45481443z m-194.18074112-388.36148111v776.72296335a48.54518557 48.54518557 0 0 1-48.54518556 48.54518443h-28.64165888a48.54518557 48.54518557 0 0 1-33.98163001-14.07810332l-145.63555556-143.20829668A291.27111111 291.27111111 0 0 0 342.57730333 657.63555556H172.18370333a145.63555556 145.63555556 0 0 1-145.63555556-145.63555556v-97.09036999a145.63555556 145.63555556 0 0 1 145.63555556-145.63555556h170.3936a291.27111111 291.27111111 0 0 0 206.31703779-85.43952668l145.63555555-143.20829554a48.54518557 48.54518557 0 0 1 33.98162888-14.07810446H754.72592555a48.54518557 48.54518557 0 0 1 48.54518556 48.54518555z" fill="currentColor"></path>
+</svg>
+    <span>NOTICE</span>
+  </div>
+  <div class="widget-body">
+    <p>！！！寒假来袭！！！，准备腹泻式更新</p>
+  </div>
+</section>
+
+
+      <section class="widget-categorys widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M900.3614811 257.09082106h-339.81629553l-67.96326003-101.9448889c-19.41807444-29.12711113-48.54518557-43.69066667-82.52681443-43.69066667H123.6385189c-53.39970333 0-97.09036999 43.69066667-97.09037113 97.09036999v582.54222222c0 53.39970333 43.69066667 97.09036999 97.09037113 97.09037002h776.7229622c53.39970333 0 97.09036999-43.69066667 97.09037113-97.09037002V354.18119104c0-53.39970333-43.69066667-97.09036999-97.09037113-97.09036998z m-97.09036999 242.72592554H220.72888889c-24.27259221 0-48.54518557-24.27259221-48.54518556-48.54518556s24.27259221-48.54518557 48.54518556-48.54518444h582.54222222c24.27259221 0 48.54518557 24.27259221 48.54518556 48.54518444s-24.27259221 48.54518557-48.54518556 48.54518556z" fill="currentColor"></path>
+</svg>
+    <span>CATEGORYS</span>
+  </div>
+  <div class="widget-body">
+    <ul class="categorys-list">
+      
+        <li class="categorys-list-item">
+          <a href="/categories/hexo%E4%B8%BB%E9%A2%98%E4%BC%98%E5%8C%96/">
+            hexo主题优化 (2)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
+          <a href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%AE%9E%E9%AA%8C/">
+            人工智能实验 (1)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
+          <a href="/categories/%E5%B0%8F%E7%A8%8B%E5%BA%8F/">
+            小程序 (1)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
+          <a href="/categories/%E6%99%BA%E8%83%BD%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/">
+            智能优化算法 (1)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
+          <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">
+            计算机网络 (1)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
+          <a href="/categories/%E9%9A%8F%E7%AC%94/">
+            随笔 (1)
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+</section>
+
+      <section class="widget-tags widget-item  layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-tags" viewBox="0 0 1098 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M283.42180005 272q0-28.38857157-20.09142843-48.48000001t-48.47999998-20.09142842-48.48000002 20.09142842-20.09142846 48.48000001 20.09142846 48.48 48.48000002 20.09142843 48.47999998-20.09142843 20.09142843-48.48zM855.0332285 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.03999997 263.58857157q-20.9142853 19.81714313-48.75428534 19.81714312-28.38857157 0-48.20571468-19.81714312l-383.04-383.58857157q-20.36571468-19.81714313-34.55999999-54.10285688t-14.19428534-62.6742853l0-222.85714313q0-27.84000002 20.36571469-48.20571469t48.2057147-20.36571466l222.85714313 0q28.38857157 0 62.6742853 14.19428529t54.65142842 34.55999999l383.04000001 382.49142843q19.81714313 20.9142853 19.81714314 48.75428532zM1060.74751475 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.04 263.58857157q-20.9142853 19.81714313-48.75428531 19.81714312-19.26857155 0-31.61142843-7.47428531t-28.38857159-24.13714314l251.79428534-251.7942853q19.81714313-19.81714313 19.81714308-48.20571469 0-27.84000002-19.81714308-48.75428531l-383.04000001-382.49142845q-20.36571468-20.36571468-54.65142842-34.55999999t-62.67428532-14.19428534l120 0q28.38857157 0 62.67428532 14.19428534t54.65142842 34.55999999l383.03999998 382.49142845q19.81714313 20.9142853 19.81714314 48.75428531z" fill="currentColor"></path>
+</svg>
+    <span>TAGS</span>
+  </div>
+  <div class="widget-body">
+    <div class="tags-cloud">
+      <a href="/tags/c/" style="font-size: 10px;" class="tags-cloud-0">c</a> <a href="/tags/css/" style="font-size: 20px;" class="tags-cloud-10">css</a> <a href="/tags/hexo/" style="font-size: 20px;" class="tags-cloud-10">hexo</a> <a href="/tags/html/" style="font-size: 20px;" class="tags-cloud-10">html</a> <a href="/tags/js/" style="font-size: 10px;" class="tags-cloud-0">js</a> <a href="/tags/py/" style="font-size: 20px;" class="tags-cloud-10">py</a> <a href="/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/" style="font-size: 10px;" class="tags-cloud-0">小程序</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 20px;" class="tags-cloud-10">算法</a>
+    </div>
+  </div>
+</section>
+    </div>
+  </article>
+</div>
+
+    <!-- footer container -->
+<footer id="footer" class="footer">
+  <div class="footer-container">
+     
+    <p>&copy; 2022 <a href="/" target="_blank">水帝</a></p>
+
+    
+
+    <p>Powered by <a href="https://hexo.io" target="_blank" rel="noopener noreferrer">Hexo</a> Theme - <a href="https://github.com/miiiku/flex-block" target="_blank" rel="noopener noreferrer author">flex-block</a></p>
+    <p>
+      <span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+      <script>
+        var now = new Date(); 
+        function createtime() { 
+            var grt= new Date("06/24/2022 20:26:16");//在此处修改你的建站时间，格式：月/日/年 时:分:秒
+            now.setTime(now.getTime()+250); 
+            days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days); 
+            hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours); 
+            if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum); 
+            mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;} 
+            seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum); 
+            snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;} 
+            document.getElementById("timeDate").innerHTML = "本站已运行 "+dnum+" 天 "; 
+            document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒"; 
+        } 
+      setInterval("createtime()",250);
+      </script>
+    </p>
+	  <p>已经记载了7篇文章</p>
+    <p>
+      <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+      浏览量：<span id="busuanzi_value_site_pv"><i class="fa fa-spinner fa-spin"></i></span>👀 | 访客数：<span id="busuanzi_value_site_uv"><i class="fa fa-spinner fa-spin"></i></span>👦
+    </p>
+    <p>
+      <a href="javascript:;" id="theme-light">🌞 光明</a>
+      <a href="javascript:;" id="theme-dark">🌛 黑暗</a>
+      <!-- <a href="javascript:;" id="theme-auto">🤖️ 自动</a> -->
+    </p>
+  </div>
+</footer>
+
+  </div>
+  <div class="back-to-top-fixed soft-size--round soft-style--box">
+    <svg class="icon icon-back-to-top" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+      <path d="M725.333333 426.666667c-12.8 0-21.333333-4.266667-29.866667-12.8l-213.333333-213.333333c-17.066667-17.066667-17.066667-42.666667 0-59.733333s42.666667-17.066667 59.733333 0l213.333333 213.333333c17.066667 17.066667 17.066667 42.666667 0 59.733333C746.666667 422.4 738.133333 426.666667 725.333333 426.666667z"></path>
+      <path d="M298.666667 426.666667c-12.8 0-21.333333-4.266667-29.866667-12.8-17.066667-17.066667-17.066667-42.666667 0-59.733333l213.333333-213.333333c17.066667-17.066667 42.666667-17.066667 59.733333 0s17.066667 42.666667 0 59.733333l-213.333333 213.333333C320 422.4 311.466667 426.666667 298.666667 426.666667z"></path>
+      <path d="M512 896c-25.6 0-42.666667-17.066667-42.666667-42.666667L469.333333 170.666667c0-25.6 17.066667-42.666667 42.666667-42.666667s42.666667 17.066667 42.666667 42.666667l0 682.666667C554.666667 878.933333 537.6 896 512 896z"></path>
+    </svg>
+  </div>
+
+  
+  <!-- aplayer -->
+
+
+<!-- dplayer -->
+
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+  
+  <!-- 尾部用户自定义相关内容 -->
+</body>
+</html>

@@ -47,6 +47,7 @@
   
     <div class="post-image" style="background-image: url(https://s2.loli.net/2022/09/25/8Gf6LqacgAITepz.jpg)"></div>
   
+  
 
   <!-- navbar -->
 <nav class="navbar">
@@ -105,8 +106,8 @@
             <time  class="article-date" datetime="2022-07-15T13:37:45.000Z" itemprop="datePublished">2022-07-15</time>
           </h2>
           <h2>
-              <span class="post-count">📖1.1k字</span>
-              <span class="post-count">⏱4分</span>
+              <span class="post-count">📖1.7k字</span>
+              <span class="post-count">⏱7分</span>
             <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
               👀<span id="busuanzi_value_page_pv"></span>次
           </h2>
@@ -148,19 +149,34 @@
         <p>那么就接着<a href="/2022/06/27/hexo%E4%B8%BB%E9%A2%98%E4%BC%98%E5%8C%96/20220627">上次的文章</a>写</p>
 <h2 id="6-导航栏新增栏位"><a href="#6-导航栏新增栏位" class="headerlink" title="6.导航栏新增栏位"></a>6.导航栏新增栏位</h2><p>(<strong>注意本分类仅针对本主题，不同主题的改写方法可能不一样</strong>)<br>其实在这个主题的1.0版本中，上面是有分类和标签一栏的，但在后续更新之后作者将其去掉了<br>但我本人还是想有一个分类的栏，方便查看，那么就试着实现一下吧：<br>首先在这里对应主题中的menu中添加</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">分类: /categories<br></code></pre></td></tr></table></figure>
+
 <p>那么此时在页面顶端就已经有多的一栏就是分类了，当然我原本这里已经自动排版了，就不用额外去写了<br>作者在本主题留下了对于主题内的layout_partial\page.ejs来为使用者自定义用，当然写在其他地方应该也可以<br>那么就在这个文件中对分类的页面进行定义，但在这之前还有事情要做：<br>在指令栏输入：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">hexo new page categories<br></code></pre></td></tr></table></figure>
+
 <p>此时在hexo的source文件夹内会出现categories文件夹，在里面的index.md写入如下内容：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">---<br>title: 分类<br>date: 2022-07-05 14:52:58<br>subtitle: 物以群分<br>cover: <br>layout: categories<br>---<br></code></pre></td></tr></table></figure>
+
 <p>注意其实只要改layout就好，其他的自行改变就可以，注意cover如果用的本地图片最好写成绝对地址，因为笔者用的图床，所以没测试过用本地的会咋样<br>然后就是在_data里面新建categories.yml文件，并按下面的格式写入内容：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">- &#123; &quot;name&quot; : &quot; &quot;, &quot;cover&quot; : &quot; &quot; &#125;<br></code></pre></td></tr></table></figure>
+
 <p>内容需要自定义分类名和对应的封面图，注意name的值一定要是已经有的分类名，如果没匹配上就不会显示<br>其实还可以具体加其他的东西，比如加个分类的概括describe之类的，但对应的也要在接下来的layout_partial\page.ejs文件内进行改动<br>那么现在在layout_partial\page.ejs内增加如下代码：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&lt;%# 输出自定义分类内容 %&gt;<br>&lt;% if (page.layout === &quot;categories&quot;) &#123; %&gt;<br>  &lt;div class=&quot;content-container layout-block article-list&quot;&gt;<br>    &lt;% site.categories.each(function(categorie) &#123; %&gt;<br>      &lt;div class=&quot;article-item layout-padding&quot;&gt;<br>        &lt;% site.data.categories.forEach(function(categorie_name) &#123; %&gt;<br>          &lt;% if (categorie.name == categorie_name.name) &#123; %&gt;<br>            &lt;article class=&quot;card-container article-card content-padding--large soft-size--large soft-style--box&quot;&gt;<br>              &lt;% if (categorie_name.cover) &#123; %&gt;<br>                &lt;div class=&quot;card-cover&quot; background-image-lazy style=&quot;&lt;%= `background-image: url($&#123;categorie_name.cover&#125;)` %&gt;&quot;&gt;&lt;/div&gt;<br>              &lt;% &#125; %&gt;<br>              &lt;div class=&quot;card-text&quot;&gt;<br>                &lt;a href=&quot;&lt;%= url_for(&#x27;/categories/&#x27;+categorie.name) %&gt;&quot; itemprop=&quot;url&quot;&gt;<br>                  &lt;h2 class=&quot;card-text--title&quot;&gt;&lt;%= categorie.name %&gt;&lt;/h2&gt;<br>                  &lt;!-- &lt;h3&gt;&lt;%= categorie_name.describe %&gt;&lt;/h3&gt;  --&gt;<br>                  &lt;h3&gt;共&lt;%= categorie.length %&gt;篇文章&lt;/h3&gt;<br>                &lt;/a&gt;<br>              &lt;/div&gt;<br>            &lt;/article&gt;<br>          &lt;% &#125; %&gt;<br>        &lt;% &#125;) %&gt;<br>      &lt;/div&gt;<br>    &lt;% &#125;) %&gt;<br>  &lt;/div&gt;<br>&lt;% &#125; %&gt;<br></code></pre></td></tr></table></figure>
+
 <p>然后发现其实上面有一行空白的，那是文章内容，但我们分类页面不需要写啥内容<br>(当然如果你想写个啥介绍之类的，在categories&#x2F;index.md内写入内容即可)<br>所以需要进行处理，将上面的输出markdown内容写一个判断条件：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&lt;% if (page.layout != &quot;categories&quot;) &#123; %&gt;<br>  &lt;%# 输出Markdown内容 %&gt;<br>  .....<br>&lt;% &#125; %&gt;<br></code></pre></td></tr></table></figure>
+
 <p>这里判断layout的属性，只有links和messages需要输出这个<br>同理，在下面的侧边栏输出，就没必要输出categories和tags内容了，也用上面的办法将其包裹即可<br>到这里分类页面就创建完成了</p>
+<blockquote>
+<p>2022 12 18更新</p>
+</blockquote>
+<p>发现在分类页面的header图片是默认封面图而不是我们指定的图</p>
+<p>在layout_partial\header.ejs内更改开始部分：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java">&lt;% <span class="hljs-keyword">if</span> ((!is_category()) &amp;&amp; (page.cover || theme.banner)) &#123; %&gt;<br>  &lt;div class=<span class="hljs-string">&quot;post-image&quot;</span> style=<span class="hljs-string">&quot;&lt;%= `background-image: url($&#123;page.cover || theme.banner&#125;)` %&gt;&quot;</span>&gt;&lt;/div&gt;<br>&lt;% &#125; %&gt;<br>&lt;% <span class="hljs-keyword">if</span> (is_category()) &#123; %&gt;<br>  &lt;% site.data.categories.forEach(function(categorie_name) &#123; %&gt;<br>    &lt;% <span class="hljs-keyword">if</span> (categorie_name.name == page.category) &#123; %&gt;<br>      &lt;% <span class="hljs-keyword">if</span> (categorie_name.cover) &#123; %&gt;<br>        &lt;div class=<span class="hljs-string">&quot;post-image&quot;</span> style=<span class="hljs-string">&quot;&lt;%= `background-image: url($&#123;categorie_name.cover || theme.banner&#125;)` %&gt;&quot;</span>&gt;&lt;/div&gt;<br>      &lt;% &#125; %&gt;<br>    &lt;% &#125; %&gt;<br>  &lt;% &#125;) %&gt;<br>&lt;% &#125; %&gt;<br></code></pre></td></tr></table></figure>
+
+<p>注意将post-image改为两种，非分类页面和分类页面，分类页面则更改为对应封面</p>
 <h2 id="7-打字效果"><a href="#7-打字效果" class="headerlink" title="7.打字效果"></a>7.打字效果</h2><p>这一部分其实比较简单，因为网上已经有有关的插件typed.js了<br>具体的安装啥的代码就不再叙述，具体官方可以<a target="_blank" rel="noopener" href="http://mattboldt.github.io/typed.js/">查看这里</a><br>我是将顶部是那小端文字实现打字机效果：<br>更改 &lt;% if (config.subtitle) { %&gt; 部分：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&lt;span id=&quot;typed&quot;&gt;&lt;/span&gt;<br>&lt;script src=&quot;https://cdn.jsdelivr.net/npm/typed.js/lib/typed.min.js&quot;&gt;&lt;/script&gt;<br>&lt;script&gt;<br>var typed = new Typed(&quot;#typed&quot;, &#123;<br>  strings: [&quot;凡为人者,皆是星辰&quot;,&quot;Every man and every woman is a star&quot;,&quot;人としてのすべては星である&quot;],<br>  startDelay: 200,<br>  backDelay: 2000,<br>  typeSpeed: 100,<br>  loop: true,<br>  backSpeed: 20<br>&#125;)<br>&lt;/script&gt;<br></code></pre></td></tr></table></figure>
+
 <p>实现完成，具体参数也可以查看上面的官网或者其他人的文章，这个实现很简单，而且网上已经有成熟且简单的方案了</p>
 <!-- ## 8.有关toc的优化
 ### 8.1 平滑跳转
@@ -170,7 +186,16 @@
 首先是我在准备对toc进行优化时发现的问题，由于我对顶部的导航栏进行了处理，使之变为常时间占据顶部，那么在跳转过后会刚刚好把跳转目的地的标题给遮住
 解决这个问题也很简单，将跳转位置上移一个导航栏高度(我这里是54px)就可以了 -->
 
-<p>待更新….</p>
+<h2 id="8-进入页面的简单动画"><a href="#8-进入页面的简单动画" class="headerlink" title="8.进入页面的简单动画"></a>8.进入页面的简单动画</h2><blockquote>
+<p>更新于2022 12 18</p>
+</blockquote>
+<p>正如你正在看的页面，每一页都有一个封面，但明显每次都展示不完全，我希望在进入这个页面时能够展示1s的完整页面，就是将这个封面平铺到整个网页，等到1s后收缩到原来的长度</p>
+<p>更改原本的header，使其能够被我变化：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-selector-class">.header-content</span> &#123;<br>  <span class="hljs-attribute">position</span>: relative<br>  width: <span class="hljs-number">100%</span><br>  margin: auto<br>  display: flex<br>  flex-direction: column<br>  align-items: center<br>  justify-content: center<br>  &amp;.highinphone&#123;<br>    <span class="hljs-attribute">height</span>: <span class="hljs-built_in">var</span>(--banner-height)//手机端就不用加这个动画了<br>  &#125;<br>  &amp;<span class="hljs-selector-class">.highinPC</span>&#123;<br>    <span class="hljs-attribute">height</span>: <span class="hljs-number">100vh</span>//vh，很好用的单位，相当于吧浏览器高度分为<span class="hljs-number">100</span>份，<span class="hljs-number">100vh</span>为一个浏览器高度<br>  &#125;<br>  &amp;<span class="hljs-selector-class">.show</span> &#123;<br>    <span class="hljs-attribute">transform</span>: <span class="hljs-built_in">translate3d</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>)//图片渲染的时候触发gpu加速<br>    height: <span class="hljs-built_in">var</span>(--banner-height)<br>    transition: all <span class="hljs-number">1s</span> ease-out//动画时间持续<span class="hljs-number">1s</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>将PC端的高度和手机端分开，手机端就不要加这个动画了，感觉加了不好看，当然如果想加可以直接把height设置为100vh，不用像我这样分类</p>
+<p>接下来是js的代码改动：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs js"><span class="hljs-comment">//增加要改动的元素</span><br><span class="hljs-keyword">const</span> back_ground     = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">querySelector</span>(<span class="hljs-string">&quot;.root-container&quot;</span>);<br><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">IsPC</span>(<span class="hljs-params"></span>)&#123;  <span class="hljs-comment">//判断是否为PC端，利用userAgent存储的用户信息判断</span><br>  <span class="hljs-keyword">var</span> userAgentInfo = navigator.<span class="hljs-property">userAgent</span>;<br>  <span class="hljs-keyword">var</span> <span class="hljs-title class_">Agents</span> = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Array</span>(<span class="hljs-string">&quot;Android&quot;</span>, <span class="hljs-string">&quot;iPhone&quot;</span>, <span class="hljs-string">&quot;SymbianOS&quot;</span>, <span class="hljs-string">&quot;Windows Phone&quot;</span>, <span class="hljs-string">&quot;iPad&quot;</span>, <span class="hljs-string">&quot;iPod&quot;</span>);  <br>  <span class="hljs-keyword">var</span> flag = <span class="hljs-literal">true</span>;  <br>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> v = <span class="hljs-number">0</span>; v &lt; <span class="hljs-title class_">Agents</span>.<span class="hljs-property">length</span>; v++) &#123;  <br>      <span class="hljs-keyword">if</span> (userAgentInfo.<span class="hljs-title function_">indexOf</span>(<span class="hljs-title class_">Agents</span>[v]) &gt; <span class="hljs-number">0</span>) &#123; flag = <span class="hljs-literal">false</span>; <span class="hljs-keyword">break</span>; &#125;  <br>  &#125;  <br>  <span class="hljs-keyword">return</span> flag;  <br>&#125;<br><br><span class="hljs-keyword">if</span>(<span class="hljs-title class_">IsPC</span>())&#123;<br>  headerr.<span class="hljs-property">classList</span>.<span class="hljs-title function_">add</span>(<span class="hljs-string">&#x27;highinPC&#x27;</span>);<br>&#125;<br><span class="hljs-keyword">else</span>&#123;<br>  headerr.<span class="hljs-property">classList</span>.<span class="hljs-title function_">add</span>(<span class="hljs-string">&#x27;highinphone&#x27;</span>);<br>&#125;<br><span class="hljs-built_in">setTimeout</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)&#123;<br>  headerr.<span class="hljs-property">classList</span>.<span class="hljs-title function_">add</span>(<span class="hljs-string">&quot;show&quot;</span>);<br>&#125;,<span class="hljs-number">800</span>);<span class="hljs-comment">//0.8s后收缩</span><br></code></pre></td></tr></table></figure>
 
       </section>
 
@@ -237,7 +262,7 @@
     <span>目录</span>
   </div>
   <div class="widget-body">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E5%AF%BC%E8%88%AA%E6%A0%8F%E6%96%B0%E5%A2%9E%E6%A0%8F%E4%BD%8D"><span class="toc-text">6.导航栏新增栏位</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E6%89%93%E5%AD%97%E6%95%88%E6%9E%9C"><span class="toc-text">7.打字效果</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E5%AF%BC%E8%88%AA%E6%A0%8F%E6%96%B0%E5%A2%9E%E6%A0%8F%E4%BD%8D"><span class="toc-text">6.导航栏新增栏位</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E6%89%93%E5%AD%97%E6%95%88%E6%9E%9C"><span class="toc-text">7.打字效果</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E8%BF%9B%E5%85%A5%E9%A1%B5%E9%9D%A2%E7%9A%84%E7%AE%80%E5%8D%95%E5%8A%A8%E7%94%BB"><span class="toc-text">8.进入页面的简单动画</span></a></li></ol>
   </div>
 </section>
 
@@ -257,19 +282,19 @@
         <svg class="icon icon-article" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M240.51564747 647.74217627h196.07203239c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806V165.10332731c0-33.18142087-30.16492806-60.32985613-60.32985612-60.32985611H245.04038668C225.43318342 104.7734712 210.35071939 119.85593522 210.35071939 139.46313845V617.57724821c0 16.59071043 13.57421762 30.16492806 30.16492808 30.16492806z m663.62841731-452.47392089v482.63884894c0 33.18142087-27.14843525 60.32985613-60.32985612 60.32985613H180.18579134c-33.18142087 0-60.32985613-27.14843525-60.32985612-60.32985613V195.26825538c-49.77213131 0-90.49478418 40.72265287-90.49478417 90.49478417v452.4739209c0 49.77213131 40.72265287 90.49478418 90.49478417 90.49478417h286.56681657c16.59071043 0 30.16492806 13.57421762 30.16492807 30.16492807s13.57421762 30.16492806 30.16492805 30.16492806h90.49478418c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806s13.57421762-30.16492806 30.16492807-30.16492807h286.56681657c49.77213131 0 90.49478418-40.72265287 90.49478417-90.49478417V285.76303955c0-49.77213131-40.72265287-90.49478418-90.49478417-90.49478417zM587.41232014 647.74217627h191.54729318c19.60720323 0 34.68966726-15.08246403 34.68966729-34.68966727V134.93839925c0-16.59071043-13.57421762-30.16492806-30.16492808-30.16492805H617.57724821c-30.16492806 0-60.32985613 27.14843525-60.32985612 60.32985611v452.4739209c0 16.59071043 13.57421762 30.16492806 30.16492805 30.16492806z" fill="currentColor"></path>
 </svg>
-        <span>6</span>
+        <span>7</span>
       </div>
       <div class="count-box--item">
         <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M900.3614811 257.09082106h-339.81629553l-67.96326003-101.9448889c-19.41807444-29.12711113-48.54518557-43.69066667-82.52681443-43.69066667H123.6385189c-53.39970333 0-97.09036999 43.69066667-97.09037113 97.09036999v582.54222222c0 53.39970333 43.69066667 97.09036999 97.09037113 97.09037002h776.7229622c53.39970333 0 97.09036999-43.69066667 97.09037113-97.09037002V354.18119104c0-53.39970333-43.69066667-97.09036999-97.09037113-97.09036998z m-97.09036999 242.72592554H220.72888889c-24.27259221 0-48.54518557-24.27259221-48.54518556-48.54518556s24.27259221-48.54518557 48.54518556-48.54518444h582.54222222c24.27259221 0 48.54518557 24.27259221 48.54518556 48.54518444s-24.27259221 48.54518557-48.54518556 48.54518556z" fill="currentColor"></path>
 </svg>
-        5
+        6
       </div>
       <div class="count-box--item">
         <svg class="icon icon-tags" viewBox="0 0 1098 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M283.42180005 272q0-28.38857157-20.09142843-48.48000001t-48.47999998-20.09142842-48.48000002 20.09142842-20.09142846 48.48000001 20.09142846 48.48 48.48000002 20.09142843 48.47999998-20.09142843 20.09142843-48.48zM855.0332285 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.03999997 263.58857157q-20.9142853 19.81714313-48.75428534 19.81714312-28.38857157 0-48.20571468-19.81714312l-383.04-383.58857157q-20.36571468-19.81714313-34.55999999-54.10285688t-14.19428534-62.6742853l0-222.85714313q0-27.84000002 20.36571469-48.20571469t48.2057147-20.36571466l222.85714313 0q28.38857157 0 62.6742853 14.19428529t54.65142842 34.55999999l383.04000001 382.49142843q19.81714313 20.9142853 19.81714314 48.75428532zM1060.74751475 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.04 263.58857157q-20.9142853 19.81714313-48.75428531 19.81714312-19.26857155 0-31.61142843-7.47428531t-28.38857159-24.13714314l251.79428534-251.7942853q19.81714313-19.81714313 19.81714308-48.20571469 0-27.84000002-19.81714308-48.75428531l-383.04000001-382.49142845q-20.36571468-20.36571468-54.65142842-34.55999999t-62.67428532-14.19428534l120 0q28.38857157 0 62.67428532 14.19428534t54.65142842 34.55999999l383.03999998 382.49142845q19.81714313 20.9142853 19.81714314 48.75428531z" fill="currentColor"></path>
 </svg>
-        9
+        8
       </div>
     </div>
   </div>
@@ -284,7 +309,7 @@
     <span>NOTICE</span>
   </div>
   <div class="widget-body">
-    <p>博客还在建设，客官请稍等</p>
+    <p>！！！寒假来袭！！！，准备腹泻式更新</p>
   </div>
 </section>
 
@@ -306,14 +331,20 @@
         </li>
       
         <li class="categorys-list-item">
+          <a href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%AE%9E%E9%AA%8C/">
+            人工智能实验 (1)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
           <a href="/categories/%E5%B0%8F%E7%A8%8B%E5%BA%8F/">
             小程序 (1)
           </a>
         </li>
       
         <li class="categorys-list-item">
-          <a href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%AE%9E%E9%AA%8C/">
-            人工智能实验 (1)
+          <a href="/categories/%E6%99%BA%E8%83%BD%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/">
+            智能优化算法 (1)
           </a>
         </li>
       
@@ -342,7 +373,7 @@
   </div>
   <div class="widget-body">
     <div class="tags-cloud">
-      <a href="/tags/TCP/" style="font-size: 10px;" class="tags-cloud-0">TCP</a> <a href="/tags/UDP/" style="font-size: 10px;" class="tags-cloud-0">UDP</a> <a href="/tags/c/" style="font-size: 10px;" class="tags-cloud-0">c</a> <a href="/tags/css/" style="font-size: 20px;" class="tags-cloud-10">css</a> <a href="/tags/hexo/" style="font-size: 20px;" class="tags-cloud-10">hexo</a> <a href="/tags/html/" style="font-size: 20px;" class="tags-cloud-10">html</a> <a href="/tags/js/" style="font-size: 10px;" class="tags-cloud-0">js</a> <a href="/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/" style="font-size: 10px;" class="tags-cloud-0">小程序</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 10px;" class="tags-cloud-0">算法</a>
+      <a href="/tags/c/" style="font-size: 10px;" class="tags-cloud-0">c</a> <a href="/tags/css/" style="font-size: 20px;" class="tags-cloud-10">css</a> <a href="/tags/hexo/" style="font-size: 20px;" class="tags-cloud-10">hexo</a> <a href="/tags/html/" style="font-size: 20px;" class="tags-cloud-10">html</a> <a href="/tags/js/" style="font-size: 10px;" class="tags-cloud-0">js</a> <a href="/tags/py/" style="font-size: 20px;" class="tags-cloud-10">py</a> <a href="/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/" style="font-size: 10px;" class="tags-cloud-0">小程序</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 20px;" class="tags-cloud-10">算法</a>
     </div>
   </div>
 </section>
@@ -378,7 +409,7 @@
       setInterval("createtime()",250);
       </script>
     </p>
-	  <p>已经记载了6篇文章</p>
+	  <p>已经记载了7篇文章</p>
     <p>
       <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
       浏览量：<span id="busuanzi_value_site_pv"><i class="fa fa-spinner fa-spin"></i></span>👀 | 访客数：<span id="busuanzi_value_site_uv"><i class="fa fa-spinner fa-spin"></i></span>👦

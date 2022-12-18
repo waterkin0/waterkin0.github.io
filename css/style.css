@@ -9,7 +9,7 @@
     --font-common-size: 16px;
     --font-base-size: 14px;
     --font-base-lh: 1.8;
-    --banner-height: 460px;
+    --banner-height: 360px;
     --content-large-padding: 40px 38px 46px;
     --content-primary-padding: 23px;
     --soft-large-radius: 24px;
@@ -580,12 +580,22 @@ html.show-mobile-nav .navbar-list {
 .header-content {
   position: relative;
   width: 100%;
-  height: var(--banner-height);
   margin: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+.header-content.highinphone {
+  height: var(--banner-height);
+}
+.header-content.highinPC {
+  height: 100vh;
+}
+.header-content.show {
+  transform: translate3d(0, 0, 0);
+  height: var(--banner-height);
+  transition: all 1s ease-out;
 }
 .post-image {
   position: absolute;
