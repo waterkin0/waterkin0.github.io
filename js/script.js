@@ -1,3 +1,11 @@
+document.body.style.overflow = 'hidden';
+var endLoading = function () {
+  document.body.style.overflow = 'auto';
+  document.getElementById('loading-box').classList.add("loaded");
+}
+window.addEventListener('load',endLoading);
+window.setTimeout(endLoading,5000);
+
 window.addEventListener("DOMContentLoaded", function() {
   const html            = document.querySelector("html");
   const navBtn          = document.querySelector(".navbar-btn");
@@ -7,16 +15,9 @@ window.addEventListener("DOMContentLoaded", function() {
   const back_ground     = document.querySelector(".root-container");
   const headerr         = document.querySelector(".header-content");
   let lastTop           = 0;
-  let theme             = window.localStorage.getItem('theme') || '';
+  let localtheme        = window.localStorage.getItem('theme') || '';
 
-  document.body.style.overflow = 'hidden';
-  var endLoading = function () {
-    document.body.style.overflow = 'auto';
-    document.getElementById('loading-box').classList.add("loaded");
-  }
-  window.addEventListener('load',endLoading);
-
-  theme && html.classList.add(theme)
+  localtheme && html.classList.add(localtheme)
 
   function IsPC(){  
     var userAgentInfo = navigator.userAgent;
@@ -33,11 +34,6 @@ window.addEventListener("DOMContentLoaded", function() {
       headerr.classList.add("show");
     },800);
   }
-
-  if(window.localStorage.getItem('theme') == 'theme-dark')
-    back_ground.setAttribute("style","background-image: url(https://s2.loli.net/2022/07/13/8OEKadVl4wY3omH.jpg)")
-  else
-    back_ground.setAttribute("style","background-image: url(https://s2.loli.net/2022/07/06/qDeLO1IijPA3EbC.jpg)")
   
   const goScrollTop = () => {
     let currentTop = getScrollTop()
@@ -69,11 +65,18 @@ window.addEventListener("DOMContentLoaded", function() {
     }
   }
 
+  var day = "background-image: url(https://s2.loli.net/2022/07/06/qDeLO1IijPA3EbC.jpg)"
+  var night = "background-image: url(https://s2.loli.net/2022/07/13/8OEKadVl4wY3omH.jpg)"
+  if(window.localStorage.getItem('theme') == 'theme-light')
+    back_ground.setAttribute("style", day)
+  else
+    back_ground.setAttribute("style", night)
+
   // theme light click
   document.querySelector('#theme-light').addEventListener('click', function () {
     html.classList.remove('theme-dark')
     html.classList.add('theme-light')
-    back_ground.setAttribute("style","background-image: url(https://s2.loli.net/2022/07/06/qDeLO1IijPA3EbC.jpg)")
+    back_ground.setAttribute("style", day)
     window.localStorage.setItem('theme', 'theme-light')// 保存本地的光/暗主题，保证跟换页面时主题不变
   })
 
@@ -81,7 +84,7 @@ window.addEventListener("DOMContentLoaded", function() {
   document.querySelector('#theme-dark').addEventListener('click', function () {
     html.classList.remove('theme-light')
     html.classList.add('theme-dark')
-    back_ground.setAttribute("style","background-image: url(https://s2.loli.net/2022/07/13/8OEKadVl4wY3omH.jpg)")
+    back_ground.setAttribute("style", night)
     window.localStorage.setItem('theme', 'theme-dark')
   })
 

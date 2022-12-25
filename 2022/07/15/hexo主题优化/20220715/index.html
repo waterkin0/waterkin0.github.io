@@ -253,9 +253,9 @@
 </blockquote>
 <p>上一篇就提到博客图片慢的问题，所以我才加了一个加载页面，但没多久我就找到了可以加速图片的cdn，之前图片一直存在SM.MS图床上的，但是速度还是很慢，这次利用了cdn+github仓库的办法，速度快了不少，而且如果cdn出了问题也可以直接在设置里面更换即可</p>
 <p>github创建仓库就不说了，我是将我要用的图片全部放在这个仓库内，利用github desktop将图片上传，当然直接用网页上传也可以，然后在主题的_config.yml内添加：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"> cdn: https://jsd.cdn.zzko.cn/gh/username[用户名]/repo[仓库名]@main/<br>//我的是 cdn: https://jsd.cdn.zzko.cn/gh/waterkin0/images@main/<br></code></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">cdn: https://jsd.cdn.zzko.cn/gh/username[用户名]/repo[仓库名]@main/<br>//我的是 cdn: cdn: https://jsd.cdn.zzko.cn/gh/waterkin0/images@main/<br></code></pre></td></tr></table></figure>
 
-<p>注意，cdn: 后面有空格，不然会出错，这里用的是一个国内的加速源，但是缓存更新好像有点慢，我2小时前上传的图片先做还没更新</p>
+<p>注意，cdn: 后面有空格，不然会出错，这里用的是<a target="_blank" rel="noopener" href="https://github.com/54ayao/Chinajsdelivr/">加速源Chinajsdelivr</a>，更新比较慢，但是加载速度快</p>
 <p>然后将所有和图片链接有关的url处添加 theme.cdn，例如：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&lt;div class=&quot;post-image&quot; style=&quot;&lt;%= `background-image: url($&#123;theme.cdn + (page.cover || theme.banner)&#125;)` %&gt;&quot;&gt;&lt;/div&gt;<br></code></pre></td></tr></table></figure>
 
