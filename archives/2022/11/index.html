@@ -40,12 +40,31 @@
 
 </head>
 <body>
-  <div class="root-container" style="">
+  <div id="loading-box">
+    <div class="loading-left-bg"></div>
+    <div class="loading-right-bg"></div>
+    <div class="spinner-box">
+        <!-- 填写你的动画 -->
+        <div class="loader">
+            <span class="loader-block"></span>
+            <span class="loader-block"></span>
+            <span class="loader-block"></span>
+            <span class="loader-block"></span>
+            <span class="loader-block"></span>
+            <span class="loader-block"></span>
+            <span class="loader-block"></span>
+            <span class="loader-block"></span>
+            <span class="loader-block"></span>
+        </div>
+        <!-- <div class="loading-word">加载中...</div> -->
+    </div>
+</div>
+  <div class="root-container">
     
 <!-- header container -->
 <header class="header-container">
   
-    <div class="post-image" style="background-image: url(https://s2.loli.net/2022/12/18/4u1hpSaviUjZWXI.jpg)"></div>
+    <div class="post-image" style="background-image: url(https://jsd.cdn.zzko.cn/gh/waterkin0/images@main/blog_base/主页.jpg)"></div>
   
   
 
@@ -118,7 +137,7 @@
       <div class="article-item layout-padding">
         <article class="card-container article-card content-padding--large soft-size--large soft-style--box">
           
-            <div class="card-cover" background-image-lazy style="background-image: url(https://s2.loli.net/2022/12/04/vCbi4RwfhHtcXUL.jpg)"></div>
+            <div class="card-cover" background-image-lazy style="background-image: url(https://jsd.cdn.zzko.cn/gh/waterkin0/images@main/blogs_images/利用TCP套接字实现简单的聊天室.jpg)"></div>
           
 
           <div class="card-text">
@@ -198,6 +217,7 @@
 </footer>
 
   </div>
+
   <div class="back-to-top-fixed soft-size--round soft-style--box">
     <svg class="icon icon-back-to-top" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
       <path d="M725.333333 426.666667c-12.8 0-21.333333-4.266667-29.866667-12.8l-213.333333-213.333333c-17.066667-17.066667-17.066667-42.666667 0-59.733333s42.666667-17.066667 59.733333 0l213.333333 213.333333c17.066667 17.066667 17.066667 42.666667 0 59.733333C746.666667 422.4 738.133333 426.666667 725.333333 426.666667z"></path>

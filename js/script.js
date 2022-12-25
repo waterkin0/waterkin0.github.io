@@ -9,6 +9,13 @@ window.addEventListener("DOMContentLoaded", function() {
   let lastTop           = 0;
   let theme             = window.localStorage.getItem('theme') || '';
 
+  document.body.style.overflow = 'hidden';
+  var endLoading = function () {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded");
+  }
+  window.addEventListener('load',endLoading);
+
   theme && html.classList.add(theme)
 
   function IsPC(){  
