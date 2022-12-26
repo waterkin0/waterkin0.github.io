@@ -22,7 +22,7 @@
 
   
 
-  <title>小程序js中常用方法的介绍 | Touma</title>
+  <title>有关flex-block主题的美化.3 | Touma</title>
 
   
 
@@ -64,7 +64,7 @@
 <!-- header container -->
 <header class="header-container post">
   
-    <div class="post-image" style="background-image: url(https://jsd.cdn.zzko.cn/gh/waterkin0/images@main/blogs_images/小程序js中常用方法的介绍.jpg)"></div>
+    <div class="post-image" style="background-image: url(https://jsd.cdn.zzko.cn/gh/waterkin0/images@main/blogs_images/hexo美化3.jpg)"></div>
   
   
 
@@ -118,28 +118,30 @@
     <div class="header-content">
       <div class="post-text layout-block">
         <div class="layout-margin">
-          <h1 class="title-wrap">小程序js中常用方法的介绍</h1>
+          <h1 class="title-wrap">有关flex-block主题的美化.3</h1>
           <h2 class="title-sub-wrap">
             <strong>水帝</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2022-09-14T08:01:49.000Z" itemprop="datePublished">2022-09-14</time>
+            <time  class="article-date" datetime="2022-12-26T06:18:45.000Z" itemprop="datePublished">2022-12-26</time>
           </h2>
           <h2>
-              <span class="post-count">📖1k字</span>
-              <span class="post-count">⏱3分</span>
+              <span class="post-count">📖671字</span>
+              <span class="post-count">⏱2分</span>
             <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
               👀<span id="busuanzi_value_page_pv"></span>次
           </h2>
           <ul class="wrap-list dark">
   
-    <li><a href="/categories/%E5%B0%8F%E7%A8%8B%E5%BA%8F/">📒 小程序</a></li>
+    <li><a href="/categories/hexo%E4%B8%BB%E9%A2%98%E4%BC%98%E5%8C%96/">📒 hexo主题优化</a></li>
   
 </ul>
           <ul class="wrap-list dark">
   
-    <li><a href="/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/">🏷️ 小程序</a></li>
+    <li><a href="/tags/css/">🏷️ css</a></li>
   
-    <li><a href="/tags/js/">🏷️ js</a></li>
+    <li><a href="/tags/html/">🏷️ html</a></li>
+  
+    <li><a href="/tags/hexo/">🏷️ hexo</a></li>
   
 </ul>
         </div>
@@ -163,60 +165,27 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <p>在编写小程序的过程中，发现微信自带的js中有很多函数方法，于是统一记在这里了</p>
-<blockquote>
-<p>小程序的这些方法触发顺序和原生js不同，后续会提到</p>
-</blockquote>
-<p>其实这些方法是小程序在执行到某一阶段自动触发，下文基本上是按照触发顺序来进行描述的</p>
-<blockquote>
-<p>顺带一提，微信小程序框架基于vue，基本上相同，建议先学习vue再来小程序会好很多</p>
-</blockquote>
-<blockquote>
-<p>因为是才接触小程序，如果有名词意义之类的错误，请谅解</p>
-</blockquote>
-<h3 id="1-onLaunchonLoad"><a href="#1-onLaunchonLoad" class="headerlink" title="1.onLaunchonLoad"></a>1.onLaunchonLoad</h3><p>只存在于app.js中，也就是说，在首次打开这个小程序便会触发，全局只触发一次(仅在第一次进入触发，无论后续前台进入后台还是后台进入前台，都不会再次触发)，</p>
-<blockquote>
-<p>注意在小程序右上角点击或者home回到桌面之后，小程序不会完全关闭，此时再次回到小程序页面不会调用onLaunchonLoad，只有当过在后台一段时间自动销毁(手动清后台或许也可以)之后，才会完全关闭</p>
-</blockquote>
-<h3 id="2-onLoad-options-：生命周期函数–监听页面加载"><a href="#2-onLoad-options-：生命周期函数–监听页面加载" class="headerlink" title="2.onLoad(options)：生命周期函数–监听页面加载"></a><strong>2.onLoad(options)：生命周期函数–监听页面加载</strong></h3><p>onLoad在本页面加载时触发，一个页面只会调用一次</p>
-<p>onLoad默认有一个Object类型的参数，是指从其他页面打开当前页面所调用的参数</p>
-<p>例如：在页面1的js中有一个跳转函数,可以用?id &#x3D; thisid的形式为跳转到的页面（页面2）传递一个值（这里的thisid是一个在页面1获取的值）</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">Jump()&#123;<br>  wx.navigateTo(&#123; <br>  url: &quot;second?id=&quot; + thisid <br>&#125;<br></code></pre></td></tr></table></figure>
+        <p>一开始正没想到会写到3，不过我发现有可以美化的地方会继续写的，好的，就接着<a href="/2022/07/15/hexo%E4%B8%BB%E9%A2%98%E4%BC%98%E5%8C%96/20220715">上次的文章</a>写</p>
+<h2 id="11-滚动条的美化"><a href="#11-滚动条的美化" class="headerlink" title="11.滚动条的美化"></a>11.滚动条的美化</h2><p>这里可以像常规的一样进行滚动条的配置，但我比较懒，直接用的插件：<a target="_blank" rel="noopener" href="https://github.com/inuyaksa/jquery.nicescroll">jquery.nicescroll</a>，但这个插件是基于jquery的，所以还要引入jQuery(现在主题基本上都有jQuery了)，在layout.ejs内添加：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-comment">&lt;!-- 引入jquery --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text/javascript&quot;</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><span class="hljs-comment">&lt;!-- 滚动条相关 --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text/javascript&quot;</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://cdn.jsdelivr.net/gh/inuyaksa/jquery.nicescroll@master/jquery.nicescroll.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></td></tr></table></figure>
 
-<p>那么在页面2中的onload函数内就可以取这个temp值：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">onLoad: function(options)&#123; <br>  var id = options.id; <br>   console.log(id); <br> &#125; <br></code></pre></td></tr></table></figure>
+<p>然后就可以开始直接用了，在js文件内写入：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs js">$(<span class="hljs-string">&quot;body&quot;</span>).<span class="hljs-title function_">niceScroll</span>(&#123;<br>  <span class="hljs-comment">//输入滚动条样式</span><br>  <span class="hljs-attr">zindex</span>: <span class="hljs-number">999</span> <span class="hljs-comment">//保证滚动条在最顶层</span><br>&#125;);<br></code></pre></td></tr></table></figure>
 
-<h3 id="3-onShow-：生命周期函数–监听页面显示"><a href="#3-onShow-：生命周期函数–监听页面显示" class="headerlink" title="3.onShow()：生命周期函数–监听页面显示"></a>3.onShow()：生命周期函数–监听页面显示</h3><p>页面显示或者切入前台时触发，此时或许页面还没渲染完成</p>
-<h3 id="4-onReady-：生命周期函数–监听页面初次渲染完成"><a href="#4-onReady-：生命周期函数–监听页面初次渲染完成" class="headerlink" title="4.onReady()：生命周期函数–监听页面初次渲染完成"></a>4.onReady()：生命周期函数–监听页面初次渲染完成</h3><p>页面初次渲染完成时触发。一个页面只会调用一次，代表页面已经准备妥当</p>
+<p>以上是对这个滚动条进行初始化和设置，设置官网有详细的，这里就不搬运了，展示下我自己的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">$(&quot;body&quot;).niceScroll(&#123;<br>    cursorcolor: &quot;#424242&quot;,//滚动条颜色<br>    cursoropacitymin: 0,//当滚动条是隐藏状态时改变透明度, 值范围 1 到 0<br>    cursoropacitymax: 0.9,// 当滚动条是显示状态时改变透明度, 值范围 1 到 <br>    cursorwidth: &#x27;1.5vh&#x27;,//滚动条宽度<br>    zindex: 999,//滚动条图层<br>  &#125;);<br></code></pre></td></tr></table></figure>
+
 <blockquote>
-<p>所以加载顺序是先加载onLoad，再是onShow，最后onReady</p>
+<p>值得一提的是：这个插件可以针对div使用，只需要将上面的body改为你想要用上的div即可，具体可以看官网</p>
 </blockquote>
-<blockquote>
-<p>而在原生js中：</p>
-<p>document.ready ：表示文档结构加载完成（不包含图片等非文字媒体文件）；ready如果定义多个，都会按渲染顺序执行。</p>
-<p>window.onload：包含图片等在内的所有元素都加载完成。但是，onload不管定义多少个，只执行一个（最后一个）；</p>
-<p>所以小程序的show,load和原生js的执行顺序刚好相反</p>
-</blockquote>
-<h3 id="5-onHide-：生命周期函数–监听页面隐藏"><a href="#5-onHide-：生命周期函数–监听页面隐藏" class="headerlink" title="5.onHide()：生命周期函数–监听页面隐藏"></a>5.onHide()：生命周期函数–监听页面隐藏</h3><p>页面从前台变为后台时执行，包括进入子页面时，会触发父页面的onHide()</p>
-<h3 id="6-onUnload-：生命周期函数–监听页面卸载"><a href="#6-onUnload-：生命周期函数–监听页面卸载" class="headerlink" title="6.onUnload()：生命周期函数–监听页面卸载"></a>6.onUnload()：生命周期函数–监听页面卸载</h3><p>页面销毁时执行，例如从子页面回到父页面，会触发子页面的onUnload()</p>
-<blockquote>
-<p>由页面1进入页面2会执行页面1的onHide()<br>由页面2返回页面1会执行页面2的onUnload()</p>
-</blockquote>
-<h3 id="7-onError"><a href="#7-onError" class="headerlink" title="7.onError()"></a>7.onError()</h3><p>仅存在与app.js中，当小程序发生脚本错误，或者 api 调用失败时，会触发 onError 并带上错误信息</p>
-<hr>
-<p>下面是页面事件处理函数，就不做详细介绍了</p>
-<h3 id="7-onPullDownRefresh-：页面相关事件处理函数–监听用户下拉动作"><a href="#7-onPullDownRefresh-：页面相关事件处理函数–监听用户下拉动作" class="headerlink" title="7.onPullDownRefresh()：页面相关事件处理函数–监听用户下拉动作"></a>7.onPullDownRefresh()：页面相关事件处理函数–监听用户下拉动作</h3><p>监听用户下拉刷新事件。</p>
-<blockquote>
-<p>需要在app.json的window选项中或页面配置中开启enablePullDownRefresh。</p>
-<p>可以通过wx.startPullDownRefresh触发下拉刷新，调用后触发下拉刷新动画，效果与用户手动下拉刷新一致。</p>
-<p>当处理完数据刷新后，wx.stopPullDownRefresh可以停止当前页面的下拉刷新。</p>
-</blockquote>
-<h3 id="8-onReachBottom-：页面上拉触底事件的处理函数"><a href="#8-onReachBottom-：页面上拉触底事件的处理函数" class="headerlink" title="8.onReachBottom()：页面上拉触底事件的处理函数"></a>8.onReachBottom()：页面上拉触底事件的处理函数</h3><p>监听用户上拉触底事件。</p>
-<blockquote>
-<p>可以在app.json的window选项中或页面配置中设置触发距离onReachBottomDistance。</p>
-<p>在触发距离内滑动期间，本事件只会被触发一次。</p>
-</blockquote>
-<p>其他还有许多方法但用的相比于上面的使用较少，建议自行查询</p>
+<p>运行会发现你的网页有两个滚动条，一个插件的，一个原本自带的，要让原本的消失，网上有很多overflow：hidden的办法，我试过很多，但会把网页搞的无法滚动，于是就用了这种掩耳盗铃的办法，直接把滚动条的width设为0(但这样会导致上面轨道背景颜色无法改动，因为没有轨道了)：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs css">::-webkit-scrollbar &#123;<br>  <span class="hljs-attribute">width</span>:<span class="hljs-number">0px</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="12-toc相关"><a href="#12-toc相关" class="headerlink" title="12.toc相关"></a>12.toc相关</h2><p>原本的toc太简陋了，于是在这里优化一下：</p>
+<h3 id="12-1-平滑跳转"><a href="#12-1-平滑跳转" class="headerlink" title="12.1.平滑跳转"></a>12.1.平滑跳转</h3><p>其实这方面的解决办法都找了好久了，因为默认用的自带的toc，但因为上面用了jQuery，所以问题就很简单的得到了解决，jQuery有animate，可以为行为赋予动画，那么就在js加入如下:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs js">$(<span class="hljs-string">&quot;a.toc-link&quot;</span>).<span class="hljs-title function_">click</span>(<span class="hljs-keyword">function</span> (<span class="hljs-params">ev</span>) &#123;<br>    ev.<span class="hljs-title function_">preventDefault</span>();<span class="hljs-comment">//阻止其原本行为</span><br>    $(<span class="hljs-string">&quot;html, body&quot;</span>).<span class="hljs-title function_">animate</span>(&#123;<span class="hljs-comment">//设置动画</span><br>      <span class="hljs-attr">scrollTop</span>: $(<span class="hljs-built_in">decodeURI</span>($(<span class="hljs-variable language_">this</span>).<span class="hljs-title function_">attr</span>(<span class="hljs-string">&quot;href&quot;</span>))).<span class="hljs-title function_">offset</span>().<span class="hljs-property">top</span> - <span class="hljs-number">67</span><span class="hljs-comment">//因为我有header长度，所以跳转的地方要低一点</span><br>    &#125;, &#123;<br>      <span class="hljs-attr">duration</span>: <span class="hljs-number">500</span>,<span class="hljs-comment">//跳转时间</span><br>      <span class="hljs-attr">easing</span>: <span class="hljs-string">&quot;swing&quot;</span><span class="hljs-comment">//动画运行方式</span><br>    &#125;);<br>  &#125;);<br></code></pre></td></tr></table></figure>
+
+<p>就可以了</p>
 
       </section>
 
@@ -224,32 +193,16 @@
       
         <nav class="article-nav">
           
-            <div class="article-nav-item layout-padding">
-  <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
-    
-      <div class="card-cover" background-image-lazy data-img="https://jsd.cdn.zzko.cn/gh/waterkin0/images@main/blogs_images/利用遗传算法求解%20TSP%20问题.png"></div>
-    
-    <div class="card-text">
-      
-        <a href="/2022/10/18/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%AE%9E%E9%AA%8C/20221018/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">利用遗传算法求解 TSP 问题</h2>
-        </a>
-      
-      <div class="card-text--row">Newer</div>
-    </div>
-  </article>
-</div>
-          
           
             <div class="article-nav-item layout-padding">
   <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
     
-      <div class="card-cover" background-image-lazy data-img="https://jsd.cdn.zzko.cn/gh/waterkin0/images@main/blogs_images/hexo美化2.jpg"></div>
+      <div class="card-cover" background-image-lazy data-img="https://jsd.cdn.zzko.cn/gh/waterkin0/images@main/blogs_images/利用遗传算法解决自动组卷问题.jpg"></div>
     
     <div class="card-text">
       
-        <a href="/2022/07/15/hexo%E4%B8%BB%E9%A2%98%E4%BC%98%E5%8C%96/20220715/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">有关flex-block主题的美化.2</h2>
+        <a href="/2022/12/18/%E6%99%BA%E8%83%BD%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/20221218/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">利用遗传算法解决自动组卷问题</h2>
         </a>
       
       <div class="card-text--row">Older</div>
@@ -283,7 +236,7 @@
     <span>目录</span>
   </div>
   <div class="widget-body">
-    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-onLaunchonLoad"><span class="toc-text">1.onLaunchonLoad</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-onLoad-options-%EF%BC%9A%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%87%BD%E6%95%B0%E2%80%93%E7%9B%91%E5%90%AC%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD"><span class="toc-text">2.onLoad(options)：生命周期函数–监听页面加载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-onShow-%EF%BC%9A%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%87%BD%E6%95%B0%E2%80%93%E7%9B%91%E5%90%AC%E9%A1%B5%E9%9D%A2%E6%98%BE%E7%A4%BA"><span class="toc-text">3.onShow()：生命周期函数–监听页面显示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-onReady-%EF%BC%9A%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%87%BD%E6%95%B0%E2%80%93%E7%9B%91%E5%90%AC%E9%A1%B5%E9%9D%A2%E5%88%9D%E6%AC%A1%E6%B8%B2%E6%9F%93%E5%AE%8C%E6%88%90"><span class="toc-text">4.onReady()：生命周期函数–监听页面初次渲染完成</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-onHide-%EF%BC%9A%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%87%BD%E6%95%B0%E2%80%93%E7%9B%91%E5%90%AC%E9%A1%B5%E9%9D%A2%E9%9A%90%E8%97%8F"><span class="toc-text">5.onHide()：生命周期函数–监听页面隐藏</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-onUnload-%EF%BC%9A%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%87%BD%E6%95%B0%E2%80%93%E7%9B%91%E5%90%AC%E9%A1%B5%E9%9D%A2%E5%8D%B8%E8%BD%BD"><span class="toc-text">6.onUnload()：生命周期函数–监听页面卸载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-onError"><span class="toc-text">7.onError()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-onPullDownRefresh-%EF%BC%9A%E9%A1%B5%E9%9D%A2%E7%9B%B8%E5%85%B3%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0%E2%80%93%E7%9B%91%E5%90%AC%E7%94%A8%E6%88%B7%E4%B8%8B%E6%8B%89%E5%8A%A8%E4%BD%9C"><span class="toc-text">7.onPullDownRefresh()：页面相关事件处理函数–监听用户下拉动作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-onReachBottom-%EF%BC%9A%E9%A1%B5%E9%9D%A2%E4%B8%8A%E6%8B%89%E8%A7%A6%E5%BA%95%E4%BA%8B%E4%BB%B6%E7%9A%84%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0"><span class="toc-text">8.onReachBottom()：页面上拉触底事件的处理函数</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#11-%E6%BB%9A%E5%8A%A8%E6%9D%A1%E7%9A%84%E7%BE%8E%E5%8C%96"><span class="toc-text">11.滚动条的美化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#12-toc%E7%9B%B8%E5%85%B3"><span class="toc-text">12.toc相关</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#12-1-%E5%B9%B3%E6%BB%91%E8%B7%B3%E8%BD%AC"><span class="toc-text">12.1.平滑跳转</span></a></li></ol></li></ol>
   </div>
 </section>
 

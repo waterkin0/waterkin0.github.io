@@ -1,11 +1,4 @@
-document.body.style.overflow = 'hidden';
-var endLoading = function () {
-  document.body.style.overflow = 'auto';
-  document.getElementById('loading-box').classList.add("loaded");
-}
-window.addEventListener('load',endLoading);
-window.setTimeout(endLoading,5000);
-
+// document.body.style.overflow = 'hidden';
 window.addEventListener("DOMContentLoaded", function() {
   const html            = document.querySelector("html");
   const navBtn          = document.querySelector(".navbar-btn");
@@ -18,6 +11,15 @@ window.addEventListener("DOMContentLoaded", function() {
   let localtheme        = window.localStorage.getItem('theme') || '';
 
   localtheme && html.classList.add(localtheme)
+  //平滑滚动
+  $("body").niceScroll({
+    cursorcolor: "#424242",//滚动条颜色
+    cursoropacitymin: 0,//当滚动条是隐藏状态时改变透明度, 值范围 1 到 0
+    cursoropacitymax: 0.9,// 当滚动条是显示状态时改变透明度, 值范围 1 到 
+    cursorwidth: '1.5vh',//滚动条宽度
+    zindex: 999,//滚动条图层
+    // cursorborderradius: "30px", // 滚动条圆角（像素）
+  });
 
   function IsPC(){  
     var userAgentInfo = navigator.userAgent;
@@ -28,12 +30,18 @@ window.addEventListener("DOMContentLoaded", function() {
     }  
     return flag;  
   }
-
-  if(IsPC()){
-    setTimeout(function(){
-      headerr.classList.add("show");
-    },800);
+  
+  var endLoading = function () {
+    if(IsPC()){
+      setTimeout(function(){
+        headerr.classList.add("show");
+      },800);
+    }
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded");
   }
+  window.addEventListener('load',endLoading);
+  window.setTimeout(endLoading,5000);
   
   const goScrollTop = () => {
     let currentTop = getScrollTop()
@@ -65,8 +73,18 @@ window.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  var day = "background-image: url(https://s2.loli.net/2022/07/06/qDeLO1IijPA3EbC.jpg)"
-  var night = "background-image: url(https://s2.loli.net/2022/07/13/8OEKadVl4wY3omH.jpg)"
+  $("a.toc-link").click(function (ev) {
+    ev.preventDefault();//阻止其原本行为
+    $("html, body").animate({//设置动画
+      scrollTop: $(decodeURI($(this).attr("href"))).offset().top - 67//因为我有header长度，所以跳转的地方要低一点
+    }, {
+      duration: 500,//跳转时间
+      easing: "swing"//动画运行方式
+    });
+  });
+
+  var day = "background-image: url(https://jsd.cdn.zzko.cn/gh/waterkin0/images@main/blog_base/day.jpg)"
+  var night = "background-image: url(https://jsd.cdn.zzko.cn/gh/waterkin0/images@main/blog_base/night.jpg)"
   if(window.localStorage.getItem('theme') == 'theme-light')
     back_ground.setAttribute("style", day)
   else

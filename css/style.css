@@ -99,6 +99,9 @@
     --theme-border-secondary: #373e47;
   }
 }
+::-webkit-scrollbar {
+  width: 0px;
+}
 html,
 body,
 div,
@@ -286,18 +289,21 @@ dfn {
   overflow: hidden;
   border-radius: var(--radius);
   background-color: var(--theme-bg-primary);
+  backdrop-filter: blur(3px);
   box-shadow: var(--soft-shadow) var(--soft-shadow) calc(var(--soft-shadow) * 2) var(--theme-bg-shadow), calc(-1 * var(--soft-shadow)) calc(-1 * var(--soft-shadow)) calc(var(--soft-shadow) * 2) var(--theme-bg-high);
 }
 [class*=soft-style--].soft-style--hover:hover {
   overflow: hidden;
   border-radius: var(--radius);
   background-color: var(--theme-bg-primary);
+  backdrop-filter: blur(3px);
   box-shadow: var(--soft-shadow) var(--soft-shadow) calc(var(--soft-shadow) * 2) var(--theme-bg-shadow), calc(-1 * var(--soft-shadow)) calc(-1 * var(--soft-shadow)) calc(var(--soft-shadow) * 2) var(--theme-bg-high);
 }
 [class*=soft-style--].soft-style--active:active {
   overflow: hidden;
   border-radius: var(--radius);
   background-color: var(--theme-bg-primary);
+  backdrop-filter: blur(3px);
   background-image: linear-gradient(145deg, var(--theme-text-active1), var(--theme-text-active2));
   box-shadow: inset var(--soft-shadow) var(--soft-shadow) calc(var(--soft-shadow) * 2) var(--theme-bg-shadow), inset calc(-1 * var(--soft-shadow)) calc(-1 * var(--soft-shadow)) calc(var(--soft-shadow) * 2) var(--theme-bg-high);
 }
@@ -317,6 +323,7 @@ dfn {
   bottom: 40px;
   padding: 12px;
   transform: translate3d(0, 100%, 0);
+  backdrop-filter: blur(3px);
 }
 .back-to-top-fixed:hover .icon-back-to-top {
   fill: var(--theme-text-stress);
@@ -342,12 +349,14 @@ dfn {
   overflow: hidden;
   border-radius: var(--soft-small-radius);
   background-color: var(--theme-bg-primary);
+  backdrop-filter: blur(3px);
   box-shadow: var(--soft-shadow) var(--soft-shadow) calc(var(--soft-shadow) * 2) var(--theme-bg-shadow), calc(-1 * var(--soft-shadow)) calc(-1 * var(--soft-shadow)) calc(var(--soft-shadow) * 2) var(--theme-bg-high);
 }
 .wrap-list.light a:active {
   overflow: hidden;
   border-radius: var(--soft-small-radius);
   background-color: var(--theme-bg-primary);
+  backdrop-filter: blur(3px);
   background-image: linear-gradient(145deg, var(--theme-text-active1), var(--theme-text-active2));
   box-shadow: inset var(--soft-shadow) var(--soft-shadow) calc(var(--soft-shadow) * 2) var(--theme-bg-shadow), inset calc(-1 * var(--soft-shadow)) calc(-1 * var(--soft-shadow)) calc(var(--soft-shadow) * 2) var(--theme-bg-high);
 }
@@ -380,7 +389,8 @@ html.show-mobile-nav .navbar-list {
   transition: all 0.5s ease-out;
 }
 .navbar.show {
-  background-color: #3e3e5f;
+  backdrop-filter: blur(3px) brightness(50%);
+  background-color: rgba(0,0,0,0);
   transform: translate3d(0, 0, 0);
   transition: all 0.5s ease-out;
 }
@@ -866,6 +876,7 @@ html.show-mobile-nav .navbar-list {
   overflow: hidden;
   border-radius: var(--soft-small-radius);
   background-color: var(--theme-bg-primary);
+  backdrop-filter: blur(3px);
   box-shadow: var(--soft-shadow) var(--soft-shadow) calc(var(--soft-shadow) * 2) var(--theme-bg-shadow), calc(-1 * var(--soft-shadow)) calc(-1 * var(--soft-shadow)) calc(var(--soft-shadow) * 2) var(--theme-bg-high);
 }
 .markdown-body iframe {
@@ -916,6 +927,7 @@ html.show-mobile-nav .navbar-list {
   overflow: hidden;
   border-radius: var(--soft-small-radius);
   background-color: var(--theme-bg-primary);
+  backdrop-filter: blur(3px);
   box-shadow: var(--soft-shadow) var(--soft-shadow) calc(var(--soft-shadow) * 2) var(--theme-bg-shadow), calc(-1 * var(--soft-shadow)) calc(-1 * var(--soft-shadow)) calc(var(--soft-shadow) * 2) var(--theme-bg-high);
 }
 .markdown-body .video-container iframe,
@@ -982,6 +994,7 @@ html.show-mobile-nav .navbar-list {
   overflow: hidden;
   border-radius: var(--soft-small-radius);
   background-color: var(--theme-bg-primary);
+  backdrop-filter: blur(3px);
   box-shadow: var(--soft-shadow) var(--soft-shadow) calc(var(--soft-shadow) * 2) var(--theme-bg-shadow), calc(-1 * var(--soft-shadow)) calc(-1 * var(--soft-shadow)) calc(var(--soft-shadow) * 2) var(--theme-bg-high);
 }
 .markdown-body .aplayer.aplayer-box .aplayer-info .aplayer-controller .aplayer-time {
@@ -999,6 +1012,7 @@ html.show-mobile-nav .navbar-list {
   overflow: hidden;
   border-radius: var(--soft-small-radius);
   background-color: var(--theme-bg-primary);
+  backdrop-filter: blur(3px);
   box-shadow: var(--soft-shadow) var(--soft-shadow) calc(var(--soft-shadow) * 2) var(--theme-bg-shadow), calc(-1 * var(--soft-shadow)) calc(-1 * var(--soft-shadow)) calc(var(--soft-shadow) * 2) var(--theme-bg-high);
 }
 .markdown-body .figure-image {
@@ -1190,6 +1204,7 @@ html.show-mobile-nav .navbar-list {
   overflow: hidden;
   border-radius: var(--soft-small-radius);
   background-color: var(--theme-bg-primary);
+  backdrop-filter: blur(3px);
   box-shadow: var(--soft-shadow) var(--soft-shadow) calc(var(--soft-shadow) * 2) var(--theme-bg-shadow), calc(-1 * var(--soft-shadow)) calc(-1 * var(--soft-shadow)) calc(var(--soft-shadow) * 2) var(--theme-bg-high);
 }
 @media screen and (min-width: 768px) {
