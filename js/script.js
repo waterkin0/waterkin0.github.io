@@ -1,4 +1,8 @@
 // document.body.style.overflow = 'hidden';
+function loadImage(){
+  $("body").getNiceScroll().resize();
+}
+
 window.addEventListener("DOMContentLoaded", function() {
   const html            = document.querySelector("html");
   const navBtn          = document.querySelector(".navbar-btn");
@@ -11,15 +15,6 @@ window.addEventListener("DOMContentLoaded", function() {
   let localtheme        = window.localStorage.getItem('theme') || '';
 
   localtheme && html.classList.add(localtheme)
-  //平滑滚动
-  $("body").niceScroll({
-    cursorcolor: "#424242",//滚动条颜色
-    cursoropacitymin: 0,//当滚动条是隐藏状态时改变透明度, 值范围 1 到 0
-    cursoropacitymax: 0.9,// 当滚动条是显示状态时改变透明度, 值范围 1 到 
-    cursorwidth: '1.5vh',//滚动条宽度
-    zindex: 999,//滚动条图层
-    // cursorborderradius: "30px", // 滚动条圆角（像素）
-  });
 
   function IsPC(){  
     var userAgentInfo = navigator.userAgent;
@@ -31,12 +26,25 @@ window.addEventListener("DOMContentLoaded", function() {
     return flag;  
   }
   
+  // img.addEventListener("load",function() {
+  //   $("body").getNiceScroll().resize();
+  // });
+  
   var endLoading = function () {
     if(IsPC()){
       setTimeout(function(){
         headerr.classList.add("show");
       },800);
     }
+    $("body").niceScroll({
+      cursorcolor: "#424242",//滚动条颜色
+      cursoropacitymin: 0,//当滚动条是隐藏状态时改变透明度, 值范围 1 到 0
+      cursoropacitymax: 0.9,// 当滚动条是显示状态时改变透明度, 值范围 1 到 
+      cursorwidth: '1.5vh',//滚动条宽度
+      zindex: 999,//滚动条图层
+      hwacceleration: true, //激活硬件加速
+      // cursorborderradius: "30px", // 滚动条圆角（像素）
+    });
     document.body.style.overflow = 'auto';
     document.getElementById('loading-box').classList.add("loaded");
   }
