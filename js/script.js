@@ -30,7 +30,7 @@ window.addEventListener("DOMContentLoaded", function() {
   //   $("body").getNiceScroll().resize();
   // });
   
-  var endLoading = function () {
+  function endLoading() {
     if(IsPC()){
       setTimeout(function(){
         headerr.classList.add("show");
@@ -49,7 +49,10 @@ window.addEventListener("DOMContentLoaded", function() {
     document.getElementById('loading-box').classList.add("loaded");
   }
   window.addEventListener('load',endLoading);
-  window.setTimeout(endLoading,5000);
+  window.setTimeout(function(){
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded");
+  },5000);
   
   const goScrollTop = () => {
     let currentTop = getScrollTop()
@@ -91,8 +94,8 @@ window.addEventListener("DOMContentLoaded", function() {
     });
   });
 
-  var day = "background-image: url(https://jsd.cdn.zzko.cn/gh/waterkin0/images@main/blog_base/day.jpg)"
-  var night = "background-image: url(https://jsd.cdn.zzko.cn/gh/waterkin0/images@main/blog_base/night.jpg)"
+  var day = "background-image: url(https://raw.iqiq.io/waterkin0/images/main/blog_base/day.jpg)"
+  var night = "background-image: url(https://raw.iqiq.io/waterkin0/images/main/blog_base/night.jpg)"
   if(window.localStorage.getItem('theme') == 'theme-light')
     back_ground.setAttribute("style", day)
   else
