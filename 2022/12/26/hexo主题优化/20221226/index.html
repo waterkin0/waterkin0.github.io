@@ -31,10 +31,10 @@
   
 
   
-    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@1.1.3/index.min.css"> -->
-    <link rel="stylesheet" href="https://jsd.cdn.zzko.cn/npm/typeface-source-code-pro@1.1.3/index.min.css">
-    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlightjs@9.16.2/styles/monokai.css"> -->
-    <link rel="stylesheet" href="https://jsd.cdn.zzko.cn/npm/highlightjs@9.16.2/styles/monokai.css">
+    <!-- <link rel="stylesheet" href="https://raw.iqiq.io/npm/typeface-source-code-pro@1.1.3/index.min.css">
+    <link rel="stylesheet" href="https://raw.iqiq.io/npm/highlightjs@9.16.2/styles/monokai.css"> -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/monokai.min.css">
+    <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script> -->
   
 
   
@@ -67,7 +67,7 @@
 <!-- header container -->
 <header class="header-container post">
   
-    <div class="post-image" style="background-image: url(https://jsd.cdn.zzko.cn/gh/waterkin0/images@main/blogs_images/hexo美化3.jpg)"></div>
+    <div class="post-image" style="background-image: url(https://raw.iqiq.io/waterkin0/images/main/blogs_images/hexo美化3.jpg)"></div>
   
   
 
@@ -128,7 +128,7 @@
             <time  class="article-date" datetime="2022-12-26T06:18:45.000Z" itemprop="datePublished">2022-12-26</time>
           </h2>
           <h2>
-              <span class="post-count">📖863字</span>
+              <span class="post-count">📖910字</span>
               <span class="post-count">⏱3分</span>
             <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
               👀<span id="busuanzi_value_page_pv"></span>次
@@ -172,6 +172,11 @@
 <h2 id="11-滚动条的美化"><a href="#11-滚动条的美化" class="headerlink" title="11.滚动条的美化"></a>11.滚动条的美化</h2><h3 id="11-1-滚动条的引入"><a href="#11-1-滚动条的引入" class="headerlink" title="11.1.滚动条的引入"></a>11.1.滚动条的引入</h3><p>这里可以像常规的一样进行滚动条的配置，但我比较懒，直接用的插件：<a target="_blank" rel="noopener" href="https://github.com/inuyaksa/jquery.nicescroll">jquery.nicescroll</a>，但这个插件是基于jquery的，所以还要引入jQuery(现在主题基本上都有jQuery了)，在layout.ejs内添加：</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-comment">&lt;!-- 引入jquery --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text/javascript&quot;</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><span class="hljs-comment">&lt;!-- 滚动条相关 --&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text/javascript&quot;</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://cdn.jsdelivr.net/gh/inuyaksa/jquery.nicescroll@master/jquery.nicescroll.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></td></tr></table></figure>
 
+<blockquote>
+<p>2023-03-26更新</p>
+<p>建议把jquery.nicescroll.js文件下载下来，我这里出现了正常加载但不能调用函数的情况</p>
+<p>项目地址：<code>https://github.com/inuyaksa/jquery.nicescroll</code></p>
+</blockquote>
 <p>然后就可以开始直接用了，在js文件内写入：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs js">$(<span class="hljs-string">&quot;body&quot;</span>).<span class="hljs-title function_">niceScroll</span>(&#123;<br>  <span class="hljs-comment">//输入滚动条样式</span><br>  <span class="hljs-attr">zindex</span>: <span class="hljs-number">999</span> <span class="hljs-comment">//保证滚动条在最顶层</span><br>&#125;);<br></code></pre></td></tr></table></figure>
 
@@ -209,7 +214,7 @@
             <div class="article-nav-item layout-padding">
   <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
     
-      <div class="card-cover" background-image-lazy data-img="https://jsd.cdn.zzko.cn/gh/waterkin0/images@main/blogs_images/蚁群算法解决TSP问题.jpg"></div>
+      <div class="card-cover" background-image-lazy data-img="https://raw.iqiq.io/waterkin0/images/main/blogs_images/蚁群算法解决TSP问题.jpg"></div>
     
     <div class="card-text">
       
@@ -226,7 +231,7 @@
             <div class="article-nav-item layout-padding">
   <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
     
-      <div class="card-cover" background-image-lazy data-img="https://jsd.cdn.zzko.cn/gh/waterkin0/images@main/blogs_images/利用遗传算法解决自动组卷问题.jpg"></div>
+      <div class="card-cover" background-image-lazy data-img="https://raw.iqiq.io/waterkin0/images/main/blogs_images/利用遗传算法解决自动组卷问题.jpg"></div>
     
     <div class="card-text">
       
@@ -285,19 +290,19 @@
         <svg class="icon icon-article" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M240.51564747 647.74217627h196.07203239c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806V165.10332731c0-33.18142087-30.16492806-60.32985613-60.32985612-60.32985611H245.04038668C225.43318342 104.7734712 210.35071939 119.85593522 210.35071939 139.46313845V617.57724821c0 16.59071043 13.57421762 30.16492806 30.16492808 30.16492806z m663.62841731-452.47392089v482.63884894c0 33.18142087-27.14843525 60.32985613-60.32985612 60.32985613H180.18579134c-33.18142087 0-60.32985613-27.14843525-60.32985612-60.32985613V195.26825538c-49.77213131 0-90.49478418 40.72265287-90.49478417 90.49478417v452.4739209c0 49.77213131 40.72265287 90.49478418 90.49478417 90.49478417h286.56681657c16.59071043 0 30.16492806 13.57421762 30.16492807 30.16492807s13.57421762 30.16492806 30.16492805 30.16492806h90.49478418c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806s13.57421762-30.16492806 30.16492807-30.16492807h286.56681657c49.77213131 0 90.49478418-40.72265287 90.49478417-90.49478417V285.76303955c0-49.77213131-40.72265287-90.49478418-90.49478417-90.49478417zM587.41232014 647.74217627h191.54729318c19.60720323 0 34.68966726-15.08246403 34.68966729-34.68966727V134.93839925c0-16.59071043-13.57421762-30.16492806-30.16492808-30.16492805H617.57724821c-30.16492806 0-60.32985613 27.14843525-60.32985612 60.32985611v452.4739209c0 16.59071043 13.57421762 30.16492806 30.16492805 30.16492806z" fill="currentColor"></path>
 </svg>
-        <span>9</span>
+        <span>12</span>
       </div>
       <div class="count-box--item">
         <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M900.3614811 257.09082106h-339.81629553l-67.96326003-101.9448889c-19.41807444-29.12711113-48.54518557-43.69066667-82.52681443-43.69066667H123.6385189c-53.39970333 0-97.09036999 43.69066667-97.09037113 97.09036999v582.54222222c0 53.39970333 43.69066667 97.09036999 97.09037113 97.09037002h776.7229622c53.39970333 0 97.09036999-43.69066667 97.09037113-97.09037002V354.18119104c0-53.39970333-43.69066667-97.09036999-97.09037113-97.09036998z m-97.09036999 242.72592554H220.72888889c-24.27259221 0-48.54518557-24.27259221-48.54518556-48.54518556s24.27259221-48.54518557 48.54518556-48.54518444h582.54222222c24.27259221 0 48.54518557 24.27259221 48.54518556 48.54518444s-24.27259221 48.54518557-48.54518556 48.54518556z" fill="currentColor"></path>
 </svg>
-        6
+        8
       </div>
       <div class="count-box--item">
         <svg class="icon icon-tags" viewBox="0 0 1098 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M283.42180005 272q0-28.38857157-20.09142843-48.48000001t-48.47999998-20.09142842-48.48000002 20.09142842-20.09142846 48.48000001 20.09142846 48.48 48.48000002 20.09142843 48.47999998-20.09142843 20.09142843-48.48zM855.0332285 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.03999997 263.58857157q-20.9142853 19.81714313-48.75428534 19.81714312-28.38857157 0-48.20571468-19.81714312l-383.04-383.58857157q-20.36571468-19.81714313-34.55999999-54.10285688t-14.19428534-62.6742853l0-222.85714313q0-27.84000002 20.36571469-48.20571469t48.2057147-20.36571466l222.85714313 0q28.38857157 0 62.6742853 14.19428529t54.65142842 34.55999999l383.04000001 382.49142843q19.81714313 20.9142853 19.81714314 48.75428532zM1060.74751475 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.04 263.58857157q-20.9142853 19.81714313-48.75428531 19.81714312-19.26857155 0-31.61142843-7.47428531t-28.38857159-24.13714314l251.79428534-251.7942853q19.81714313-19.81714313 19.81714308-48.20571469 0-27.84000002-19.81714308-48.75428531l-383.04000001-382.49142845q-20.36571468-20.36571468-54.65142842-34.55999999t-62.67428532-14.19428534l120 0q28.38857157 0 62.67428532 14.19428534t54.65142842 34.55999999l383.03999998 382.49142845q19.81714313 20.9142853 19.81714314 48.75428531z" fill="currentColor"></path>
 </svg>
-        8
+        11
       </div>
     </div>
   </div>
@@ -312,7 +317,7 @@
     <span>NOTICE</span>
   </div>
   <div class="widget-body">
-    <p>已将jsdelivr加速改为了字节跳动的静态加速</p>
+    <p>再次更改加速,部分js文件迭代更新</p>
   </div>
 </section>
 
@@ -363,6 +368,18 @@
           </a>
         </li>
       
+        <li class="categorys-list-item">
+          <a href="/categories/%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98/">
+            力扣刷题 (1)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
+          <a href="/categories/mysql-php/">
+            mysql+php (2)
+          </a>
+        </li>
+      
     </ul>
   </div>
 </section>
@@ -376,7 +393,7 @@
   </div>
   <div class="widget-body">
     <div class="tags-cloud">
-      <a href="/tags/c/" style="font-size: 10px;" class="tags-cloud-0">c</a> <a href="/tags/css/" style="font-size: 20px;" class="tags-cloud-10">css</a> <a href="/tags/hexo/" style="font-size: 20px;" class="tags-cloud-10">hexo</a> <a href="/tags/html/" style="font-size: 20px;" class="tags-cloud-10">html</a> <a href="/tags/js/" style="font-size: 10px;" class="tags-cloud-0">js</a> <a href="/tags/py/" style="font-size: 20px;" class="tags-cloud-10">py</a> <a href="/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/" style="font-size: 10px;" class="tags-cloud-0">小程序</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 20px;" class="tags-cloud-10">算法</a>
+      <a href="/tags/c/" style="font-size: 10px;" class="tags-cloud-0">c</a> <a href="/tags/c/" style="font-size: 10px;" class="tags-cloud-0">c++</a> <a href="/tags/css/" style="font-size: 20px;" class="tags-cloud-10">css</a> <a href="/tags/hexo/" style="font-size: 20px;" class="tags-cloud-10">hexo</a> <a href="/tags/html/" style="font-size: 20px;" class="tags-cloud-10">html</a> <a href="/tags/js/" style="font-size: 10px;" class="tags-cloud-0">js</a> <a href="/tags/mysql/" style="font-size: 15px;" class="tags-cloud-5">mysql</a> <a href="/tags/php/" style="font-size: 15px;" class="tags-cloud-5">php</a> <a href="/tags/py/" style="font-size: 20px;" class="tags-cloud-10">py</a> <a href="/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/" style="font-size: 10px;" class="tags-cloud-0">小程序</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 20px;" class="tags-cloud-10">算法</a>
     </div>
   </div>
 </section>
@@ -412,7 +429,7 @@
       setInterval("createtime()",250);
       </script>
     </p>
-	  <p>已经记载了9篇文章</p>
+	  <p>已经记载了12篇文章</p>
     <p>
       <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
       浏览量：<span id="busuanzi_value_site_pv"><i class="fa fa-spinner fa-spin"></i></span>👀 | 访客数：<span id="busuanzi_value_site_uv"><i class="fa fa-spinner fa-spin"></i></span>👦
@@ -464,7 +481,7 @@
 <script type="text/javascript" src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 <!-- 滚动条相关 -->
 <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/inuyaksa/jquery.nicescroll@master/jquery.nicescroll.js"></script> -->
-<script type="text/javascript" src="https://jsd.cdn.zzko.cn/gh/inuyaksa/jquery.nicescroll@master/jquery.nicescroll.js"></script>
+<script type="text/javascript" src="/js/jquery.nicescroll.js"></script>
 <!-- <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery.nicescroll/3.7.6/jquery.nicescroll.js"></script> -->
 </body>
 </html>
