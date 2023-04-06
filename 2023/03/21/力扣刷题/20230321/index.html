@@ -128,7 +128,7 @@
             <time  class="article-date" datetime="2023-03-21T06:46:04.000Z" itemprop="datePublished">2023-03-21</time>
           </h2>
           <h2>
-              <span class="post-count">📖58字</span>
+              <span class="post-count">📖207字</span>
               <span class="post-count">⏱1分</span>
             <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
               👀<span id="busuanzi_value_page_pv"></span>次
@@ -169,6 +169,13 @@
 </blockquote>
 <p>最近在力扣刷题，还是遇到了一些报错，记录在这里了：</p>
 <h2 id="1-heap-buffer-overflow-on-address"><a href="#1-heap-buffer-overflow-on-address" class="headerlink" title="1.heap-buffer-overflow on address"></a>1.heap-buffer-overflow on address</h2><p>很简单，一般情况下是数组越界访问或者数组的下标错误造成的</p>
+<h2 id="2-Line-16-Char-29-error-expected-unqualified-id"><a href="#2-Line-16-Char-29-error-expected-unqualified-id" class="headerlink" title="2.Line 16: Char 29: error: expected unqualified-id"></a>2.Line 16: Char 29: error: expected unqualified-id</h2><p>我比较笨，这里是for的第一个分号里面定义了两个值，例如</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>,<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; i &lt; n; i++)<br></code></pre></td></tr></table></figure>
+
+<p>于是我就改外面去了</p>
+<p>但我搜了一下，c++支持这样写，那就不是很清楚了，可能是力扣的问题吧</p>
+<h2 id="3-AddressSanitizer-heap-buffer-overflow-on-address"><a href="#3-AddressSanitizer-heap-buffer-overflow-on-address" class="headerlink" title="3.AddressSanitizer: heap-buffer-overflow on address"></a>3.AddressSanitizer: heap-buffer-overflow on address</h2><p>非法越界，大概率是指针，看看循环里面那里，是不是循环结束的判断条件出错了</p>
+<h2 id="4-invalid-operands-to-binary-expression"><a href="#4-invalid-operands-to-binary-expression" class="headerlink" title="4.invalid operands to binary expression"></a>4.invalid operands to binary expression</h2><p>往往是比较出错了，两者的数据类型不同，不能比较</p>
 
       </section>
 
@@ -235,7 +242,7 @@
     <span>目录</span>
   </div>
   <div class="widget-body">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-heap-buffer-overflow-on-address"><span class="toc-text">1.heap-buffer-overflow on address</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-heap-buffer-overflow-on-address"><span class="toc-text">1.heap-buffer-overflow on address</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Line-16-Char-29-error-expected-unqualified-id"><span class="toc-text">2.Line 16: Char 29: error: expected unqualified-id</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-AddressSanitizer-heap-buffer-overflow-on-address"><span class="toc-text">3.AddressSanitizer: heap-buffer-overflow on address</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-invalid-operands-to-binary-expression"><span class="toc-text">4.invalid operands to binary expression</span></a></li></ol>
   </div>
 </section>
 
@@ -255,7 +262,7 @@
         <svg class="icon icon-article" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M240.51564747 647.74217627h196.07203239c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806V165.10332731c0-33.18142087-30.16492806-60.32985613-60.32985612-60.32985611H245.04038668C225.43318342 104.7734712 210.35071939 119.85593522 210.35071939 139.46313845V617.57724821c0 16.59071043 13.57421762 30.16492806 30.16492808 30.16492806z m663.62841731-452.47392089v482.63884894c0 33.18142087-27.14843525 60.32985613-60.32985612 60.32985613H180.18579134c-33.18142087 0-60.32985613-27.14843525-60.32985612-60.32985613V195.26825538c-49.77213131 0-90.49478418 40.72265287-90.49478417 90.49478417v452.4739209c0 49.77213131 40.72265287 90.49478418 90.49478417 90.49478417h286.56681657c16.59071043 0 30.16492806 13.57421762 30.16492807 30.16492807s13.57421762 30.16492806 30.16492805 30.16492806h90.49478418c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806s13.57421762-30.16492806 30.16492807-30.16492807h286.56681657c49.77213131 0 90.49478418-40.72265287 90.49478417-90.49478417V285.76303955c0-49.77213131-40.72265287-90.49478418-90.49478417-90.49478417zM587.41232014 647.74217627h191.54729318c19.60720323 0 34.68966726-15.08246403 34.68966729-34.68966727V134.93839925c0-16.59071043-13.57421762-30.16492806-30.16492808-30.16492805H617.57724821c-30.16492806 0-60.32985613 27.14843525-60.32985612 60.32985611v452.4739209c0 16.59071043 13.57421762 30.16492806 30.16492805 30.16492806z" fill="currentColor"></path>
 </svg>
-        <span>12</span>
+        <span>13</span>
       </div>
       <div class="count-box--item">
         <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -304,14 +311,14 @@
         </li>
       
         <li class="categorys-list-item">
-          <a href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%AE%9E%E9%AA%8C/">
-            人工智能实验 (1)
+          <a href="/categories/mysql-php/">
+            mysql+php (3)
           </a>
         </li>
       
         <li class="categorys-list-item">
-          <a href="/categories/mysql-php/">
-            mysql+php (2)
+          <a href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%AE%9E%E9%AA%8C/">
+            人工智能实验 (1)
           </a>
         </li>
       
@@ -358,7 +365,7 @@
   </div>
   <div class="widget-body">
     <div class="tags-cloud">
-      <a href="/tags/c/" style="font-size: 10px;" class="tags-cloud-0">c</a> <a href="/tags/c/" style="font-size: 10px;" class="tags-cloud-0">c++</a> <a href="/tags/css/" style="font-size: 20px;" class="tags-cloud-10">css</a> <a href="/tags/hexo/" style="font-size: 20px;" class="tags-cloud-10">hexo</a> <a href="/tags/html/" style="font-size: 20px;" class="tags-cloud-10">html</a> <a href="/tags/js/" style="font-size: 10px;" class="tags-cloud-0">js</a> <a href="/tags/mysql/" style="font-size: 15px;" class="tags-cloud-5">mysql</a> <a href="/tags/php/" style="font-size: 15px;" class="tags-cloud-5">php</a> <a href="/tags/py/" style="font-size: 20px;" class="tags-cloud-10">py</a> <a href="/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/" style="font-size: 10px;" class="tags-cloud-0">小程序</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 20px;" class="tags-cloud-10">算法</a>
+      <a href="/tags/c/" style="font-size: 10px;" class="tags-cloud-0">c</a> <a href="/tags/c/" style="font-size: 10px;" class="tags-cloud-0">c++</a> <a href="/tags/css/" style="font-size: 20px;" class="tags-cloud-10">css</a> <a href="/tags/hexo/" style="font-size: 20px;" class="tags-cloud-10">hexo</a> <a href="/tags/html/" style="font-size: 20px;" class="tags-cloud-10">html</a> <a href="/tags/js/" style="font-size: 10px;" class="tags-cloud-0">js</a> <a href="/tags/mysql/" style="font-size: 15px;" class="tags-cloud-5">mysql</a> <a href="/tags/php/" style="font-size: 20px;" class="tags-cloud-10">php</a> <a href="/tags/py/" style="font-size: 20px;" class="tags-cloud-10">py</a> <a href="/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/" style="font-size: 10px;" class="tags-cloud-0">小程序</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 20px;" class="tags-cloud-10">算法</a>
     </div>
   </div>
 </section>
@@ -394,7 +401,7 @@
       setInterval("createtime()",250);
       </script>
     </p>
-	  <p>已经记载了12篇文章</p>
+	  <p>已经记载了13篇文章</p>
     <p>
       <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
       浏览量：<span id="busuanzi_value_site_pv"><i class="fa fa-spinner fa-spin"></i></span>👀 | 访客数：<span id="busuanzi_value_site_uv"><i class="fa fa-spinner fa-spin"></i></span>👦

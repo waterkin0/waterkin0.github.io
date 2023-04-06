@@ -22,7 +22,7 @@
 
   
 
-  <title>学习mysql过程中的一些报错 | Touma</title>
+  <title>cookie! session! token! | Touma</title>
 
   
 
@@ -67,7 +67,7 @@
 <!-- header container -->
 <header class="header-container post">
   
-    <div class="post-image" style="background-image: url(https://raw.iqiq.io/waterkin0/images/main/blogs_images/学习mysql过程中的一些报错.png)"></div>
+    <div class="post-image" style="background-image: url(https://raw.iqiq.io/waterkin0/images/main/blogs_images/cookie!session!token!.jpg)"></div>
   
   
 
@@ -121,15 +121,15 @@
     <div class="header-content">
       <div class="post-text layout-block">
         <div class="layout-margin">
-          <h1 class="title-wrap">学习mysql过程中的一些报错</h1>
+          <h1 class="title-wrap">cookie! session! token!</h1>
           <h2 class="title-sub-wrap">
             <strong>水帝</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2023-03-07T16:04:56.000Z" itemprop="datePublished">2023-03-08</time>
+            <time  class="article-date" datetime="2023-04-05T10:31:39.000Z" itemprop="datePublished">2023-04-05</time>
           </h2>
           <h2>
-              <span class="post-count">📖977字</span>
-              <span class="post-count">⏱3分</span>
+              <span class="post-count">📖2.1k字</span>
+              <span class="post-count">⏱7分</span>
             <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
               👀<span id="busuanzi_value_page_pv"></span>次
           </h2>
@@ -139,8 +139,6 @@
   
 </ul>
           <ul class="wrap-list dark">
-  
-    <li><a href="/tags/mysql/">🏷️ mysql</a></li>
   
     <li><a href="/tags/php/">🏷️ php</a></li>
   
@@ -166,85 +164,94 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <blockquote>
-<p>（更新中）</p>
+        <p>最近在初学jquery和php，涉及到登陆验证的问题，所以学习了一下cookie和session，迷迷糊糊网上的内容很多很杂，看了好久才大概理顺了</p>
+<blockquote>
+<p>以下内容建立在jQuery作为前端，利用get&#x2F;post请求php后端的基础上</p>
 </blockquote>
-<p>在学习mysql过程中遇到的一些报错，在此记录一下：</p>
-<p>本人用是pymysql来对mysql进行操作，php虽然也安装但没怎么用，我想等我先把mysql相关学完再说，所以在这里对mysql基本都是用python来操作的</p>
-<p>更新：php挺香的，后面还是继续php了</p>
-<h2 id="1-pymysql-err-OperationalError-1130"><a href="#1-pymysql-err-OperationalError-1130" class="headerlink" title="1.pymysql.err.OperationalError: (1130,"></a>1.pymysql.err.OperationalError: (1130,</h2><blockquote>
-<p>pymysql.err.OperationalError: (1130, “*’ is not allowed to connect to this MySQL server”)</p>
-</blockquote>
-<p>这是因为连接地址权限的问题，查询相应权限</p>
+<h2 id="1-关于cookie"><a href="#1-关于cookie" class="headerlink" title="1.关于cookie"></a>1.关于cookie</h2><p>cookie一般存在客户端，如果存在cookie，那么在向后端请求时会自动带上，直接在后端就可以读取这个cookie，例如对应php</p>
+<p>要创建一个cookie存在前端：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-title function_ invoke__">setcookie</span>(<span class="hljs-string">&quot;sid&quot;</span>, <span class="hljs-string">&quot;12345&quot;</span>, <span class="hljs-title function_ invoke__">time</span>()+<span class="hljs-number">3600</span>, <span class="hljs-string">&#x27;/&#x27;</span>);<span class="hljs-comment">//cookie名，cookie值，存储时间(单位秒)，作用域</span><br></code></pre></td></tr></table></figure>
+
+<p>关于最后一个值php官网上有这个解释：</p>
+<p><strong>cookie将在其中可用的服务器上的路径。如果设置为“&#x2F;”，则cookie将在整个域中可用。如果设置为“&#x2F;foo&#x2F;”，cookie将仅在&#x2F;foo&#x2F;目录和域的所有子目录（如&#x2F;foo&#x2F;bar&#x2F;）中可用。默认值是设置cookie的当前目录。</strong></p>
+<p>那么我这里设置为’&#x2F;‘， 保证前端可以读取到cookie(因为我这里前后端分离了，路径不同，如果我这里不这么写，前端网页实际上没有得到这个cookie)</p>
+<p>当你在前端查看，可以看到这个cookie：</p>
 
     <figure class="figure-image">
-      <img src="/2023/03/08/mysql+php/20230308/1.png" alt loading="lazy" onload="loadImage()">
+      <img src="/2023/04/05/mysql+php/20230405/1.png" alt loading="lazy" onload="loadImage()">
       <figcaption></figcaption>
     </figure>
   
 
-<p>可以看出这里针对root用户的host是localhost，也就是只能本地访问，我这里重新创建了一个用户testuser用于远程访问，如上图已经有了。然后运行 <code>update user set host = &#39;%&#39; where user =&#39;testuser&#39;;</code></p>
-<p>将访问这个用户的地址改为‘%’，即全体，再次查看其权限：</p>
+<p>设置成功，那么接下来没前端什么事了，因为在后续请求的时候会自动带上这个cookie</p>
+<p>那么在php后端内如何获取这个cookie呢：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-variable">$_COOKIE</span>[<span class="hljs-string">&quot;sid&quot;</span>]<span class="hljs-comment">//cookie名</span><br></code></pre></td></tr></table></figure>
+
+<p>经过测试，直接这样就可以得到这个cookie值，就可以在后端验证这个cookie并登陆了</p>
+<p><strong>注意，虽然 <code>$_COOKIE[&quot;sid&quot;]</code>看起来像直接读取服务器本地的值，但实际上这个值不在服务器，而是由前端传过来的</strong></p>
+<p>如果想删除这个cookie，可以设置过期时间为过去：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-title function_ invoke__">setcookie</span>(<span class="hljs-string">&quot;sid&quot;</span>, <span class="hljs-string">&quot;&quot;</span>, <span class="hljs-title function_ invoke__">time</span>()-<span class="hljs-number">3600</span>);<br></code></pre></td></tr></table></figure>
+
+<h2 id="2-关于session"><a href="#2-关于session" class="headerlink" title="2.关于session"></a>2.关于session</h2><p>前面提到，cookie存在客户端上，服务器上不会保存这个值，如果我在本地修改这个值然后给服务器，在某种程度上可能欺骗服务器，导致安全隐患</p>
+<p>用户请求的网页往往不止一个，那么在不同的请求之间需要存一些临时的变量，例如当前正在访问的用户名</p>
+<p>于是就诞生了session，可以看做一次会话，通过在服务器上存储信息以便随后使用，不过需要注意，这里是信息只是临时的，在<strong>用户停止操作</strong>一定时间后会过期(一般是30分钟)</p>
+<p>php内存session：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-title function_ invoke__">session_start</span>();<span class="hljs-comment">//开启会话</span><br><span class="hljs-variable">$_SESSION</span>[<span class="hljs-string">&quot;name&quot;</span>] = <span class="hljs-variable">$name</span>;<span class="hljs-comment">//存值</span><br></code></pre></td></tr></table></figure>
+
+<p>注意 <code>session_start()</code>是必须的，这会让服务器创建一个会话(或者进入某个会话)，并向客户端返回一个cookie，可以在浏览器内看到：</p>
 
     <figure class="figure-image">
-      <img src="/2023/03/08/mysql+php/20230308/2.png" alt loading="lazy" onload="loadImage()">
+      <img src="/2023/04/05/mysql+php/20230405/2.png" alt loading="lazy" onload="loadImage()">
       <figcaption></figcaption>
     </figure>
   
 
-<p>然后再连接就不会报这个错了，但是还有问题</p>
-<h2 id="2-pymysql-err-OperationalError-1044"><a href="#2-pymysql-err-OperationalError-1044" class="headerlink" title="2.pymysql.err.OperationalError: (1044"></a>2.pymysql.err.OperationalError: (1044</h2><blockquote>
-<p>pymysql.err.OperationalError: (1044, “Access denied for user ‘testuser‘@’%’ to database ‘testdb’”)</p>
+<p>客户端出现了一个名为PHPSESSID的cookie，值是服务端随机产生且唯一，代表当前会话的id</p>
+<blockquote>
+<p>该cookie在默认情况下，浏览器关闭即会消失，不会长期保存</p>
 </blockquote>
-<p>这个是因为用户权限，创建用户后没有给予权限（指增删查改之类的）就会报这个错</p>
-<p>关于权限的给予这里不再描述了（因为内容有点多），网上有很多文章</p>
-<h2 id="3-get-resource-type-Argument-1-resource-must-be-of-type-resource"><a href="#3-get-resource-type-Argument-1-resource-must-be-of-type-resource" class="headerlink" title="3.get_resource_type(): Argument #1 ($resource) must be of type resource"></a>3.get_resource_type(): Argument #1 ($resource) must be of type resource</h2><blockquote>
-<p>Fatal error :Uncaught TypeError: get_resource_type(): Argument #1 ($resource) must be of type resource, mysqli given in</p>
+<p>那么在下一次向服务器请求的时候，会自动带上这个cookie，服务器通过这个cookie进入之前创建的会话，就可以知道用户的相关信息了</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-variable">$sid</span> = <span class="hljs-variable">$_COOKIE</span>[<span class="hljs-string">&quot;PHPSESSID&quot;</span>]<span class="hljs-comment">//获取当前会话id</span><br><span class="hljs-title function_ invoke__">session_id</span>(sid)<span class="hljs-comment">//进入该会话，括号内为空则获取当前会话id</span><br><span class="hljs-title function_ invoke__">session_start</span>();<br></code></pre></td></tr></table></figure>
+
+<p>注意 <code>session_id()</code>和 <code>session_start()</code>的顺序</p>
+<p>当需要进入某个会话，需要 <code>session_id()</code>先指定会话名，再由 <code>session_start()</code>进入</p>
+<p>当需要创建一个新的会话直接 <code>session_start()</code>创建即可，需要获取这个id再运行 <code>session_id()</code></p>
+<p><strong>注意，尽管前端可以获取PHPSESSID这个代表 <code>session_id()</code>的cookie，但是无法获取这个会话中的内容，该内容只能由服务器获取，一定程度上保证了用户的数据安全</strong></p>
+<h2 id="3-一个简单的cookie和session例子"><a href="#3-一个简单的cookie和session例子" class="headerlink" title="3.一个简单的cookie和session例子"></a>3.一个简单的cookie和session例子</h2><p>一个简单的验证前端是否登陆的流程可以这样表示：</p>
+<p>首先是用户拥有cookie，在后端验证这个cookie的PHPSESSID，验证成功，进入id对应的会话</p>
+<p>验证失败，代表 session已经过期(或者由用户伪造！)，进入登陆的页面，重新登陆并创建新的会话</p>
+<p>其次是如果用户还没有登陆，即没有读取到cookie，这时跳转进入登陆页面，然后创建新的会话</p>
+<p>很明显，我们这里的cookie只存了PHPSESSID这一个值并且只验证了这一个值，第一是这个值只会保存很短时间，在浏览器关闭后就会消失，第二是cookie被发明来存这么简单的值不会有些浪费吗</p>
+<p>还记得很多大型网站，支持长期登陆，那么是如何实现的呢？</p>
+<h2 id="4-实现长期登陆"><a href="#4-实现长期登陆" class="headerlink" title="4.实现长期登陆"></a>4.实现长期登陆</h2><p>这里我找了很久，说法都不同，大概有以下两种：</p>
+<h3 id="1-延长session的过期时间"><a href="#1-延长session的过期时间" class="headerlink" title="1.延长session的过期时间"></a>1.延长session的过期时间</h3><p>上面提到session在在<strong>用户停止操作</strong>一定时间后会过期，那么合理设置这个时间，可以让那些活跃的用户保持登陆</p>
+<p>虽然这个方法可行，但本人不推荐这个方法，有个很明显的问题，当用户量过大的时候，session过大，而服务器要保存如此大的数据（需要注意会话的数据是存在内存而不是硬盘），会出现很大的负担，当然如果是小型的，那问题不会很大，这种方法也最简单</p>
+<h3 id="2-session的钝化和活化"><a href="#2-session的钝化和活化" class="headerlink" title="2.session的钝化和活化"></a>2.session的钝化和活化</h3><p>偶然间看到的，也不知道对不对，上面提到session的数据实际上是存在内存而非硬盘，但实际上可以将其钝化，存在硬盘内，那么我设想可以在用户停止操作的一定时间后，将其钝化，此时会把这些数据变为一个文件(可以找到这个文件)，在需要再将其活化</p>
+<p>很可惜没有去深究这个方法，网上对其的描述也不多，笔者了解的也不多，希望有兴趣的可以自己去找找</p>
+<h3 id="3-设置token"><a href="#3-设置token" class="headerlink" title="3.设置token"></a>3.设置token</h3><blockquote>
+<p>千呼万唤始出来</p>
 </blockquote>
-<p>说实话，网上没找到原因，这里出现这个报错是出现在使用了 <code>get_resource_type</code>函数时，因为php的教程里面有</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-variable">$c</span> = <span class="hljs-title function_ invoke__">mysql_connect</span>();<br><span class="hljs-keyword">echo</span> <span class="hljs-title function_ invoke__">get_resource_type</span>(<span class="hljs-variable">$c</span>).<span class="hljs-string">&quot;\n&quot;</span>;<br></code></pre></td></tr></table></figure>
-
-<p>那么期望输出</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php">mysql link<br></code></pre></td></tr></table></figure>
-
-<p>但是在php7及以上已经废除了 <code>mysql_connect()</code>，转而使用 <code>mysqli_connect</code>，但实际如果直接改成这个就会报错</p>
-<p>猜测是因为 <code>mysqli_connect</code>返回的值不是resource类型了,所以出错了</p>
-<h2 id="4-define-Argument-3-case-insensitive"><a href="#4-define-Argument-3-case-insensitive" class="headerlink" title="4.define(): Argument #3 ($case_insensitive)"></a>4.define(): Argument #3 ($case_insensitive)</h2><blockquote>
-<p>Warning : define(): Argument #3 ($case_insensitive) is ignored since declaration of case-insensitive constants is no longer supported in</p>
+<p>上面的两个方法都有一个问题，数据存在服务器端，确实会产生大量需要服务器存储的数据，但如果存在客户端，安全问题得不到保障，用户可以篡改这些数据来欺骗服务器，那么可不可以又存在客户端减轻服务器压力又可以保证安全？Token(令牌)某种程度上可以</p>
+<blockquote>
+<p>笔者的拙见，token就是特殊的cookie，也是存在cookie或者localStorage内，简单而不严谨的说，token就是服务器加密后的sessionid</p>
 </blockquote>
-<p>警告很直接，因为 <code>define</code>定义常量在php8中已经无法不区分大小写了，即不再拥有第三个参数了</p>
-<h2 id="5-ERROR-1064-42000-You-have-an-error-in-your-SQL-syntax"><a href="#5-ERROR-1064-42000-You-have-an-error-in-your-SQL-syntax" class="headerlink" title="5.ERROR 1064 (42000): You have an error in your SQL syntax"></a>5.ERROR 1064 (42000): You have an error in your SQL syntax</h2><blockquote>
-<p>ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ‘{</p>
+<p>数据可以加密，服务器端产生一个密钥，对需要的数据(一般包含 sessionid)进行加密然后再存在客户端，需要的时候让客户端传过来，解密在用就可以了</p>
+<p>用登陆举个例子：在第一次用账号和密码成功登录后，服务器生成一个只有服务器存储的密钥，然后通过这个密钥将一些会话信息加密后返回存在客户端，下次来的时候就将这些加密过的信息带上，由服务器解密验证是不是用户，再根据结果进行后续操作就可以了</p>
+<blockquote>
+<p>其实用token还有个原因，移动端的app往往没有cookie和session，开发web当然没问题，但如果是开发API要考虑移动端，token更加泛用</p>
 </blockquote>
-<p>我这里是 <code>create table</code>的时候出现的，检查后发现是 <code>create</code>应该用 <code>()</code>而不是 <code>&#123;&#125;</code>,在网上搜的时候发现有因为</p>
-<p>在MySQL中，为了区分MySQL的关键字与普通字符，MySQL引入了一个反引号，而在定义名称时，应该用 <code>``</code>,而不是 <code>&#39;&#39;</code></p>
-<p>即 <code>&#39;package_code&#39; varchar(6)  NOTNULL</code>变为 <code> `package_code` varchar(6)  NOTNULL</code></p>
-<p>但个人认为其实触发这个报错的大部分原因是出现了中文字符，改完就好了</p>
-<h2 id="6-Unknown-column-‘root’-in-‘where-clause’"><a href="#6-Unknown-column-‘root’-in-‘where-clause’" class="headerlink" title="6.Unknown column ‘root’ in ‘where clause’"></a>6.Unknown column ‘root’ in ‘where clause’</h2><blockquote>
-<p>Uncaught mysqli_sql_exception: Unknown column ‘root’ in ‘where clause’</p>
-</blockquote>
-<p>字面意思是没有这个列，但大概率是因为在写sql语句时引用的参数没有加引号，将：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-variable">$sql</span> = <span class="hljs-string">&quot;select password from user where username=<span class="hljs-subst">$name</span>&quot;</span>;<br></code></pre></td></tr></table></figure>
+<p>综上，token可以看做用<strong>时间换空间</strong>的做法(用加密解密的时间换取session的存储空间)</p>
+<p>token的格式有一个标准规定，称为：JWT，即Json Web Token</p>
+<p>jwt的token由三部分组成：</p>
+<p>第一部分：header，格式如下：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br><span class="hljs-attr">&quot;typ&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;JWT&quot;</span><span class="hljs-punctuation">,</span><span class="hljs-comment">//代表类型</span><br><span class="hljs-attr">&quot;alg&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;HS256&quot;</span><span class="hljs-comment">//加密算法</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
 
-<p>改为</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-variable">$sql</span> = <span class="hljs-string">&quot;select password from user where username=&#x27;<span class="hljs-subst">$name</span>&#x27;&quot;</span>;<br></code></pre></td></tr></table></figure>
+<p>第二部分payload，这部分就是要存放的信息了：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br><span class="hljs-attr">&quot;uid&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;e12a34b56c78d9e0f&quot;</span><span class="hljs-punctuation">,</span><br><span class="hljs-attr">&quot;name&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;ramostear&quot;</span><span class="hljs-punctuation">,</span><br><span class="hljs-attr">&quot;role&quot;</span><span class="hljs-punctuation">:</span><span class="hljs-string">&quot;admin&quot;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
 
-<p>即可</p>
-<h2 id="7-ERROR-1366-HY000-Incorrect-string-value"><a href="#7-ERROR-1366-HY000-Incorrect-string-value" class="headerlink" title="7.ERROR 1366 (HY000): Incorrect string value"></a>7.ERROR 1366 (HY000): Incorrect string value</h2><p>网上搜了很多，都是说数据库编码问题的，即要把数据库设置为utf-8，但是我的数据库就是这个编码，所以错误很明显不是这个</p>
-<p>找了很久，找到了<a target="_blank" rel="noopener" href="https://blog.csdn.net/zsx157326/article/details/77012242">这篇文章</a>讲的很好</p>
-<p>总结一下：在你用cmd进行mysql操作的时候，可以查看其属性，会发现默认是gbk编码</p>
-
-    <figure class="figure-image">
-      <img src="/2023/03/08/mysql+php/20230308/3.png" alt loading="lazy" onload="loadImage()">
-      <figcaption></figcaption>
-    </figure>
-  
-
-<p>这个gbk指cmd是用这个，当你用cmd进行数据的存入和读取的时候，自然会编码错误</p>
-<p>要么就是把cmd改为utf8编码，但本人没尝试过</p>
-<p>要不就是修改配置文件，在MySQL的安装目录下找到my.ini（这个文件是自己建立的设置文件，不是mysql自带的），把default-character-set的值改为gbk</p>
-<p>这些设置只对MySQL提供的客户端（也就是cmd中用的那个）管用</p>
-<p>设置完重启就好</p>
+<p>第三部分是signature：</p>
+<p>这个签证信息由三部分组成：header (base64后的)、payload (base64后的)、secret，由他们链接而成</p>
+<p>只是简单讲一了下，因为笔者也没有深究了，关于jwt，可以去github上直接搜，这方面的库有很多</p>
 
       </section>
 
@@ -252,32 +259,16 @@
       
         <nav class="article-nav">
           
-            <div class="article-nav-item layout-padding">
-  <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
-    
-      <div class="card-cover" background-image-lazy data-img="https://raw.iqiq.io/waterkin0/images/main/blogs_images/力扣刷题遇到的报错.jpg"></div>
-    
-    <div class="card-text">
-      
-        <a href="/2023/03/21/%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98/20230321/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">力扣刷题遇到的报错</h2>
-        </a>
-      
-      <div class="card-text--row">Newer</div>
-    </div>
-  </article>
-</div>
-          
           
             <div class="article-nav-item layout-padding">
   <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
     
-      <div class="card-cover" background-image-lazy data-img="https://raw.iqiq.io/waterkin0/images/main/blogs_images/蚁群算法解决TSP问题.jpg"></div>
+      <div class="card-cover" background-image-lazy data-img="https://raw.iqiq.io/waterkin0/images/main/blogs_images/学习php过程中的一些问题.jpg"></div>
     
     <div class="card-text">
       
-        <a href="/2022/12/27/%E6%99%BA%E8%83%BD%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/20221227/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">蚁群算法解决TSP问题</h2>
+        <a href="/2023/03/23/mysql+php/20230323/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">学习php过程中的一些问题</h2>
         </a>
       
       <div class="card-text--row">Older</div>
@@ -311,7 +302,7 @@
     <span>目录</span>
   </div>
   <div class="widget-body">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-pymysql-err-OperationalError-1130"><span class="toc-text">1.pymysql.err.OperationalError: (1130,</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-pymysql-err-OperationalError-1044"><span class="toc-text">2.pymysql.err.OperationalError: (1044</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-get-resource-type-Argument-1-resource-must-be-of-type-resource"><span class="toc-text">3.get_resource_type(): Argument #1 ($resource) must be of type resource</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-define-Argument-3-case-insensitive"><span class="toc-text">4.define(): Argument #3 ($case_insensitive)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-ERROR-1064-42000-You-have-an-error-in-your-SQL-syntax"><span class="toc-text">5.ERROR 1064 (42000): You have an error in your SQL syntax</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-Unknown-column-%E2%80%98root%E2%80%99-in-%E2%80%98where-clause%E2%80%99"><span class="toc-text">6.Unknown column ‘root’ in ‘where clause’</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-ERROR-1366-HY000-Incorrect-string-value"><span class="toc-text">7.ERROR 1366 (HY000): Incorrect string value</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%85%B3%E4%BA%8Ecookie"><span class="toc-text">1.关于cookie</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%85%B3%E4%BA%8Esession"><span class="toc-text">2.关于session</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84cookie%E5%92%8Csession%E4%BE%8B%E5%AD%90"><span class="toc-text">3.一个简单的cookie和session例子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%AE%9E%E7%8E%B0%E9%95%BF%E6%9C%9F%E7%99%BB%E9%99%86"><span class="toc-text">4.实现长期登陆</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%BB%B6%E9%95%BFsession%E7%9A%84%E8%BF%87%E6%9C%9F%E6%97%B6%E9%97%B4"><span class="toc-text">1.延长session的过期时间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-session%E7%9A%84%E9%92%9D%E5%8C%96%E5%92%8C%E6%B4%BB%E5%8C%96"><span class="toc-text">2.session的钝化和活化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E8%AE%BE%E7%BD%AEtoken"><span class="toc-text">3.设置token</span></a></li></ol></li></ol>
   </div>
 </section>
 
