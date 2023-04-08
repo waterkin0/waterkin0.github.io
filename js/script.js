@@ -50,8 +50,7 @@ window.addEventListener("DOMContentLoaded", function() {
   }
   window.addEventListener('load',endLoading);
   window.setTimeout(function(){
-    document.body.style.overflow = 'auto';
-    document.getElementById('loading-box').classList.add("loaded");
+    endLoading()
   },5000);
   
   const goScrollTop = () => {
