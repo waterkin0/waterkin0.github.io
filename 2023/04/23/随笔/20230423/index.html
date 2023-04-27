@@ -31,7 +31,7 @@
 
   
 
-  <title>学习php过程中的一些问题 | Touma</title>
+  <title>水帝の绝赞推荐 | Touma</title>
 
   
 
@@ -76,7 +76,7 @@
 <!-- header container -->
 <header class="header-container post">
   
-    <div class="post-image" style="background-image: url(https://raw.iqiq.io/waterkin0/images/main/blogs_images/学习php过程中的一些问题.jpg)"></div>
+    <div class="post-image" style="background-image: url(https://raw.iqiq.io/waterkin0/images/main/blogs_images/水帝の绝赞推荐.png)"></div>
   
   
 
@@ -130,28 +130,24 @@
     <div class="header-content">
       <div class="post-text layout-block">
         <div class="layout-margin">
-          <h1 class="title-wrap">学习php过程中的一些问题</h1>
+          <h1 class="title-wrap">水帝の绝赞推荐</h1>
           <h2 class="title-sub-wrap">
             <strong>水帝</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2023-03-23T08:57:39.000Z" itemprop="datePublished">2023-03-23</time>
+            <time  class="article-date" datetime="2023-04-23T10:26:38.000Z" itemprop="datePublished">2023-04-23</time>
           </h2>
           <h2>
-              <span class="post-count">📖291字</span>
+              <span class="post-count">📖242字</span>
               <span class="post-count">⏱1分</span>
             <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
               👀<span id="busuanzi_value_page_pv"></span>次
           </h2>
           <ul class="wrap-list dark">
   
-    <li><a href="/categories/mysql-php/">📒 mysql+php</a></li>
+    <li><a href="/categories/%E9%9A%8F%E7%AC%94/">📒 随笔</a></li>
   
 </ul>
           <ul class="wrap-list dark">
-  
-    <li><a href="/tags/mysql/">🏷️ mysql</a></li>
-  
-    <li><a href="/tags/php/">🏷️ php</a></li>
   
 </ul>
         </div>
@@ -175,31 +171,16 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <blockquote>
-<p>（更新中）</p>
-</blockquote>
-<p>主要是写php遇到的问题</p>
-<h2 id="1-在form提交后防止刷新"><a href="#1-在form提交后防止刷新" class="headerlink" title="1.在form提交后防止刷新"></a>1.在form提交后防止刷新</h2><p>我这里是用ajax提交的，方便进行表单验证，错误就直接打印在当前页面，但是实际操作的时候发现提交后那个错误信息只会打印一瞬间</p>
-<p>其实这里是 <code>submit</code>提交后强制刷新页面，我就修改了一下：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;button&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;mysql_login&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;登陆&quot;</span>&gt;</span><br></code></pre></td></tr></table></figure>
-
-<p>把 <code>type</code>的 <code>sumbit</code>改为 <code>button</code>了，然后触发改为 <code>onclick</code>，因为实际的提交表单是由js完成的</p>
+        <p>最近学东西的过程中找到了很多很棒的文章，有些知识点其实想自己记录下来，但真的无论如何去讲都感觉完全不如这些文章</p>
+<p>真的有种 眼前有景道不得，崔颖诗题在上头 的感觉</p>
+<p>一是怕以后找不到，二是自己写不出也能让其他人找到，就出现了这么一个栏目：</p>
+<h1 id="1-c-后端"><a href="#1-c-后端" class="headerlink" title="1.c++ 后端"></a>1.c++ 后端</h1><h2 id="1-IO-多路复用（select，-poll，-epoll）"><a href="#1-IO-多路复用（select，-poll，-epoll）" class="headerlink" title="1.IO 多路复用（select， poll， epoll）"></a>1.IO 多路复用（select， poll， epoll）</h2><p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/YdIdoZ_yusVWza1PU7lWaw">你管这破玩意叫 IO 多路复用？</a></p>
+<p>一篇对linux下多路复用很好的讲解，我只恨没早点找的它，不然也不至于看几个小时没看懂了😇</p>
 <blockquote>
-<p>form内如果直接用button进行编写，如</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">button</span>&gt;</span>登陆<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span><br></code></pre></td></tr></table></figure>
-
-<p>也是不可以的，因为form内的button自带sumbit，当然加上 <code>type=&quot;button&quot;</code>后也是可以的</p>
+<p>这个博主的文章都很不错，神！</p>
 </blockquote>
-<h2 id="2-Compilation-failed-PCRE-does-not-support-L-l-N-P-p-U-u-or-X-at-…"><a href="#2-Compilation-failed-PCRE-does-not-support-L-l-N-P-p-U-u-or-X-at-…" class="headerlink" title="2.Compilation failed: PCRE does not support \L, \l, \N, \P, \p, \U, \u, or \X at …"></a>2.Compilation failed: PCRE does not support \L, \l, \N, \P, \p, \U, \u, or \X at …</h2><blockquote>
-<p>preg_match() [function.preg-match]: Compilation failed: PCRE does not support \L, \l, \N, \P, \p, \U, \u, or \X at …</p>
-</blockquote>
-<p>pcre自己的问题，中文匹配出错，要像下面这样更改：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">/^[\x&#123;4e00&#125;-\x&#123;9fa5&#125;A-Za-z0-9_]&#123;2,12&#125;$/<br></code></pre></td></tr></table></figure>
-
-<p>改为</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">/^[\x&#123;4e00&#125;-\x&#123;9fa5&#125;A-Za-z0-9_]&#123;2,12&#125;$/u<br></code></pre></td></tr></table></figure>
-
-<p>即可</p>
+<h1 id="2-其他"><a href="#2-其他" class="headerlink" title="2.其他"></a>2.其他</h1><h2 id="1-傅里叶变换"><a href="#1-傅里叶变换" class="headerlink" title="1.傅里叶变换"></a>1.傅里叶变换</h2><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/317237264">通俗易懂的理解傅里叶变换（一）</a></p>
+<p>很浪漫和美妙的一篇文章，能遇到是我的幸运，虽然和计算机技术关系不大，但还是推荐在这</p>
 
       </section>
 
@@ -210,12 +191,12 @@
             <div class="article-nav-item layout-padding">
   <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
     
-      <div class="card-cover" background-image-lazy data-img="https://raw.iqiq.io/waterkin0/images/main/blogs_images/cookie!session!token!.jpg"></div>
+      <div class="card-cover" background-image-lazy data-img="https://raw.iqiq.io/waterkin0/images/main/blogs_images/socket编程.png"></div>
     
     <div class="card-text">
       
-        <a href="/2023/04/05/mysql+php/20230405/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">cookie! session! token!</h2>
+        <a href="/2023/04/25/c++%20webserver/20230425/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">webserver之1.socket编程</h2>
         </a>
       
       <div class="card-text--row">Newer</div>
@@ -227,12 +208,12 @@
             <div class="article-nav-item layout-padding">
   <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
     
-      <div class="card-cover" background-image-lazy data-img="https://raw.iqiq.io/waterkin0/images/main/blogs_images/力扣刷题遇到的报错.jpg"></div>
+      <div class="card-cover" background-image-lazy data-img="https://raw.iqiq.io/waterkin0/images/main/blogs_images/学习springboot过程中的一些报错.jpg"></div>
     
     <div class="card-text">
       
-        <a href="/2023/03/21/%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98/20230321/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">力扣刷题遇到的报错</h2>
+        <a href="/2023/04/19/java/20230419/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">学习springboot过程中的一些报错</h2>
         </a>
       
       <div class="card-text--row">Older</div>
@@ -266,7 +247,7 @@
     <span>目录</span>
   </div>
   <div class="widget-body">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%9C%A8form%E6%8F%90%E4%BA%A4%E5%90%8E%E9%98%B2%E6%AD%A2%E5%88%B7%E6%96%B0"><span class="toc-text">1.在form提交后防止刷新</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Compilation-failed-PCRE-does-not-support-L-l-N-P-p-U-u-or-X-at-%E2%80%A6"><span class="toc-text">2.Compilation failed: PCRE does not support \L, \l, \N, \P, \p, \U, \u, or \X at …</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-c-%E5%90%8E%E7%AB%AF"><span class="toc-text">1.c++ 后端</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-IO-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%EF%BC%88select%EF%BC%8C-poll%EF%BC%8C-epoll%EF%BC%89"><span class="toc-text">1.IO 多路复用（select， poll， epoll）</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-%E5%85%B6%E4%BB%96"><span class="toc-text">2.其他</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%82%85%E9%87%8C%E5%8F%B6%E5%8F%98%E6%8D%A2"><span class="toc-text">1.傅里叶变换</span></a></li></ol></li></ol>
   </div>
 </section>
 
