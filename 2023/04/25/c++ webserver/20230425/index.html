@@ -206,9 +206,10 @@
 <p>如果上面的都写了下来保存了，先运行服务器，然后运行客户端，客户端就可以得到前者发来的消息</p>
 <p>你可能会说服务器怎么能运行一次就结束呢！</p>
 <p>你只需要在accept那一块加入while1，就可以让服务器一直运行下去了，可以不停的运行客户端来请求</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)&#123;<br>        <span class="hljs-keyword">struct</span> <span class="hljs-title class_">sockaddr_in</span> clnt_addr;<br>        <span class="hljs-type">socklen_t</span> clnt_addr_size = <span class="hljs-built_in">sizeof</span>(clnt_addr);<br>        <span class="hljs-type">int</span> clnt_sock = <span class="hljs-built_in">accept</span>(listenfd, (<span class="hljs-keyword">struct</span> sockaddr*)&amp;clnt_addr, &amp;clnt_addr_size);<br><br>        <span class="hljs-comment">//向客户端发送数据</span><br>        <span class="hljs-type">char</span> str[] = <span class="hljs-string">&quot;Hello World!&quot;</span>;<br>        <span class="hljs-built_in">write</span>(clnt_sock, str, <span class="hljs-built_in">sizeof</span>(str));<br>        <span class="hljs-built_in">close</span>(clnt_sock);<br>    &#125;<br><br>    <span class="hljs-comment">//关闭套接字</span><br>    <span class="hljs-built_in">close</span>(listenfd);<br></code></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)&#123;<br>    <span class="hljs-keyword">struct</span> <span class="hljs-title class_">sockaddr_in</span> clnt_addr;<br>    <span class="hljs-type">socklen_t</span> clnt_addr_size = <span class="hljs-built_in">sizeof</span>(clnt_addr);<br>    <span class="hljs-type">int</span> clnt_sock = <span class="hljs-built_in">accept</span>(listenfd, (<span class="hljs-keyword">struct</span> sockaddr*)&amp;clnt_addr, &amp;clnt_addr_size);<br><br>    <span class="hljs-comment">//向客户端发送数据</span><br>    <span class="hljs-type">char</span> str[] = <span class="hljs-string">&quot;Hello World!&quot;</span>;<br>    <span class="hljs-built_in">write</span>(clnt_sock, str, <span class="hljs-built_in">sizeof</span>(str));<br>    <span class="hljs-built_in">close</span>(clnt_sock);<br>&#125;<br><br><span class="hljs-comment">//关闭套接字</span><br><span class="hljs-built_in">close</span>(listenfd);<br></code></pre></td></tr></table></figure>
 
-<p>很简单对吧！然而有个重要的问题，一个大型的服务器，可能有一瞬间涌入大量的连接需求，小小的accept还不能处理</p>
+<p>很简单对吧！这样就实现了服务器和客户端的连接，然而真的这么简单吗</p>
+<h2 id="3-预告-多路复用epoll"><a href="#3-预告-多路复用epoll" class="headerlink" title="3.预告-多路复用epoll"></a>3.预告-多路复用epoll</h2><p>有个重要的问题，一个大型的服务器，可能有一瞬间涌入大量的连接需求，小小的accept还不能处理</p>
 <p>其次真正在使用的时候，不可能建立好一个链接后就发个数据就没了，这个连接可能会维持很长时间再关闭</p>
 <p>开个线程去处理不就好了！ 是可以这样，但一个线程处理一个连接是很浪费的一件事</p>
 <p>你打开网页，连接建立并发送了消息，你可能会在这个网页待上一个小时，对于这个连接，没有任何的信息交流，但却让一个线程活活这么空转了一个小时，那有没有什么办法可以让这个线程来处理多个连接呢</p>
@@ -220,6 +221,22 @@
       
       
         <nav class="article-nav">
+          
+            <div class="article-nav-item layout-padding">
+  <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
+    
+      <div class="card-cover" background-image-lazy data-img="https://raw.iqiq.io/waterkin0/images/main/blogs_images/select,poll和epoll.jpg"></div>
+    
+    <div class="card-text">
+      
+        <a href="/2023/04/28/c++%20webserver/20230428/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">webserver之2.select,poll和epoll</h2>
+        </a>
+      
+      <div class="card-text--row">Newer</div>
+    </div>
+  </article>
+</div>
           
           
             <div class="article-nav-item layout-padding">
@@ -264,7 +281,7 @@
     <span>目录</span>
   </div>
   <div class="widget-body">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%AE%A2%E6%88%B7%E7%AB%AFclient"><span class="toc-text">1.客户端client</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%9C%8D%E5%8A%A1%E7%AB%AFserver"><span class="toc-text">2.服务端server</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%AE%A2%E6%88%B7%E7%AB%AFclient"><span class="toc-text">1.客户端client</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%9C%8D%E5%8A%A1%E7%AB%AFserver"><span class="toc-text">2.服务端server</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E9%A2%84%E5%91%8A-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8epoll"><span class="toc-text">3.预告-多路复用epoll</span></a></li></ol>
   </div>
 </section>
 
@@ -286,7 +303,7 @@
         <svg class="icon icon-article" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M240.51564747 647.74217627h196.07203239c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806V165.10332731c0-33.18142087-30.16492806-60.32985613-60.32985612-60.32985611H245.04038668C225.43318342 104.7734712 210.35071939 119.85593522 210.35071939 139.46313845V617.57724821c0 16.59071043 13.57421762 30.16492806 30.16492808 30.16492806z m663.62841731-452.47392089v482.63884894c0 33.18142087-27.14843525 60.32985613-60.32985612 60.32985613H180.18579134c-33.18142087 0-60.32985613-27.14843525-60.32985612-60.32985613V195.26825538c-49.77213131 0-90.49478418 40.72265287-90.49478417 90.49478417v452.4739209c0 49.77213131 40.72265287 90.49478418 90.49478417 90.49478417h286.56681657c16.59071043 0 30.16492806 13.57421762 30.16492807 30.16492807s13.57421762 30.16492806 30.16492805 30.16492806h90.49478418c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806s13.57421762-30.16492806 30.16492807-30.16492807h286.56681657c49.77213131 0 90.49478418-40.72265287 90.49478417-90.49478417V285.76303955c0-49.77213131-40.72265287-90.49478418-90.49478417-90.49478417zM587.41232014 647.74217627h191.54729318c19.60720323 0 34.68966726-15.08246403 34.68966729-34.68966727V134.93839925c0-16.59071043-13.57421762-30.16492806-30.16492808-30.16492805H617.57724821c-30.16492806 0-60.32985613 27.14843525-60.32985612 60.32985611v452.4739209c0 16.59071043 13.57421762 30.16492806 30.16492805 30.16492806z" fill="currentColor"></path>
 </svg>
-        <span>18</span>
+        <span>19</span>
       </div>
       <div class="count-box--item">
         <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -384,7 +401,7 @@
       
         <li class="categorys-list-item">
           <a href="/categories/c-webserver/">
-            c++ webserver (1)
+            c++ webserver (2)
           </a>
         </li>
       
@@ -401,7 +418,7 @@
   </div>
   <div class="widget-body">
     <div class="tags-cloud">
-      <a href="/tags/c/" style="font-size: 10px;" class="tags-cloud-0">c</a> <a href="/tags/c/" style="font-size: 13.33px;" class="tags-cloud-3">c++</a> <a href="/tags/css/" style="font-size: 16.67px;" class="tags-cloud-7">css</a> <a href="/tags/hexo/" style="font-size: 16.67px;" class="tags-cloud-7">hexo</a> <a href="/tags/html/" style="font-size: 16.67px;" class="tags-cloud-7">html</a> <a href="/tags/js/" style="font-size: 10px;" class="tags-cloud-0">js</a> <a href="/tags/key-value/" style="font-size: 10px;" class="tags-cloud-0">key_value</a> <a href="/tags/mysql/" style="font-size: 16.67px;" class="tags-cloud-7">mysql</a> <a href="/tags/php/" style="font-size: 20px;" class="tags-cloud-10">php</a> <a href="/tags/py/" style="font-size: 16.67px;" class="tags-cloud-7">py</a> <a href="/tags/redis/" style="font-size: 10px;" class="tags-cloud-0">redis</a> <a href="/tags/springboot/" style="font-size: 10px;" class="tags-cloud-0">springboot</a> <a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="font-size: 10px;" class="tags-cloud-0">云服务器</a> <a href="/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/" style="font-size: 10px;" class="tags-cloud-0">小程序</a> <a href="/tags/%E6%8A%A5%E9%94%99/" style="font-size: 10px;" class="tags-cloud-0">报错</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 16.67px;" class="tags-cloud-7">算法</a>
+      <a href="/tags/c/" style="font-size: 10px;" class="tags-cloud-0">c</a> <a href="/tags/c/" style="font-size: 15px;" class="tags-cloud-5">c++</a> <a href="/tags/css/" style="font-size: 15px;" class="tags-cloud-5">css</a> <a href="/tags/hexo/" style="font-size: 15px;" class="tags-cloud-5">hexo</a> <a href="/tags/html/" style="font-size: 15px;" class="tags-cloud-5">html</a> <a href="/tags/js/" style="font-size: 10px;" class="tags-cloud-0">js</a> <a href="/tags/key-value/" style="font-size: 10px;" class="tags-cloud-0">key_value</a> <a href="/tags/mysql/" style="font-size: 15px;" class="tags-cloud-5">mysql</a> <a href="/tags/php/" style="font-size: 20px;" class="tags-cloud-10">php</a> <a href="/tags/py/" style="font-size: 15px;" class="tags-cloud-5">py</a> <a href="/tags/redis/" style="font-size: 10px;" class="tags-cloud-0">redis</a> <a href="/tags/springboot/" style="font-size: 10px;" class="tags-cloud-0">springboot</a> <a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="font-size: 10px;" class="tags-cloud-0">云服务器</a> <a href="/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/" style="font-size: 10px;" class="tags-cloud-0">小程序</a> <a href="/tags/%E6%8A%A5%E9%94%99/" style="font-size: 10px;" class="tags-cloud-0">报错</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15px;" class="tags-cloud-5">算法</a>
     </div>
   </div>
 </section>
@@ -457,7 +474,7 @@
       setInterval("createtime()",250);
       </script>
     </p>
-	  <p>已经记载了18篇文章</p>
+	  <p>已经记载了19篇文章</p>
     <p>
       <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
       浏览量：<span id="busuanzi_value_site_pv"><i class="fa fa-spinner fa-spin"></i></span>👀 | 访客数：<span id="busuanzi_value_site_uv"><i class="fa fa-spinner fa-spin"></i></span>👦

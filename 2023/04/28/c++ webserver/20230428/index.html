@@ -31,7 +31,7 @@
 
   
 
-  <title>蚁群算法解决TSP问题 | Touma</title>
+  <title>webserver之2.select,poll和epoll | Touma</title>
 
   
 
@@ -76,7 +76,7 @@
 <!-- header container -->
 <header class="header-container post">
   
-    <div class="post-image" style="background-image: url(https://raw.iqiq.io/waterkin0/images/main/blogs_images/蚁群算法解决TSP问题.jpg)"></div>
+    <div class="post-image" style="background-image: url(https://raw.iqiq.io/waterkin0/images/main/blogs_images/select,poll和epoll.jpg)"></div>
   
   
 
@@ -130,28 +130,26 @@
     <div class="header-content">
       <div class="post-text layout-block">
         <div class="layout-margin">
-          <h1 class="title-wrap">蚁群算法解决TSP问题</h1>
+          <h1 class="title-wrap">webserver之2.select,poll和epoll</h1>
           <h2 class="title-sub-wrap">
             <strong>水帝</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2022-12-27T11:25:53.000Z" itemprop="datePublished">2022-12-27</time>
+            <time  class="article-date" datetime="2023-04-28T02:52:26.000Z" itemprop="datePublished">2023-04-28</time>
           </h2>
           <h2>
-              <span class="post-count">📖1.3k字</span>
-              <span class="post-count">⏱5分</span>
+              <span class="post-count">📖2.5k字</span>
+              <span class="post-count">⏱9分</span>
             <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
               👀<span id="busuanzi_value_page_pv"></span>次
           </h2>
           <ul class="wrap-list dark">
   
-    <li><a href="/categories/%E6%99%BA%E8%83%BD%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/">📒 智能优化算法</a></li>
+    <li><a href="/categories/c-webserver/">📒 c++ webserver</a></li>
   
 </ul>
           <ul class="wrap-list dark">
   
-    <li><a href="/tags/%E7%AE%97%E6%B3%95/">🏷️ 算法</a></li>
-  
-    <li><a href="/tags/py/">🏷️ py</a></li>
+    <li><a href="/tags/c/">🏷️ c++</a></li>
   
 </ul>
         </div>
@@ -175,90 +173,94 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <p>关于TSP问题在<a href="/2022/10/18/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%AE%9E%E9%AA%8C/20221018">上次的文章</a>用过了遗传算法来求解，这次使用另一种算法——蚁群算法</p>
-<h2 id="1-蚁群算法"><a href="#1-蚁群算法" class="headerlink" title="1.蚁群算法"></a>1.蚁群算法</h2><blockquote>
-<p>蚁群算法是一种用来寻找优化路径的概率型算法。它由Marco Dorigo于1992年在他的博士论文中提出，其灵感来源于蚂蚁在寻找食物过程中发现路径的行为 ——百度百科</p>
+        <blockquote>
+<p>本篇文章紧接<a target="_blank" rel="noopener" href="https://waterkin.top/2023/04/25/c++%20webserver/20230425/">第一篇</a>，部分代码修改自上篇内容</p>
 </blockquote>
-<p>正如百科中所述，蚁群算法和遗传算法一样灵感来自于自然</p>
-
-    <figure class="figure-image">
-      <img src="/2022/12/27/%E6%99%BA%E8%83%BD%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/20221227/1.png" alt="蚁群" loading="lazy" onload="loadImage()">
-      <figcaption>蚁群</figcaption>
-    </figure>
-  
-
-<p>如上图，蚂蚁在寻找食物的时候总会很快的找到最短路径，无论中间的路程有多么复杂，这是因为蚂蚁在整个行进的过程中会释放一定量的<strong>信息素</strong>，这种信息素会按照一定速率<strong>挥发</strong>，而在进行选择的时候他们往往会选择<strong>浓度高</strong>的地方前进，大量的蚂蚁进行不断探索，短的地方浓度会高，导致走的蚂蚁更多，浓度更高，形成正反馈，导致找到最短的路径</p>
-<p>正如刚才描述的一样，我们可以得到待会需要的数据和操作步骤</p>
-<p>数据：信息素浓度矩阵，挥发速率，蚂蚁的行走路线</p>
-<p>步骤：</p>
-<ol>
-<li>初始化</li>
-<li>为每只蚂蚁选择下一个节点</li>
-<li>更新信息素矩阵</li>
-<li>检查终止条件</li>
-<li>得到答案</li>
-</ol>
+<p>在谈谈如何让这群打工人不摸鱼之前，先来看看什么是多路复用：</p>
+<ul>
+<li>多路: 多个socket网络连接</li>
+<li>复用: 复用一个线程</li>
+<li>linux上的多路复用主要有三种：select，poll，epoll。epoll是最新的, 也是目前最好的多路复用技术</li>
+</ul>
 <blockquote>
-<p>一般终止条件就是达到目标迭代数</p>
+<p>本文不讲select和poll，如果想了解可以参考<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/YdIdoZ_yusVWza1PU7lWaw">这篇</a>很棒的文章</p>
 </blockquote>
-<p>那么直接上代码好了</p>
-<h2 id="2-代码和解释"><a href="#2-代码和解释" class="headerlink" title="2.代码和解释"></a>2.代码和解释</h2><p>为了方便，将所有的过程全部放在一个类里面了</p>
-<h3 id="2-1-初始化"><a href="#2-1-初始化" class="headerlink" title="2.1.初始化"></a>2.1.初始化</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> random<br><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd<br><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">yiqun</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>        self.N = <span class="hljs-number">20</span> <span class="hljs-comment">#蚂蚁个数</span><br>        self.M = <span class="hljs-number">22</span> <span class="hljs-comment">#城市个数</span><br>        self.order = []  <span class="hljs-comment"># 记录路线</span><br>        self.way = [] <span class="hljs-comment"># 记录最优路线</span><br>        self.best_one = <span class="hljs-number">15000</span>  <span class="hljs-comment"># best_one记录最优距离</span><br>        self.bests = [] <span class="hljs-comment">#最优距离的集合</span><br>        self.dis = self.build_distance()<br>        self.Q = <span class="hljs-number">3</span> <span class="hljs-comment"># 信息素强度</span><br>        self.changecon = <span class="hljs-number">0.5</span><br>        self.con = [[<span class="hljs-number">1</span>] * self.M <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(self.M)] <span class="hljs-comment">#信息素</span><br><br>    <span class="hljs-comment"># 构建距离矩阵</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">build_distance</span>(<span class="hljs-params">self</span>):<br>        data1 = pd.read_excel(<span class="hljs-string">r&#x27;距离矩阵.xlsx&#x27;</span>)<br>        names = data1[<span class="hljs-string">&#x27;院楼名称&#x27;</span>]<br>        names = <span class="hljs-built_in">list</span>(names)<br>        data1 = data1.values<br>        dis = []<br>        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">22</span>):<br>            dis.append(data1[i][<span class="hljs-number">1</span>:])<br>        <span class="hljs-keyword">return</span> dis<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">get_longth</span>(<span class="hljs-params">self, t</span>):  <span class="hljs-comment"># 路线长度</span><br>        result = <span class="hljs-number">0</span><br>        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, self.M):<br>            result += self.dis[t[i]][t[i - <span class="hljs-number">1</span>]]<br>        result += self.dis[t[<span class="hljs-number">0</span>]][t[self.M - <span class="hljs-number">1</span>]]<br>        <span class="hljs-keyword">return</span> result<br></code></pre></td></tr></table></figure>
+<p>以及文件系统中的IO系统一般是缓存IO，在Linux的缓存IO机制中，操作系统会将IO的数据缓存在文件系统的页缓存（page cache）。也就是说，数据会先被拷贝到操作系统内核的缓冲区中，然后才会从操作系统内核的缓存区拷贝到应用程序的地址空间中</p>
+<p>那么为啥不能直接从磁盘送到应用内存中呢，<strong>最简单的原因就是应用不能直接操作系统的硬件</strong></p>
+<p>因而产生了select，poll，epoll这种系统提供的函数，可以直接对系统进行操作</p>
+<h2 id="1-epoll是什么原理"><a href="#1-epoll是什么原理" class="headerlink" title="1.epoll是什么原理"></a>1.epoll是什么原理</h2><p>如果你看了上面推荐的<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/YdIdoZ_yusVWza1PU7lWaw">那篇文章</a>，那么这里其实可以跳过了，这里是给懒得看那么长的文章的人写的</p>
+<p>select，poll，epoll的思路类似，都是调用这些系统提供的函数，来监听指定的套接字和事件，并等待其返回，但细节有很多不同</p>
+<p>创建epoll之后，告诉其需要注意的套接字及其会发生的事件(比如写或者读事件)</p>
+<p>与select不同的是，这里可以只告诉其需要监听的事件发生了什么改变，而不是直接传整个一堆事件进去，比如一开始创建了监听读事件，对于select，需要改变这个想监听的事件(这里假设要加一个写事件)是要重新创建一个写+读的事件并传入，而select可以直接用add一个写事件</p>
+<p>然后就可以等待了，这个等待默认是阻塞的，当系统的epoll发现事件发生，会将这些<strong>已经发生了的事件</strong>的相关数据打包给你，而对应select，会将整个你监听的**全部返回(无论是否发生)**，你在应用内还需要遍历来确定那些是被select标记为发生</p>
+<h2 id="2-如何运用epoll"><a href="#2-如何运用epoll" class="headerlink" title="2.如何运用epoll"></a>2.如何运用epoll</h2><p>epoll看起来很简单，因为只有三个函数：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">epoll_create</span><span class="hljs-params">(<span class="hljs-type">int</span> size)</span></span>;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">epoll_ctl</span><span class="hljs-params">(<span class="hljs-type">int</span> epfd, <span class="hljs-type">int</span> op, <span class="hljs-type">int</span> fd, <span class="hljs-keyword">struct</span> epoll_event *event)</span></span>;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">epoll_wait</span><span class="hljs-params">(<span class="hljs-type">int</span> epfd, <span class="hljs-keyword">struct</span> epoll_event *events, <span class="hljs-type">int</span> max events, <span class="hljs-type">int</span> timeout)</span></span>;<br></code></pre></td></tr></table></figure>
 
-<p>一共22个城市，20只蚂蚁，最优距离初始化为15000，当然可以大一点，不过我这里怎么跑都会小于15000就是了，信息素强度设为3，即每一步蚂蚁会释放3个单位的信息素，挥发速率为0.9</p>
-<p>下面的build_distance函数就是读取矩阵的数据了，这个可以自行根据需要编写</p>
-<h3 id="2-2-移动"><a href="#2-2-移动" class="headerlink" title="2.2.移动"></a>2.2.移动</h3><p>这里就是为每只蚂蚁选择下一个节点了</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">move</span>(<span class="hljs-params">self, x, nowpos</span>):  <span class="hljs-comment">#x从nowpos移动，返回移动的下一个点</span><br>    allone = <span class="hljs-number">0.0</span><br>    one = [<span class="hljs-number">0.0</span>] * self.M<br>    <span class="hljs-comment">#print(self.order[x])</span><br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(self.M):<br>        <span class="hljs-keyword">if</span> (i <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> self.order[x] <span class="hljs-keyword">and</span> self.dis[nowpos][i] != <span class="hljs-number">0</span>):  <br>            one[i] = <span class="hljs-built_in">pow</span>(self.con[nowpos][i],<span class="hljs-number">1</span>) * <span class="hljs-built_in">pow</span>((<span class="hljs-number">1</span> / self.dis[nowpos][i]),<span class="hljs-number">6</span>)<span class="hljs-comment"># 概率计算</span><br>        <span class="hljs-keyword">else</span>:<br>            one[i] = <span class="hljs-number">0</span><br>        allone += one[i]<br>    <span class="hljs-keyword">if</span> allone == <span class="hljs-number">0</span>:<span class="hljs-comment">#已经走完一次，返回0</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span><br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(self.M):  <span class="hljs-comment"># 轮盘赌</span><br>        one[i] = one[i] / allone<br>    num = random.random()<br>    temp = <span class="hljs-number">0</span><br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(self.M):<br>        temp += one[i]<br>        <span class="hljs-keyword">if</span> (temp &gt;= num): <br>            <span class="hljs-keyword">return</span> i<br>    <span class="hljs-keyword">return</span> self.M - <span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+<h3 id="1-epoll-create"><a href="#1-epoll-create" class="headerlink" title="1.epoll_create"></a>1.epoll_create</h3><p>很简单啊，创建一个epoll，后面这个参数没有意义，只要大于0就可以，那么我这里：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-built_in">epoll_create</span>(<span class="hljs-number">114514</span>);<br></code></pre></td></tr></table></figure>
 
-<p>概率计算一般是用信息素con的值(的α次方)乘以距离的倒数(的β次方) <code>(self.con[nowpos][i]^α)* ((1 / self.dis[nowpos][i])^β)</code></p>
-<p>这个α和β是两者的因子，比值一般在1：6左右为好</p>
-<p>该函数返回下一个地点，用这个函数实现蚂蚁的前进</p>
-<h3 id="2-3-迭代内容"><a href="#2-3-迭代内容" class="headerlink" title="2.3.迭代内容"></a>2.3.迭代内容</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">get</span>(<span class="hljs-params">self</span>):<br>    self.order = [[<span class="hljs-number">0</span>] * self.M <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(self.N)]  <span class="hljs-comment"># 重新记录路线</span><br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(self.N):<br>        <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(self.M-<span class="hljs-number">1</span>):<br>            ob = self.move(i, self.order[i][j])  <span class="hljs-comment"># 向前移动一步,返回移动的点</span><br>            self.order[i][j + <span class="hljs-number">1</span>] = ob <span class="hljs-comment"># 更新路线</span><br>        <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(self.M):<br>            self.con[self.order[i][j]][ob] += self.Q / self.get_longth(self.order[i])  <span class="hljs-comment"># 更新信息素</span><br>        a = self.order[i][self.M - <span class="hljs-number">1</span>]<br>        b = self.order[i][<span class="hljs-number">0</span>]<br>        self.con[a][b] += self.Q / self.get_longth(self.order[i])<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(self.N):  <span class="hljs-comment"># 计算每只蚂蚁路径长度</span><br>        longth = self.get_longth(self.order[i])<br>        <span class="hljs-keyword">if</span> (longth &lt; self.best_one):  <span class="hljs-comment"># 更新最优解</span><br>            self.best_one = longth<br>            self.way = self.order[i]<br>    self.bests.append(self.best_one)<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(self.M):  <span class="hljs-comment"># 挥发</span><br>        <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(self.M):<br>            self.con[i][j] *= self.changecon<br></code></pre></td></tr></table></figure>
+<h3 id="2-epoll-ctl"><a href="#2-epoll-ctl" class="headerlink" title="2.epoll_ctl"></a>2.epoll_ctl</h3><p>对epoll进行设置，四个参数分别是</p>
+<ol>
+<li>要操作内核的文件描述符，即epoll_create返回的</li>
+<li>操作类型，有：<ul>
+<li>EPOLL_CTL_ADD:添加监听的事件</li>
+<li>EPOLL_CTL_DEL:删除监听的事件</li>
+<li>EPOLL_CTL_MOD:修改监听的事件</li>
+</ul>
+</li>
+<li>所要操作用户的文件描述符，即要监听的套接字</li>
+<li>指定监听类型，由event定义<ul>
+<li>EPOLLIN: 描述符可读</li>
+<li>EPOLLOUT: 描述符可写</li>
+<li>EPOLLRDHUP(since Linux 2.6.17): 流套接字对端关闭连接或者关闭写端</li>
+<li>EPOLLPRI: 紧急数据可读</li>
+<li>EPOLLERR: 描述符发生错误，该事件由内核一直监听（比如connect套接字失败会返回EPOLLERR）</li>
+<li>EPOLLHUP: 文件秒杀符被中断，该事件由内核一直监听</li>
+<li>EPOLLET: 开启边缘触发，默认是水平触发</li>
+<li>EPOLLONESHOT: 一个事件发生并读取之后，fd自动不再监控；若要重新监控需要使用EPOLL_CTL_MOD重新设置<br>返回值: 成功返回0，失败返回－1并设置errno</li>
+</ul>
+</li>
+</ol>
+<p>那么我这里专门写一个addfd进行epoll的设置：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">addfd</span><span class="hljs-params">(<span class="hljs-type">int</span> epollfd, <span class="hljs-type">int</span> fd)</span> </span>&#123;<br>    epoll_event event;<span class="hljs-comment">//定义监听的事件类型</span><br>    event.data.fd = fd; <br>    event.events = EPOLLIN | EPOLLET | EPOLLRDHUP | EPOLLONESHOT;<br>    <span class="hljs-comment">/* 针对connfd，开启EPOLLONESHOT，因为我们希望每个socket在任意时刻都只被一个线程处理 */</span><br>    <span class="hljs-built_in">epoll_ctl</span>(epollfd, EPOLL_CTL_ADD, fd, &amp;event); <span class="hljs-comment">//四个参数分别是1.要操作内核的文件描述符，即epoll_create返回的，2.操作类型，3.所要操作用户的文件描述符，4.指定监听类型</span><br>    <span class="hljs-built_in">setnonblocking</span>(fd);<span class="hljs-comment">//将这个套接字变为非阻塞</span><br>&#125;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">setnonblocking</span><span class="hljs-params">( <span class="hljs-type">int</span> fd )</span>   <span class="hljs-comment">//自定义函数，用于设置套接字为非阻塞套接字</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">int</span> old_option = <span class="hljs-built_in">fcntl</span>( fd, F_GETFL );<span class="hljs-comment">//取得fd的文件状态标志</span><br>    <span class="hljs-type">int</span> new_option = old_option | O_NONBLOCK;<br>    <span class="hljs-built_in">fcntl</span>( fd, F_SETFL, new_option );        <span class="hljs-comment">//设置为非阻塞套接字</span><br>    <span class="hljs-keyword">return</span> old_option;<br>&#125;<br></code></pre></td></tr></table></figure>
 
-<p>利用move函数进行移动，并更新对应路线，在所有路线都更新完成后在更新信息素</p>
-<p>这里更新信息素的方法有三种：</p>
-<table>
-<thead>
-<tr>
-<th align="center">\</th>
-<th align="center">蚁周模型</th>
-<th align="center">蚁量模型</th>
-<th align="center">蚁密模型</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">每次增量</td>
-<td align="center">Q&#x2F;Lk</td>
-<td align="center">Q&#x2F;dij</td>
-<td align="center">Q</td>
-</tr>
-<tr>
-<td align="center">改变时机</td>
-<td align="center">第K只蚂蚁走完一次路线后</td>
-<td align="center">每走一步</td>
-<td align="center">每走一步</td>
-</tr>
-</tbody></table>
-<p>Lk是蚂蚁当前路线整个路程长，dij是ij之间的路程，即一步的路程长</p>
-<p>蚁周模型是全局模型，后两者是局部模型</p>
-<p>这里采用了蚁周模型</p>
-<h3 id="2-4-结果"><a href="#2-4-结果" class="headerlink" title="2.4.结果"></a>2.4.结果</h3><p>选择迭代500次：</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">def</span> <span class="hljs-title function_">show</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">500</span>):  <span class="hljs-comment"># 迭代500次</span><br>        self.get()<br>    <span class="hljs-built_in">print</span>(self.way) <span class="hljs-comment"># 路线</span><br>    <span class="hljs-built_in">print</span>(<span class="hljs-built_in">round</span>(self.best_one, <span class="hljs-number">3</span>))  <span class="hljs-comment"># 距离,保留三位小数</span><br>    plt.plot(self.bests) <span class="hljs-comment">#画图</span><br>    plt.show()<br></code></pre></td></tr></table></figure>
+<p>那么注意上面的event的设置，我们这里设置了4个值</p>
+<p>首先是<strong>EPOLLIN</strong>，虽然触发条件是描述符可读，但实际上在新连接开启后也会触发这个事件</p>
+<p>那么为什么不一起写上EPOLLOUT呢，因为这个例子没这个必要，比如当你传10g的文件，缓存区肯定不够，这时才需要EPOLLOUT来判断缓存区空出来了吗，以此进行继续的传输</p>
+<p><strong>EPOLLET</strong>：边缘触发，一个epoll重要的概念，后续的很多写法和这个触发方式有关，epoll默认采用水平触发</p>
+<p>关于这两种触发，如果学过电子电路，肯定不会陌生，水平触发就是高水平的时候会一直触发，边缘触发就是状态改变才会触发</p>
+<p>前者由于会一直触发，性能肯定不如后者，但后者在使用时需要注意，每次状态的改变只会触发一个，也就是说，比如传入了100k的数据，触发读取，你只读了20k，那么剩下的80k就一直留在那了，也就是每次读取都要保证读完，具体表现为循环调用 recv 函数直到 recv 出错（错误码是 EWOULDBLOCK 或者EAGAIN，这两错误码一样），而水平触发就不用在意</p>
+<p><strong>EPOLLRDHUP</strong>就像上面讲的一样，断开连接会触发，不多做讲解</p>
+<p><strong>EPOLLONESHOT</strong>是让该socket只处理一次，后续具体是让这个socket只由一个线程操作，因为后续多线程的时候，容易出现这个套接字被反复读取从而被多个线程处理</p>
+<p>但你可以试试，如果直接这样定义，在一次处理完这个socket的事件后，第二次请求将会阻塞，客户端没有得到返回的，因为服务器已经处理过这个socket了，不会再次理会这次的请求</p>
+<p>所以需要定义一个函数，重置EPOLLONESHOT事件，让其可以再次被使用(你可以理解为第一次设置将可处理次数变为1，然后开始处理时变为0，防止其他线程重复处理，而处理完后重新变为1，这样才可以继续处理后续的请求)</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">resetfd</span><span class="hljs-params">(<span class="hljs-type">int</span> epollfd,<span class="hljs-type">int</span> fd)</span></span>&#123;<span class="hljs-comment">//重置事件</span><br>    epoll_event event;<br>    event.data.fd = fd;<br>    event.events = EPOLLIN | EPOLLET | EPOLLRDHUP | EPOLLONESHOT;<br>    <span class="hljs-built_in">epoll_ctl</span>(epollfd, EPOLL_CTL_MOD, fd, &amp;event);<br>&#125;<br></code></pre></td></tr></table></figure>
 
-<p>那么得到结果：</p>
+<p>最后就是为啥要将这个套接字设置为非阻塞呢，其实想想就明白，如果是阻塞，会阻塞在例如读&#x2F;写操作，怎么进行复用呢</p>
+<blockquote>
+<p>这个设置为非阻塞的函数是linux下的，因为运用到了其万物皆文件的特性</p>
+</blockquote>
+<h3 id="3-epoll-wait"><a href="#3-epoll-wait" class="headerlink" title="3.epoll_wait"></a>3.epoll_wait</h3><p>唯一需要阻塞的函数，四个参数分别为：</p>
+<ol>
+<li>要操作的内核文件描述符，即 epoll_create 的返回值</li>
+<li>存储内核事件表中得到的检测事件集合，需要自己创建</li>
+<li>内核 events 的最大 size</li>
+<li>指定超时时间，单位毫秒，-1就永不超时</li>
+</ol>
+<p>函数返回值是触发的事件个数，那么具体实现可以是：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> MAX_EVENT_NUMBER 10</span><br>epoll_event events[MAX_EVENT_NUMBER]; <br><span class="hljs-type">int</span> number = <span class="hljs-built_in">epoll_wait</span>(epollfd, events, MAX_EVENT_NUMBER, <span class="hljs-number">-1</span>);<br></code></pre></td></tr></table></figure>
 
-    <figure class="figure-image">
-      <img src="/2022/12/27/%E6%99%BA%E8%83%BD%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/20221227/2.png" alt="结果" loading="lazy" onload="loadImage()">
-      <figcaption>结果</figcaption>
-    </figure>
-  
+<p>那么触发的事件就会被存在events这个数组中，等待被你一个个拿出处理</p>
+<p>那么具体实现就是(把上篇文章的listen后边换成下面的即可)：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-type">int</span> epollfd = <span class="hljs-built_in">epoll_create</span>(<span class="hljs-number">114514</span>); <span class="hljs-comment">//创建epoll，这个数字大于0即可，无意义</span><br>epoll_event events[MAX_EVENT_NUMBER];  <span class="hljs-comment">//用来存事件</span><br><span class="hljs-comment">/* 主线程往epoll内核事件表中注册监听socket事件，当listen到新的客户连接时，listenfd变为就绪事件 */</span><br><span class="hljs-built_in">addfd</span>(epollfd, listenfd); <br><span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)&#123;<br>    <span class="hljs-type">int</span> number = <span class="hljs-built_in">epoll_wait</span>(epollfd, events, MAX_EVENT_NUMBER, <span class="hljs-number">-1</span>);<span class="hljs-comment">//1.要操作的内核文件描述符，即 epoll_create 的返回值2.存储内核事件表中得到的检测事件集合3.内核 events 的最大 size，4.指定超时时间</span><br>    <span class="hljs-comment">//注意上面只有wait是阻塞的</span><br><br>    <span class="hljs-comment">/* 然后我们遍历这一数组以处理这些已经就绪的事件 */</span><br>    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; number; ++i) &#123;<br>        <span class="hljs-type">int</span> sockfd = events[i].data.fd;  <span class="hljs-comment">// 事件表中就绪的socket文件描述符</span><br>        <span class="hljs-keyword">if</span>(sockfd == listenfd) &#123;  <span class="hljs-comment">// 当listen到新的用户连接，listenfd上则产生就绪事件</span><br>            std::cout &lt;&lt; <span class="hljs-string">&quot;处理新的连接&quot;</span> &lt;&lt; std::endl;<br>            <span class="hljs-keyword">struct</span> <span class="hljs-title class_">sockaddr_in</span> client_address;<br>            <span class="hljs-type">socklen_t</span> client_addrlength = <span class="hljs-built_in">sizeof</span>(client_address);<br>            <span class="hljs-comment">/* ET模式 */</span><br>            <span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)&#123;<br>                <span class="hljs-type">int</span> connfd = <span class="hljs-built_in">accept</span>(listenfd, (<span class="hljs-keyword">struct</span> sockaddr *) &amp;client_address, &amp;client_addrlength);<br>                <span class="hljs-keyword">if</span>(connfd &lt; <span class="hljs-number">0</span>) <span class="hljs-keyword">break</span>;<br>                <span class="hljs-type">char</span> str[] = <span class="hljs-string">&quot;Hello World!&quot;</span>;<br>                <span class="hljs-built_in">write</span>(connfd, str, <span class="hljs-built_in">sizeof</span>(str));<br>            &#125;<br>        &#125;<br>        <span class="hljs-built_in">resetfd</span>(epollfd, sockfd);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 
-
-    <figure class="figure-image">
-      <img src="/2022/12/27/%E6%99%BA%E8%83%BD%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/20221227/3.png" alt="收敛图" loading="lazy" onload="loadImage()">
-      <figcaption>收敛图</figcaption>
-    </figure>
-  
+<p>然后上述代码其实不太标准，删了很多处理，比如将新的套接字加入epoll，但这里只是为了演示epoll的处理，也就够了</p>
+<p>运行你的服务器，启动你的客户端，那么是可以正常返回的，结果和第一篇文章一样</p>
+<h2 id="3-预告-线程池"><a href="#3-预告-线程池" class="headerlink" title="3.预告-线程池"></a>3.预告-线程池</h2><p>其实讲了这么多，所有的所有都是建立在多线程的基础上的，每次处理新事件都会创建一个新的线程</p>
+<p>但这样是否会浪费过多资源在创建-删除上？尤其是当连接很多，创建删除线程更会占据大量资源和时间</p>
+<p>于是就要引入线程池这个概念了，提前创建好一定数量的线程，需要的时候取用，用完还给线程池即可</p>
+<p>线程池本质是一个空间换时间的作用，用提前创建好占空间来换每次创建删除的时间</p>
+<p>那么下次就暂时抛开网络，看看如何实现线程池</p>
 
       </section>
 
@@ -266,32 +268,16 @@
       
         <nav class="article-nav">
           
-            <div class="article-nav-item layout-padding">
-  <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
-    
-      <div class="card-cover" background-image-lazy data-img="https://raw.iqiq.io/waterkin0/images/main/blogs_images/学习mysql过程中的一些报错.png"></div>
-    
-    <div class="card-text">
-      
-        <a href="/2023/03/08/mysql+php/20230308/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">学习mysql过程中的一些报错</h2>
-        </a>
-      
-      <div class="card-text--row">Newer</div>
-    </div>
-  </article>
-</div>
-          
           
             <div class="article-nav-item layout-padding">
   <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
     
-      <div class="card-cover" background-image-lazy data-img="https://raw.iqiq.io/waterkin0/images/main/blogs_images/hexo美化3.jpg"></div>
+      <div class="card-cover" background-image-lazy data-img="https://raw.iqiq.io/waterkin0/images/main/blogs_images/socket编程.png"></div>
     
     <div class="card-text">
       
-        <a href="/2022/12/26/hexo%E4%B8%BB%E9%A2%98%E4%BC%98%E5%8C%96/20221226/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">有关flex-block主题的美化.3</h2>
+        <a href="/2023/04/25/c++%20webserver/20230425/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">webserver之1.socket编程</h2>
         </a>
       
       <div class="card-text--row">Older</div>
@@ -325,7 +311,7 @@
     <span>目录</span>
   </div>
   <div class="widget-body">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E8%9A%81%E7%BE%A4%E7%AE%97%E6%B3%95"><span class="toc-text">1.蚁群算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E4%BB%A3%E7%A0%81%E5%92%8C%E8%A7%A3%E9%87%8A"><span class="toc-text">2.代码和解释</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-text">2.1.初始化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E7%A7%BB%E5%8A%A8"><span class="toc-text">2.2.移动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E8%BF%AD%E4%BB%A3%E5%86%85%E5%AE%B9"><span class="toc-text">2.3.迭代内容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E7%BB%93%E6%9E%9C"><span class="toc-text">2.4.结果</span></a></li></ol></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-epoll%E6%98%AF%E4%BB%80%E4%B9%88%E5%8E%9F%E7%90%86"><span class="toc-text">1.epoll是什么原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%A6%82%E4%BD%95%E8%BF%90%E7%94%A8epoll"><span class="toc-text">2.如何运用epoll</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-epoll-create"><span class="toc-text">1.epoll_create</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-epoll-ctl"><span class="toc-text">2.epoll_ctl</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-epoll-wait"><span class="toc-text">3.epoll_wait</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E9%A2%84%E5%91%8A-%E7%BA%BF%E7%A8%8B%E6%B1%A0"><span class="toc-text">3.预告-线程池</span></a></li></ol>
   </div>
 </section>
 
