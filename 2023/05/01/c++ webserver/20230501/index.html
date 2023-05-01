@@ -31,7 +31,7 @@
 
   
 
-  <title>学习php过程中的一些问题 | Touma</title>
+  <title>webserver之3.线程池 | Touma</title>
 
   
 
@@ -76,7 +76,7 @@
 <!-- header container -->
 <header class="header-container post">
   
-    <div class="post-image" style="background-image: url(https://raw.iqiq.io/waterkin0/images/main/blogs_images/学习php过程中的一些问题.jpg)"></div>
+    <div class="post-image" style="background-image: url(https://raw.iqiq.io/waterkin0/images/main/blogs_images/线程池.png)"></div>
   
   
 
@@ -130,28 +130,26 @@
     <div class="header-content">
       <div class="post-text layout-block">
         <div class="layout-margin">
-          <h1 class="title-wrap">学习php过程中的一些问题</h1>
+          <h1 class="title-wrap">webserver之3.线程池</h1>
           <h2 class="title-sub-wrap">
             <strong>水帝</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2023-03-23T08:57:39.000Z" itemprop="datePublished">2023-03-23</time>
+            <time  class="article-date" datetime="2023-05-01T03:00:41.374Z" itemprop="datePublished">2023-05-01</time>
           </h2>
           <h2>
-              <span class="post-count">📖291字</span>
-              <span class="post-count">⏱1分</span>
+              <span class="post-count">📖1.7k字</span>
+              <span class="post-count">⏱6分</span>
             <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
               👀<span id="busuanzi_value_page_pv"></span>次
           </h2>
           <ul class="wrap-list dark">
   
-    <li><a href="/categories/mysql-php/">📒 mysql+php</a></li>
+    <li><a href="/categories/c-webserver/">📒 c++ webserver</a></li>
   
 </ul>
           <ul class="wrap-list dark">
   
-    <li><a href="/tags/mysql/">🏷️ mysql</a></li>
-  
-    <li><a href="/tags/php/">🏷️ php</a></li>
+    <li><a href="/tags/c/">🏷️ c++</a></li>
   
 </ul>
         </div>
@@ -176,30 +174,81 @@
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
         <blockquote>
-<p>（更新中）</p>
+<p>本篇文章紧接<a target="_blank" rel="noopener" href="https://waterkin.top/2023/04/28/c++%20webserver/20230428/">第二篇</a>，但相对独立</p>
 </blockquote>
-<p>主要是写php遇到的问题</p>
-<h2 id="1-在form提交后防止刷新"><a href="#1-在form提交后防止刷新" class="headerlink" title="1.在form提交后防止刷新"></a>1.在form提交后防止刷新</h2><p>我这里是用ajax提交的，方便进行表单验证，错误就直接打印在当前页面，但是实际操作的时候发现提交后那个错误信息只会打印一瞬间</p>
-<p>其实这里是 <code>submit</code>提交后强制刷新页面，我就修改了一下：</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;button&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;mysql_login&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;登陆&quot;</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<p>由于本次服务器基于c++实现，所以本文的线程池会用到c++内的一些东西，而网上很多都是c实现的，比如条件变量和锁都需要自己定义</p>
+<p>幸而c++已经帮我们定义好了，我们可以直接调用</p>
+<h2 id="1-基础"><a href="#1-基础" class="headerlink" title="1.基础"></a>1.基础</h2><p>为保证线程的正常分配和执行，本文用来两个工具：互斥锁mutex和条件变量condition_variable，定义于：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;mutex&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;condition_variable&gt;</span></span><br></code></pre></td></tr></table></figure>
 
-<p>把 <code>type</code>的 <code>sumbit</code>改为 <code>button</code>了，然后触发改为 <code>onclick</code>，因为实际的提交表单是由js完成的</p>
+<p>条件变量就是满足条件才会运行，这里是其 <code>wait()</code>函数，会阻塞到有其他线程调用 <code>notify_one()</code>（放开一个wait）或者 <code>notify_all()</code>（放开所有wait）才会继续运行</p>
 <blockquote>
-<p>form内如果直接用button进行编写，如</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">button</span>&gt;</span>登陆<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span><br></code></pre></td></tr></table></figure>
-
-<p>也是不可以的，因为form内的button自带sumbit，当然加上 <code>type=&quot;button&quot;</code>后也是可以的</p>
+<p>互斥锁和条件变量经常一起用，比如wait会传入这个互斥锁的参数，而在开始阻塞时会自动释放这个锁，运行时会继续上锁，感谢c++，不然还得写这段逻辑</p>
 </blockquote>
-<h2 id="2-Compilation-failed-PCRE-does-not-support-L-l-N-P-p-U-u-or-X-at-…"><a href="#2-Compilation-failed-PCRE-does-not-support-L-l-N-P-p-U-u-or-X-at-…" class="headerlink" title="2.Compilation failed: PCRE does not support \L, \l, \N, \P, \p, \U, \u, or \X at …"></a>2.Compilation failed: PCRE does not support \L, \l, \N, \P, \p, \U, \u, or \X at …</h2><blockquote>
-<p>preg_match() [function.preg-match]: Compilation failed: PCRE does not support \L, \l, \N, \P, \p, \U, \u, or \X at …</p>
+<p>那么线程池是如何利用这两个变量进行运作的呢</p>
+<p>上篇文章的最后也有提到，就是让应用一开始就创建规定数量的线程并维护，需要用的时候就取出来运行指定的程序就好</p>
+<p>那么这些指定的程序也需要一个队列去存以进行后续的处理</p>
+<p>其实不难看出，线程池的核心就是2个东西： 1.一堆线程 2.任务队列</p>
+<p>那么接下来就是如何依次实现了</p>
+<blockquote>
+<p>与之前不同的是，本次写在一个类内，后续应该也都是这种写法了</p>
 </blockquote>
-<p>pcre自己的问题，中文匹配出错，要像下面这样更改：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">/^[\x&#123;4e00&#125;-\x&#123;9fa5&#125;A-Za-z0-9_]&#123;2,12&#125;$/<br></code></pre></td></tr></table></figure>
+<h2 id="2-实现"><a href="#2-实现" class="headerlink" title="2.实现"></a>2.实现</h2><p>忘记提一嘴了，c++有一个重要的机制，RALL，资源获取即初始化，说简单一点就是类的自动构造和析构，这能帮我们省很多事</p>
+<p>比如互斥锁可以包裹在一个类内，其析构函数就是解开这个锁，而在我们实际调用的时候，如果直接用锁(不是指c++的mutex而是c中的pthread_mutex，因为前者就是后者的包裹类)，如果我们在代码的最后忘记解锁了，会出现很大的麻烦</p>
+<p>更常见的例子就是循环定义了一堆new的变量而在这段代码结束时没有释放，那么你会看到：</p>
 
-<p>改为</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">/^[\x&#123;4e00&#125;-\x&#123;9fa5&#125;A-Za-z0-9_]&#123;2,12&#125;$/u<br></code></pre></td></tr></table></figure>
+    <figure class="figure-image">
+      <img src="/2023/05/01/c++%20webserver/20230501/1.png" alt loading="lazy" onload="loadImage()">
+      <figcaption></figcaption>
+    </figure>
+  
 
-<p>即可</p>
+<p>但是如果我们将其放在类内并在析构函数写上delete，就不怕忘记了，因为在离开其作用域时会自动析构</p>
+<p>互斥锁同理，c++的mutex就是已经帮我们包装好的锁，不用我们手动解锁了</p>
+<p>在一切之前首先是一些全局的变量，比如互斥锁和条件变量，这些变量或者函数会声明在这个类内：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> T&gt;<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">threadpool</span>&#123;<br>    <span class="hljs-keyword">private</span>:<br>        vector&lt;thread&gt; threads;       <span class="hljs-comment">//描述线程池的数组，其大小为MAX_THREADPOOL_NUM</span><br>        queue&lt;T*&gt; requests; <span class="hljs-comment">//请求队列,先进先出</span><br>        mutex mux;       <span class="hljs-comment">//保护请求队列的互斥锁</span><br>        condition_variable cv;            <span class="hljs-comment">//条件变量，确定是否有请求要处理</span><br>        <span class="hljs-type">bool</span> is_run; <span class="hljs-comment">//线程池是否在运行</span><br>        <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">work</span><span class="hljs-params">()</span></span>; <span class="hljs-comment">//每个线程运行的部分</span><br>    <span class="hljs-keyword">public</span>:<br>        <span class="hljs-built_in">threadpool</span>();<br>        ~<span class="hljs-built_in">threadpool</span>();<br>        <span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">appendrequest</span><span class="hljs-params">(T* t)</span></span>; <span class="hljs-comment">//增加请求</span><br>        <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">stop</span><span class="hljs-params">()</span></span>; <span class="hljs-comment">//停止线程池</span><br>        <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">start</span><span class="hljs-params">()</span></span>; <span class="hljs-comment">//开始线程池</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>上面就是所有要用到的变量和函数了</p>
+<p>各个变量的作用已经标出并且不难理解，那么主要介绍函数了</p>
+<h3 id="1-构造和析构函数"><a href="#1-构造和析构函数" class="headerlink" title="1.构造和析构函数"></a>1.构造和析构函数</h3><p>就是对start和stop的复制罢了，因为上面的变量都不需要初始化</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> T&gt;<br>threadpool&lt;T&gt;::<span class="hljs-built_in">threadpool</span>() : <span class="hljs-built_in">is_run</span>(<span class="hljs-literal">true</span>) &#123;<br>    <span class="hljs-built_in">start</span>();<br>&#125;<br><br><span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> T&gt;<br>threadpool&lt;T&gt;::~<span class="hljs-built_in">threadpool</span>() &#123;<br>    <span class="hljs-built_in">stop</span>();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-开始和停止"><a href="#2-开始和停止" class="headerlink" title="2.开始和停止"></a>2.开始和停止</h3><p>虽然我们用的是vector来装每个线程，但我们还是要规定一个线程数，你可以定义在类内，也可以像我一样定义为宏：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">define</span> MAX_THREADPOOL_NUM 10 <span class="hljs-comment">//线程池的线程数</span></span><br></code></pre></td></tr></table></figure>
+
+<p>然后就是创建线程并加入线程池：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> T&gt;<br><span class="hljs-type">void</span> threadpool&lt;T&gt;::<span class="hljs-built_in">start</span>()&#123;<br>    is_run = <span class="hljs-literal">true</span>;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; MAX_THREADPOOL_NUM; i++)&#123;<br>        threads.<span class="hljs-built_in">push_back</span>(<span class="hljs-built_in">thread</span>(&amp;threadpool::work, <span class="hljs-keyword">this</span>));<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>work函数还没定义，是每个线程执行的函数</p>
+<p>stop函数也相对简单：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> T&gt;<br><span class="hljs-type">void</span> threadpool&lt;T&gt;::<span class="hljs-built_in">stop</span>()&#123;<br>    &#123;<br>        <span class="hljs-function">std::unique_lock&lt;std::mutex&gt; <span class="hljs-title">lock</span><span class="hljs-params">(mux)</span></span>;<br>        is_run = <span class="hljs-literal">false</span>;<br>        cv.<span class="hljs-built_in">notify_all</span>();<br>    &#125;<br>    <span class="hljs-keyword">for</span> (std::thread &amp;thd : threads)&#123;<br>        <span class="hljs-keyword">if</span> (thd.<span class="hljs-built_in">joinable</span>())&#123;<br>            thd.<span class="hljs-built_in">join</span>();<br>        &#125;<br>    &#125;<br>    cout&lt;&lt; <span class="hljs-string">&quot;线程池已被清空&quot;</span> &lt;&lt; endl;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>上面第一个大括号把锁放里面就是rall的运用，保证自动解锁</p>
+<p><code>notify_all()</code>已经说过了，是让所有的wait都继续执行，<code>join()</code>是让主线程等待指定线程执行完毕</p>
+<p>那么接下来就是work函数，具体的执行了</p>
+<h3 id="3-执行"><a href="#3-执行" class="headerlink" title="3.执行"></a>3.执行</h3><p>首先是把请求加入请求队列，以便后续的线程取用：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> T&gt;<br><span class="hljs-type">bool</span> threadpool&lt;T&gt;::<span class="hljs-built_in">appendrequest</span>(T* t)&#123;<br>    cout &lt;&lt; <span class="hljs-string">&quot;加入线程&quot;</span> &lt;&lt; endl;<br>    <span class="hljs-keyword">if</span> (is_run)&#123;<br>        <span class="hljs-function">std::unique_lock&lt;std::mutex&gt; <span class="hljs-title">lock</span><span class="hljs-params">(mux)</span></span>;<br>        <span class="hljs-keyword">if</span> (requests.<span class="hljs-built_in">size</span>() &gt;= MAX_REQUESTS_NUM)&#123;<br>            lock.<span class="hljs-built_in">unlock</span>();<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>        &#125;<br>        requests.<span class="hljs-built_in">push</span>(t);<br>        cv.<span class="hljs-built_in">notify_one</span>();<br>        cout &lt;&lt; <span class="hljs-string">&quot;加入完成&quot;</span> &lt;&lt; endl;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>加入队列后直接 <code>notify_one()</code> 唤醒其中一个线程执行就可以了</p>
+<p>然后就是最后的work，线程的执行主体：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">template</span>&lt;<span class="hljs-keyword">typename</span> T&gt;<br><span class="hljs-type">void</span> threadpool&lt;T&gt;::<span class="hljs-built_in">work</span>()&#123;<br>    <span class="hljs-keyword">auto</span> id = this_thread::<span class="hljs-built_in">get_id</span>();<br>    stringstream ss;<br>    ss &lt;&lt; id;<br>    string mystring = ss.<span class="hljs-built_in">str</span>();<br>    string tmp = <span class="hljs-string">&quot;thread &quot;</span> + mystring + <span class="hljs-string">&quot; begin to work!&quot;</span>;<br>    cout &lt;&lt; tmp &lt;&lt; endl;<br>    <span class="hljs-keyword">while</span>(is_run)&#123;<br>        <span class="hljs-function">std::unique_lock&lt;std::mutex&gt; <span class="hljs-title">lock</span><span class="hljs-params">(mux)</span></span>;<br>        cv.<span class="hljs-built_in">wait</span>(lock); <span class="hljs-comment">//线程被创建，但是开始等待条件变量给的信号，lock自动解锁直到被唤醒</span><br>        <span class="hljs-keyword">if</span>(requests.<span class="hljs-built_in">empty</span>()) <span class="hljs-keyword">continue</span>;<br>        T* t = requests.<span class="hljs-built_in">front</span>();<br>        <span class="hljs-built_in">t</span>();<br>        requests.<span class="hljs-built_in">pop</span>();<br>    &#125;<br>    tmp =  <span class="hljs-string">&quot;thread &quot;</span> + mystring + <span class="hljs-string">&quot; going to die!&quot;</span>;<br>    cout &lt;&lt; tmp &lt;&lt; endl;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>while之前都没写的必要，那是为了在执行时能看出线程是否启动了</p>
+<p>while内有个t()，因为我们等会要用函数进行验证，只是验证用，因为后续服务器执行肯定不是传入一个函数的</p>
+<h2 id="3-测试"><a href="#3-测试" class="headerlink" title="3.测试"></a>3.测试</h2><p>写个main.cpp进行测试好了：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;threadpool.h&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><br><span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> std;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">test1</span><span class="hljs-params">()</span></span>&#123;<br>    cout &lt;&lt; <span class="hljs-string">&quot;helloworld&quot;</span> &lt;&lt; endl;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>&#123;<br>    threadpool&lt;<span class="hljs-built_in">void</span>()&gt; newpool;<br>    <span class="hljs-built_in">sleep</span>(<span class="hljs-number">3</span>);<br>    newpool.<span class="hljs-built_in">appendrequest</span>(test1);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>为啥要sleep呢，你可以去掉试试，输出由于是多个线程一起的太快了会很混乱…</p>
+<p>那么最后的结果应该是：</p>
+
+    <figure class="figure-image">
+      <img src="/2023/05/01/c++%20webserver/20230501/2.png" alt loading="lazy" onload="loadImage()">
+      <figcaption></figcaption>
+    </figure>
+  
+
+<p>那么前面写了这么多，肯定要整合，下一篇就是写一点http处理以及整合前面内容了</p>
+<p>要是懒得看整合可以直接看我这里<a target="_blank" rel="noopener" href="https://github.com/waterkin0/mywebserver" title="0.1的版本">初版的代码</a>，client可以就用之前的，也可以加上while一直发，但是要注意while之间要等一下，太快了服务器也撑不住，一些注意事项都在main的注释里写了</p>
 
       </section>
 
@@ -207,32 +256,16 @@
       
         <nav class="article-nav">
           
-            <div class="article-nav-item layout-padding">
-  <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
-    
-      <div class="card-cover" background-image-lazy data-img="https://raw.iqiq.io/waterkin0/images/main/blogs_images/cookie!session!token!.jpg"></div>
-    
-    <div class="card-text">
-      
-        <a href="/2023/04/05/mysql+php/20230405/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">cookie! session! token!</h2>
-        </a>
-      
-      <div class="card-text--row">Newer</div>
-    </div>
-  </article>
-</div>
-          
           
             <div class="article-nav-item layout-padding">
   <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
     
-      <div class="card-cover" background-image-lazy data-img="https://raw.iqiq.io/waterkin0/images/main/blogs_images/力扣刷题遇到的报错.jpg"></div>
+      <div class="card-cover" background-image-lazy data-img="https://raw.iqiq.io/waterkin0/images/main/blogs_images/select,poll和epoll.jpg"></div>
     
     <div class="card-text">
       
-        <a href="/2023/03/21/%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98/20230321/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">力扣刷题遇到的报错</h2>
+        <a href="/2023/04/28/c++%20webserver/20230428/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">webserver之2.select,poll和epoll</h2>
         </a>
       
       <div class="card-text--row">Older</div>
@@ -266,7 +299,7 @@
     <span>目录</span>
   </div>
   <div class="widget-body">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%9C%A8form%E6%8F%90%E4%BA%A4%E5%90%8E%E9%98%B2%E6%AD%A2%E5%88%B7%E6%96%B0"><span class="toc-text">1.在form提交后防止刷新</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Compilation-failed-PCRE-does-not-support-L-l-N-P-p-U-u-or-X-at-%E2%80%A6"><span class="toc-text">2.Compilation failed: PCRE does not support \L, \l, \N, \P, \p, \U, \u, or \X at …</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%9F%BA%E7%A1%80"><span class="toc-text">1.基础</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%AE%9E%E7%8E%B0"><span class="toc-text">2.实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%9E%84%E9%80%A0%E5%92%8C%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0"><span class="toc-text">1.构造和析构函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%BC%80%E5%A7%8B%E5%92%8C%E5%81%9C%E6%AD%A2"><span class="toc-text">2.开始和停止</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%89%A7%E8%A1%8C"><span class="toc-text">3.执行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E6%B5%8B%E8%AF%95"><span class="toc-text">3.测试</span></a></li></ol>
   </div>
 </section>
 
