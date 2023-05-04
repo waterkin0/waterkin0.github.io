@@ -31,7 +31,7 @@
 
   
 
-  <title>webserver之3.线程池 | Touma</title>
+  <title>webserver之3 线程池 | Touma</title>
 
   
 
@@ -130,15 +130,15 @@
     <div class="header-content">
       <div class="post-text layout-block">
         <div class="layout-margin">
-          <h1 class="title-wrap">webserver之3.线程池</h1>
+          <h1 class="title-wrap">webserver之3 线程池</h1>
           <h2 class="title-sub-wrap">
             <strong>水帝</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2023-05-01T03:00:41.374Z" itemprop="datePublished">2023-05-01</time>
+            <time  class="article-date" datetime="2023-05-01T03:00:41.000Z" itemprop="datePublished">2023-05-01</time>
           </h2>
           <h2>
-              <span class="post-count">📖1.7k字</span>
-              <span class="post-count">⏱6分</span>
+              <span class="post-count">📖1.8k字</span>
+              <span class="post-count">⏱7分</span>
             <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
               👀<span id="busuanzi_value_page_pv"></span>次
           </h2>
@@ -247,14 +247,31 @@
     </figure>
   
 
-<p>那么前面写了这么多，肯定要整合，下一篇就是写一点http处理以及整合前面内容了</p>
-<p>要是懒得看整合可以直接看我这里<a target="_blank" rel="noopener" href="https://github.com/waterkin0/mywebserver" title="0.1的版本">初版的代码</a>，client可以就用之前的，也可以加上while一直发，但是要注意while之间要等一下，太快了服务器也撑不住，一些注意事项都在main的注释里写了</p>
+<h2 id="4-预告-整合"><a href="#4-预告-整合" class="headerlink" title="4.预告-整合"></a>4.预告-整合</h2><p>那么前面写了这么多，肯定要整合，下一篇就是写一点http处理以及整合前面内容了(加上部分改错)</p>
+<p>要是懒得看整合可以直接看我这里<a target="_blank" rel="noopener" href="https://github.com/waterkin0/mywebserver" title="0.1的版本">初版的代码</a>，client可以就用之前的，也可以加上while一直发，但是要注意while之间要小等一下，太快了服务器也处理不过来，一些注意事项都在main的注释里写了</p>
+<p><strong>更新：直接看<a target="_blank" rel="noopener" href="https://github.com/waterkin0/mywebserver">最新版的</a>，因为每一篇博客的代码基本都是一个文件的，后续改动不大，看对应的h或者cpp文件就好</strong></p>
 
       </section>
 
       
       
         <nav class="article-nav">
+          
+            <div class="article-nav-item layout-padding">
+  <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
+    
+      <div class="card-cover" background-image-lazy data-img="https://raw.iqiq.io/waterkin0/images/main/blogs_images/初具雏形.jpg"></div>
+    
+    <div class="card-text">
+      
+        <a href="/2023/05/04/c++%20webserver/20230504/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">webserver之3.5 初具雏形</h2>
+        </a>
+      
+      <div class="card-text--row">Newer</div>
+    </div>
+  </article>
+</div>
           
           
             <div class="article-nav-item layout-padding">
@@ -265,7 +282,7 @@
     <div class="card-text">
       
         <a href="/2023/04/28/c++%20webserver/20230428/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">webserver之2.select,poll和epoll</h2>
+          <h2 class="card-text--title text-ellipsis">webserver之2 select,poll和epoll</h2>
         </a>
       
       <div class="card-text--row">Older</div>
@@ -299,7 +316,7 @@
     <span>目录</span>
   </div>
   <div class="widget-body">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%9F%BA%E7%A1%80"><span class="toc-text">1.基础</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%AE%9E%E7%8E%B0"><span class="toc-text">2.实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%9E%84%E9%80%A0%E5%92%8C%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0"><span class="toc-text">1.构造和析构函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%BC%80%E5%A7%8B%E5%92%8C%E5%81%9C%E6%AD%A2"><span class="toc-text">2.开始和停止</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%89%A7%E8%A1%8C"><span class="toc-text">3.执行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E6%B5%8B%E8%AF%95"><span class="toc-text">3.测试</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%9F%BA%E7%A1%80"><span class="toc-text">1.基础</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%AE%9E%E7%8E%B0"><span class="toc-text">2.实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%9E%84%E9%80%A0%E5%92%8C%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0"><span class="toc-text">1.构造和析构函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%BC%80%E5%A7%8B%E5%92%8C%E5%81%9C%E6%AD%A2"><span class="toc-text">2.开始和停止</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%89%A7%E8%A1%8C"><span class="toc-text">3.执行</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E6%B5%8B%E8%AF%95"><span class="toc-text">3.测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E9%A2%84%E5%91%8A-%E6%95%B4%E5%90%88"><span class="toc-text">4.预告-整合</span></a></li></ol>
   </div>
 </section>
 
@@ -321,7 +338,7 @@
         <svg class="icon icon-article" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M240.51564747 647.74217627h196.07203239c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806V165.10332731c0-33.18142087-30.16492806-60.32985613-60.32985612-60.32985611H245.04038668C225.43318342 104.7734712 210.35071939 119.85593522 210.35071939 139.46313845V617.57724821c0 16.59071043 13.57421762 30.16492806 30.16492808 30.16492806z m663.62841731-452.47392089v482.63884894c0 33.18142087-27.14843525 60.32985613-60.32985612 60.32985613H180.18579134c-33.18142087 0-60.32985613-27.14843525-60.32985612-60.32985613V195.26825538c-49.77213131 0-90.49478418 40.72265287-90.49478417 90.49478417v452.4739209c0 49.77213131 40.72265287 90.49478418 90.49478417 90.49478417h286.56681657c16.59071043 0 30.16492806 13.57421762 30.16492807 30.16492807s13.57421762 30.16492806 30.16492805 30.16492806h90.49478418c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806s13.57421762-30.16492806 30.16492807-30.16492807h286.56681657c49.77213131 0 90.49478418-40.72265287 90.49478417-90.49478417V285.76303955c0-49.77213131-40.72265287-90.49478418-90.49478417-90.49478417zM587.41232014 647.74217627h191.54729318c19.60720323 0 34.68966726-15.08246403 34.68966729-34.68966727V134.93839925c0-16.59071043-13.57421762-30.16492806-30.16492808-30.16492805H617.57724821c-30.16492806 0-60.32985613 27.14843525-60.32985612 60.32985611v452.4739209c0 16.59071043 13.57421762 30.16492806 30.16492805 30.16492806z" fill="currentColor"></path>
 </svg>
-        <span>20</span>
+        <span>21</span>
       </div>
       <div class="count-box--item">
         <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -365,7 +382,7 @@
       
         <li class="categorys-list-item">
           <a href="/categories/c-webserver/">
-            c++ webserver (3)
+            c++ webserver (4)
           </a>
         </li>
       
@@ -436,7 +453,7 @@
   </div>
   <div class="widget-body">
     <div class="tags-cloud">
-      <a href="/tags/c/" style="font-size: 10px;" class="tags-cloud-0">c</a> <a href="/tags/c/" style="font-size: 20px;" class="tags-cloud-10">c++</a> <a href="/tags/css/" style="font-size: 15px;" class="tags-cloud-5">css</a> <a href="/tags/hexo/" style="font-size: 15px;" class="tags-cloud-5">hexo</a> <a href="/tags/html/" style="font-size: 15px;" class="tags-cloud-5">html</a> <a href="/tags/js/" style="font-size: 10px;" class="tags-cloud-0">js</a> <a href="/tags/key-value/" style="font-size: 10px;" class="tags-cloud-0">key_value</a> <a href="/tags/mysql/" style="font-size: 15px;" class="tags-cloud-5">mysql</a> <a href="/tags/php/" style="font-size: 20px;" class="tags-cloud-10">php</a> <a href="/tags/py/" style="font-size: 15px;" class="tags-cloud-5">py</a> <a href="/tags/redis/" style="font-size: 10px;" class="tags-cloud-0">redis</a> <a href="/tags/springboot/" style="font-size: 10px;" class="tags-cloud-0">springboot</a> <a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="font-size: 10px;" class="tags-cloud-0">云服务器</a> <a href="/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/" style="font-size: 10px;" class="tags-cloud-0">小程序</a> <a href="/tags/%E6%8A%A5%E9%94%99/" style="font-size: 10px;" class="tags-cloud-0">报错</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15px;" class="tags-cloud-5">算法</a>
+      <a href="/tags/c/" style="font-size: 10px;" class="tags-cloud-0">c</a> <a href="/tags/c/" style="font-size: 20px;" class="tags-cloud-10">c++</a> <a href="/tags/css/" style="font-size: 13.33px;" class="tags-cloud-3">css</a> <a href="/tags/hexo/" style="font-size: 13.33px;" class="tags-cloud-3">hexo</a> <a href="/tags/html/" style="font-size: 13.33px;" class="tags-cloud-3">html</a> <a href="/tags/js/" style="font-size: 10px;" class="tags-cloud-0">js</a> <a href="/tags/key-value/" style="font-size: 10px;" class="tags-cloud-0">key_value</a> <a href="/tags/mysql/" style="font-size: 13.33px;" class="tags-cloud-3">mysql</a> <a href="/tags/php/" style="font-size: 16.67px;" class="tags-cloud-7">php</a> <a href="/tags/py/" style="font-size: 13.33px;" class="tags-cloud-3">py</a> <a href="/tags/redis/" style="font-size: 10px;" class="tags-cloud-0">redis</a> <a href="/tags/springboot/" style="font-size: 10px;" class="tags-cloud-0">springboot</a> <a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="font-size: 10px;" class="tags-cloud-0">云服务器</a> <a href="/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/" style="font-size: 10px;" class="tags-cloud-0">小程序</a> <a href="/tags/%E6%8A%A5%E9%94%99/" style="font-size: 10px;" class="tags-cloud-0">报错</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 13.33px;" class="tags-cloud-3">算法</a>
     </div>
   </div>
 </section>
@@ -492,7 +509,7 @@
       setInterval("createtime()",250);
       </script>
     </p>
-	  <p>已经记载了20篇文章</p>
+	  <p>已经记载了21篇文章</p>
     <p>
       <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
       浏览量：<span id="busuanzi_value_site_pv"><i class="fa fa-spinner fa-spin"></i></span>👀 | 访客数：<span id="busuanzi_value_site_uv"><i class="fa fa-spinner fa-spin"></i></span>👦

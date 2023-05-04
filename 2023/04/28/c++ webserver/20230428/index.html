@@ -31,7 +31,7 @@
 
   
 
-  <title>webserver之2.select,poll和epoll | Touma</title>
+  <title>webserver之2 select,poll和epoll | Touma</title>
 
   
 
@@ -130,7 +130,7 @@
     <div class="header-content">
       <div class="post-text layout-block">
         <div class="layout-margin">
-          <h1 class="title-wrap">webserver之2.select,poll和epoll</h1>
+          <h1 class="title-wrap">webserver之2 select,poll和epoll</h1>
           <h2 class="title-sub-wrap">
             <strong>水帝</strong>
             <span>发布于</span>
@@ -176,7 +176,7 @@
         <blockquote>
 <p>本篇文章紧接<a target="_blank" rel="noopener" href="https://waterkin.top/2023/04/25/c++%20webserver/20230425/">第一篇</a>，部分代码修改自上篇内容</p>
 </blockquote>
-<p>在谈谈如何让这群打工人不摸鱼之前，先来看看什么是多路复用：</p>
+<p>在谈谈如何让这群<del>打工人</del>线程不摸鱼之前，先来看看什么是多路复用：</p>
 <ul>
 <li>多路: 多个socket网络连接</li>
 <li>复用: 复用一个线程</li>
@@ -222,7 +222,7 @@
 </li>
 </ol>
 <p>那么我这里专门写一个addfd进行epoll的设置：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">addfd</span><span class="hljs-params">(<span class="hljs-type">int</span> epollfd, <span class="hljs-type">int</span> fd)</span> </span>&#123;<br>    epoll_event event;<span class="hljs-comment">//定义监听的事件类型</span><br>    event.data.fd = fd; <br>    event.events = EPOLLIN | EPOLLET | EPOLLRDHUP | EPOLLONESHOT;<br>    <span class="hljs-comment">/* 针对connfd，开启EPOLLONESHOT，因为我们希望每个socket在任意时刻都只被一个线程处理 */</span><br>    <span class="hljs-built_in">epoll_ctl</span>(epollfd, EPOLL_CTL_ADD, fd, &amp;event); <span class="hljs-comment">//四个参数分别是1.要操作内核的文件描述符，即epoll_create返回的，2.操作类型，3.所要操作用户的文件描述符，4.指定监听类型</span><br>    <span class="hljs-built_in">setnonblocking</span>(fd);<span class="hljs-comment">//将这个套接字变为非阻塞</span><br>&#125;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">setnonblocking</span><span class="hljs-params">( <span class="hljs-type">int</span> fd )</span>   <span class="hljs-comment">//自定义函数，用于设置套接字为非阻塞套接字</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">int</span> old_option = <span class="hljs-built_in">fcntl</span>( fd, F_GETFL );<span class="hljs-comment">//取得fd的文件状态标志</span><br>    <span class="hljs-type">int</span> new_option = old_option | O_NONBLOCK;<br>    <span class="hljs-built_in">fcntl</span>( fd, F_SETFL, new_option );        <span class="hljs-comment">//设置为非阻塞套接字</span><br>    <span class="hljs-keyword">return</span> old_option;<br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">addfd</span><span class="hljs-params">(<span class="hljs-type">int</span> epollfd, <span class="hljs-type">int</span> fd, <span class="hljs-type">int</span> ev)</span> </span>&#123;<br>    epoll_event event;<span class="hljs-comment">//定义监听的事件类型</span><br>    event.data.fd = fd; <br>    event.events = ev | EPOLLET | EPOLLRDHUP | EPOLLONESHOT;<span class="hljs-comment">//因为可能会加入不同的事件,用ev来传参</span><br>    <span class="hljs-comment">/* 针对connfd，开启EPOLLONESHOT，因为我们希望每个socket在任意时刻都只被一个线程处理 */</span><br>    <span class="hljs-built_in">epoll_ctl</span>(epollfd, EPOLL_CTL_ADD, fd, &amp;event); <span class="hljs-comment">//四个参数分别是1.要操作内核的文件描述符，即epoll_create返回的，2.操作类型，3.所要操作用户的文件描述符，4.指定监听类型</span><br>    <span class="hljs-built_in">setnonblocking</span>(fd);<span class="hljs-comment">//将这个套接字变为非阻塞</span><br>&#125;<br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">setnonblocking</span><span class="hljs-params">( <span class="hljs-type">int</span> fd )</span>   <span class="hljs-comment">//自定义函数，用于设置套接字为非阻塞套接字</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-type">int</span> old_option = <span class="hljs-built_in">fcntl</span>( fd, F_GETFL );<span class="hljs-comment">//取得fd的文件状态标志</span><br>    <span class="hljs-type">int</span> new_option = old_option | O_NONBLOCK;<br>    <span class="hljs-built_in">fcntl</span>( fd, F_SETFL, new_option );        <span class="hljs-comment">//设置为非阻塞套接字</span><br>    <span class="hljs-keyword">return</span> old_option;<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <p>那么注意上面的event的设置，我们这里设置了4个值</p>
 <p>首先是<strong>EPOLLIN</strong>，虽然触发条件是描述符可读，但实际上在新连接开启后也会触发这个事件</p>
@@ -280,7 +280,7 @@
     <div class="card-text">
       
         <a href="/2023/05/01/c++%20webserver/20230501/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">webserver之3.线程池</h2>
+          <h2 class="card-text--title text-ellipsis">webserver之3 线程池</h2>
         </a>
       
       <div class="card-text--row">Newer</div>
@@ -297,7 +297,7 @@
     <div class="card-text">
       
         <a href="/2023/04/25/c++%20webserver/20230425/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">webserver之1.socket编程</h2>
+          <h2 class="card-text--title text-ellipsis">webserver之1 socket编程</h2>
         </a>
       
       <div class="card-text--row">Older</div>
@@ -353,7 +353,7 @@
         <svg class="icon icon-article" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M240.51564747 647.74217627h196.07203239c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806V165.10332731c0-33.18142087-30.16492806-60.32985613-60.32985612-60.32985611H245.04038668C225.43318342 104.7734712 210.35071939 119.85593522 210.35071939 139.46313845V617.57724821c0 16.59071043 13.57421762 30.16492806 30.16492808 30.16492806z m663.62841731-452.47392089v482.63884894c0 33.18142087-27.14843525 60.32985613-60.32985612 60.32985613H180.18579134c-33.18142087 0-60.32985613-27.14843525-60.32985612-60.32985613V195.26825538c-49.77213131 0-90.49478418 40.72265287-90.49478417 90.49478417v452.4739209c0 49.77213131 40.72265287 90.49478418 90.49478417 90.49478417h286.56681657c16.59071043 0 30.16492806 13.57421762 30.16492807 30.16492807s13.57421762 30.16492806 30.16492805 30.16492806h90.49478418c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806s13.57421762-30.16492806 30.16492807-30.16492807h286.56681657c49.77213131 0 90.49478418-40.72265287 90.49478417-90.49478417V285.76303955c0-49.77213131-40.72265287-90.49478418-90.49478417-90.49478417zM587.41232014 647.74217627h191.54729318c19.60720323 0 34.68966726-15.08246403 34.68966729-34.68966727V134.93839925c0-16.59071043-13.57421762-30.16492806-30.16492808-30.16492805H617.57724821c-30.16492806 0-60.32985613 27.14843525-60.32985612 60.32985611v452.4739209c0 16.59071043 13.57421762 30.16492806 30.16492805 30.16492806z" fill="currentColor"></path>
 </svg>
-        <span>20</span>
+        <span>21</span>
       </div>
       <div class="count-box--item">
         <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -397,7 +397,7 @@
       
         <li class="categorys-list-item">
           <a href="/categories/c-webserver/">
-            c++ webserver (3)
+            c++ webserver (4)
           </a>
         </li>
       
@@ -468,7 +468,7 @@
   </div>
   <div class="widget-body">
     <div class="tags-cloud">
-      <a href="/tags/c/" style="font-size: 10px;" class="tags-cloud-0">c</a> <a href="/tags/c/" style="font-size: 20px;" class="tags-cloud-10">c++</a> <a href="/tags/css/" style="font-size: 15px;" class="tags-cloud-5">css</a> <a href="/tags/hexo/" style="font-size: 15px;" class="tags-cloud-5">hexo</a> <a href="/tags/html/" style="font-size: 15px;" class="tags-cloud-5">html</a> <a href="/tags/js/" style="font-size: 10px;" class="tags-cloud-0">js</a> <a href="/tags/key-value/" style="font-size: 10px;" class="tags-cloud-0">key_value</a> <a href="/tags/mysql/" style="font-size: 15px;" class="tags-cloud-5">mysql</a> <a href="/tags/php/" style="font-size: 20px;" class="tags-cloud-10">php</a> <a href="/tags/py/" style="font-size: 15px;" class="tags-cloud-5">py</a> <a href="/tags/redis/" style="font-size: 10px;" class="tags-cloud-0">redis</a> <a href="/tags/springboot/" style="font-size: 10px;" class="tags-cloud-0">springboot</a> <a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="font-size: 10px;" class="tags-cloud-0">云服务器</a> <a href="/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/" style="font-size: 10px;" class="tags-cloud-0">小程序</a> <a href="/tags/%E6%8A%A5%E9%94%99/" style="font-size: 10px;" class="tags-cloud-0">报错</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 15px;" class="tags-cloud-5">算法</a>
+      <a href="/tags/c/" style="font-size: 10px;" class="tags-cloud-0">c</a> <a href="/tags/c/" style="font-size: 20px;" class="tags-cloud-10">c++</a> <a href="/tags/css/" style="font-size: 13.33px;" class="tags-cloud-3">css</a> <a href="/tags/hexo/" style="font-size: 13.33px;" class="tags-cloud-3">hexo</a> <a href="/tags/html/" style="font-size: 13.33px;" class="tags-cloud-3">html</a> <a href="/tags/js/" style="font-size: 10px;" class="tags-cloud-0">js</a> <a href="/tags/key-value/" style="font-size: 10px;" class="tags-cloud-0">key_value</a> <a href="/tags/mysql/" style="font-size: 13.33px;" class="tags-cloud-3">mysql</a> <a href="/tags/php/" style="font-size: 16.67px;" class="tags-cloud-7">php</a> <a href="/tags/py/" style="font-size: 13.33px;" class="tags-cloud-3">py</a> <a href="/tags/redis/" style="font-size: 10px;" class="tags-cloud-0">redis</a> <a href="/tags/springboot/" style="font-size: 10px;" class="tags-cloud-0">springboot</a> <a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="font-size: 10px;" class="tags-cloud-0">云服务器</a> <a href="/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/" style="font-size: 10px;" class="tags-cloud-0">小程序</a> <a href="/tags/%E6%8A%A5%E9%94%99/" style="font-size: 10px;" class="tags-cloud-0">报错</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 13.33px;" class="tags-cloud-3">算法</a>
     </div>
   </div>
 </section>
@@ -524,7 +524,7 @@
       setInterval("createtime()",250);
       </script>
     </p>
-	  <p>已经记载了20篇文章</p>
+	  <p>已经记载了21篇文章</p>
     <p>
       <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
       浏览量：<span id="busuanzi_value_site_pv"><i class="fa fa-spinner fa-spin"></i></span>👀 | 访客数：<span id="busuanzi_value_site_uv"><i class="fa fa-spinner fa-spin"></i></span>👦
