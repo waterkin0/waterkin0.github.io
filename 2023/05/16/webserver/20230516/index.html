@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?5b456f31ba675bfffb7993b408d4f0ce";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+  </script>    
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="theme-color" content="#3367D6"/>
+  <!-- <link rel="apple-touch-icon" href="/icons-192.png"> -->
+  <!-- <link rel="manifest" href="/manifest.json"> -->
+  
+  <meta name="generator" content="Hexo 6.2.0">
+
+  
+
+  
+
+  
+    <meta name="author" content="水帝">
+  
+
+  
+
+  
+
+  <title>webserver之5 定时器 | Touma</title>
+
+  
+
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+
+  
+    <!-- <link rel="stylesheet" href="https://raw.iqiq.io/npm/typeface-source-code-pro@1.1.3/index.min.css">
+    <link rel="stylesheet" href="https://raw.iqiq.io/npm/highlightjs@9.16.2/styles/monokai.css"> -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/monokai.min.css">
+    <!-- <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script> -->
+  
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+</head>
+<body>
+  <div id="loading-box">
+    <div class="loading-left-bg"></div>
+    <div class="loading-right-bg"></div>
+    <div class="spinner-box">
+        <!-- 填写你的动画 -->
+        <div class="loader">
+            <span class="loader-block"></span>
+            <span class="loader-block"></span>
+            <span class="loader-block"></span>
+            <span class="loader-block"></span>
+            <span class="loader-block"></span>
+            <span class="loader-block"></span>
+            <span class="loader-block"></span>
+            <span class="loader-block"></span>
+            <span class="loader-block"></span>
+        </div>
+        <!-- <div class="loading-word">加载中...</div> -->
+    </div>
+</div>
+
+  <div class="root-container">
+    
+<!-- header container -->
+<header class="header-container post">
+  
+    <div class="post-image" style="background-image: url(https://raw.iqiq.io/waterkin0/images/main/blogs_images/定时器.jpg)"></div>
+  
+  
+
+  <!-- navbar -->
+<nav class="navbar">
+  <div class="navbar-content">
+    <!-- logo -->
+    <div class="navbar-logo">
+      <a href="/">
+        
+          Touma
+        
+      </a>
+    </div>
+    <!-- link -->
+    <div class="navbar-link">
+      <div class="navbar-btn">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <ul class="navbar-list">
+        
+          <li class="navbar-list-item"><a href="/">首页</a></li>
+        
+          <li class="navbar-list-item"><a href="/categories">分类</a></li>
+        
+          <li class="navbar-list-item"><a href="/links">友链</a></li>
+        
+          <li class="navbar-list-item"><a href="/about">关于</a></li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+    <div class="header-content">
+      <div class="post-text layout-block">
+        <div class="layout-margin">
+          <h1 class="title-wrap">webserver之5 定时器</h1>
+          <h2 class="title-sub-wrap">
+            <strong>水帝</strong>
+            <span>发布于</span>
+            <time  class="article-date" datetime="2023-05-16T07:52:59.000Z" itemprop="datePublished">2023-05-16</time>
+          </h2>
+          <h2>
+              <span class="post-count">📖2.1k字</span>
+              <span class="post-count">⏱8分</span>
+            <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
+              👀<span id="busuanzi_value_page_pv"></span>次
+          </h2>
+          <ul class="wrap-list dark">
+  
+    <li><a href="/categories/webserver/">📒 webserver</a></li>
+  
+</ul>
+          <ul class="wrap-list dark">
+  
+    <li><a href="/tags/c/">🏷️ c++</a></li>
+  
+</ul>
+        </div>
+      </div>
+    </div>
+  
+
+  
+  
+  
+</header>
+
+    <!-- 文章 -->
+
+<!-- 文章内容 -->
+<div class="body-container">
+  <article class="content-container layout-block post-container">
+    <div class="article-info">
+      
+      
+      
+      
+      <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
+        <blockquote>
+<p>本篇文章紧接<a target="_blank" rel="noopener" href="https://waterkin.top/2023/05/15/webserver/20230515/">第四篇下</a>，是http篇的下篇</p>
+</blockquote>
+<p>可能你也发现了，无论是在读的报文还是写的报文中有一个设置：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs json">Connection<span class="hljs-punctuation">:</span>keep-alive<br></code></pre></td></tr></table></figure>
+
+<p>这是干嘛的呢，我们网络通讯是用的套接字编程，套接字是tcp连接的端点，因为每次的tcp连接都需要三次握手，断开又需要四次挥手，再加上tcp本来就是一个稳定持久的链接，如果在建立之后仅仅只传输了一次数据就断开，感觉有点浪费了，于是在浏览器请求的时候往往都会带上这行报文，来告诉服务器，他需要一个持续活跃的链接，也就是让服务器别断开，方便后续的数据继续传输</p>
+<p>那什么时候断开呢，客户端没说，如果有这么一个客户端一直挂起，没关，服务器也会一直维护这个连接</p>
+<p>那么问题就出现了，如果真的出现了很多这种一直挂起的客户端，服务器就维护了一大堆已经没用的连接(或者说没必要)，这种情况咋办</p>
+<p>那么就需要定时器了，其实定时器是一个很简单的装置，在链接建立之后一段时间内如果没有来往，那服务器主动断开连接</p>
+<h2 id="1-定时器"><a href="#1-定时器" class="headerlink" title="1.定时器"></a>1.定时器</h2><p>怎么运行呢，这里用了链表来实现，每个节点一个定时器，定时器内存其过期时间，该链表按升序排序</p>
+<p>每个定时器都指向其定时的相关资源，而每个链接也都有一个其定时器的指针</p>
+<p>诶，那么为啥不干脆把定时器直接写在http链接类内呢</p>
+<p>注意我们存定时器的链表是升序排列的，那么在实际运行的时候就不用遍历每一个定时器来查看其是否过期了</p>
+<p>查看定时器是否过期的方法是在webserver内设置一个定时中断，中断是什么如果各位有学过嵌入式应该不难理解</p>
+<p>简单来说就是每隔一段时间，系统会将当前进程暂停，然后系统处理一些事情</p>
+<p>而这里需要处理的就是删除过期的定时器，以及关闭相应的链接</p>
+<p>这里用到的函数是alarm(int seconds)，内核会给当前进程发送SIGALRM信号。进程收到该信号，停止，并调用之前设定好的回调函数</p>
+<p>同时每个链接都有一个指针指向定时器，主要是当该客户端主动断开的时候，方便服务器删除该定时器</p>
+<h2 id="2-代码部分"><a href="#2-代码部分" class="headerlink" title="2.代码部分"></a>2.代码部分</h2><p>首先就是链表的定义</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">class</span> <span class="hljs-title class_">timer</span><span class="hljs-comment">//定时器，即链表节点</span><br>&#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-built_in">timer</span>() : <span class="hljs-built_in">prev</span>(<span class="hljs-literal">NULL</span>), <span class="hljs-built_in">next</span>(<span class="hljs-literal">NULL</span>) &#123;&#125;<br><br>    <span class="hljs-comment">//定时器相关链接资源</span><br>    sockaddr_in address;<br>    <span class="hljs-type">int</span> sockfd;<br><br>    <span class="hljs-type">time_t</span> expire;<span class="hljs-comment">//时间戳,定义超时时间</span><br><br>    <span class="hljs-comment">//链表相关</span><br>    timer *prev;<br>    timer *next;<br>&#125;;<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">timer_list</span>&#123;<span class="hljs-comment">//定时器链表类.根据时间升序排列</span><br>    <span class="hljs-keyword">public</span>:<br>    <span class="hljs-built_in">timer_list</span>() : <span class="hljs-built_in">head</span>(<span class="hljs-literal">NULL</span>), <span class="hljs-built_in">tail</span>(<span class="hljs-literal">NULL</span>) &#123;&#125;<br>    ~<span class="hljs-built_in">timer_list</span>() &#123;<br>        timer *tmp = head;<br>        <span class="hljs-keyword">while</span> (tmp) &#123;<br>            head = tmp-&gt;next;<br>            <span class="hljs-keyword">delete</span> tmp;<br>            tmp = head;<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">add_timer</span><span class="hljs-params">(timer *t)</span></span>;<span class="hljs-comment">//增加定时器</span><br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">adjust_timer</span><span class="hljs-params">(timer *t)</span></span>;<span class="hljs-comment">//调整定时器在链表内的位置，一般用于当该链接有动静之后，需要将定时器后移</span><br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">del_timer</span><span class="hljs-params">(timer *t, <span class="hljs-type">bool</span> dele)</span></span>;<span class="hljs-comment">//删除定时器</span><br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">tick</span><span class="hljs-params">()</span></span>;<span class="hljs-comment">//去除超时的定时器</span><br><br><span class="hljs-keyword">private</span>:<br>    timer *head;<br>    timer *tail;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>和实现</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">//静态变量定义</span><br><span class="hljs-type">int</span> *timer_util::pipefd = <span class="hljs-number">0</span>;<br><span class="hljs-type">int</span> timer_util::epollfd = <span class="hljs-number">0</span>;<br>timer_list timer_util::timerlst;<br><span class="hljs-comment">//链表实现</span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">timer_list::add_timer</span><span class="hljs-params">(timer *t)</span> </span>&#123;<br>    <span class="hljs-keyword">if</span>(!t) <span class="hljs-keyword">return</span>;<br>    <span class="hljs-keyword">if</span>(!head) &#123;<br>        head = tail = t;<br>        <span class="hljs-keyword">return</span>;<br>    &#125;<br>    timer* tmp = <span class="hljs-keyword">new</span> timer;<span class="hljs-comment">//创建虚拟头结点，用于遍历</span><br>     timer* tmp2 = tmp;<span class="hljs-comment">//用于后续释放内存</span><br>    tmp-&gt;next = head;<br>    <span class="hljs-keyword">while</span>(tmp-&gt;next-&gt;expire &lt; t-&gt;expire) &#123;<span class="hljs-comment">//下一个节点小于目标节点，向后遍历</span><br>        tmp = tmp-&gt;next;<br>        <span class="hljs-keyword">if</span>(tmp-&gt;next == <span class="hljs-literal">NULL</span>) &#123;<span class="hljs-comment">//下一个节点为空，说明到尾了</span><br>            <span class="hljs-keyword">break</span>;<br>        &#125;<br>    &#125;<br>    <span class="hljs-comment">//双链表插入</span><br>    <span class="hljs-comment">// tmp-&gt;next = t;</span><br>    <span class="hljs-comment">// t-&gt;prev = tmp;</span><br>    <span class="hljs-comment">// t-&gt;next = tmp-&gt;next;//自己指自己了,艹</span><br>    t-&gt;next = tmp-&gt;next;<br>    t-&gt;prev = tmp;<br>    tmp-&gt;next = t;<br>    <span class="hljs-keyword">if</span>(t-&gt;next == <span class="hljs-literal">NULL</span>)<span class="hljs-comment">//说明插入的是尾部</span><br>        tail = t;<br>    <span class="hljs-keyword">else</span><br>        t-&gt;next-&gt;prev = t;<br>    <span class="hljs-keyword">delete</span> tmp2;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">timer_list::del_timer</span><span class="hljs-params">(timer *t, <span class="hljs-type">bool</span> dele)</span> </span>&#123; <span class="hljs-comment">//删除定时器</span><br>    <span class="hljs-keyword">if</span>(!t || !head) <span class="hljs-keyword">return</span>;<br>    <span class="hljs-keyword">if</span>(t == head &amp;&amp; t == tail) &#123;<span class="hljs-comment">//唯一节点</span><br>        <span class="hljs-keyword">if</span>(dele) <span class="hljs-keyword">delete</span> t;<br>        head = <span class="hljs-literal">NULL</span>;<br>        tail = <span class="hljs-literal">NULL</span>;<br>        <span class="hljs-keyword">return</span>;<br>    &#125;<br>    <span class="hljs-keyword">if</span>(t == head) &#123; <span class="hljs-comment">//删除头部</span><br>        head = t-&gt;next;<br>        head-&gt;prev = <span class="hljs-literal">NULL</span>;<br>        <span class="hljs-keyword">if</span>(dele) <span class="hljs-keyword">delete</span> t;<br>        <span class="hljs-keyword">return</span>;<br>    &#125;<br>    <span class="hljs-keyword">if</span>(t == tail) &#123; <span class="hljs-comment">//删除尾部</span><br>        tail = t-&gt;prev;<br>        tail-&gt;next = <span class="hljs-literal">NULL</span>;<br>        <span class="hljs-keyword">if</span>(dele) <span class="hljs-keyword">delete</span> t;<br>        <span class="hljs-keyword">return</span>;<br>    &#125;<br>    t-&gt;prev-&gt;next = t-&gt;next;<br>    t-&gt;next-&gt;prev = t-&gt;prev;<br>    <span class="hljs-keyword">if</span>(dele) <span class="hljs-keyword">delete</span> t;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">timer_list::adjust_timer</span><span class="hljs-params">(timer *t)</span> </span>&#123; <span class="hljs-comment">//定时器发生改变，重新对该定时器排序,删掉再加入就好</span><br>    <span class="hljs-built_in">del_timer</span>(t, <span class="hljs-literal">false</span>);<br>    <span class="hljs-built_in">add_timer</span>(t);<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">timer_list::tick</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-keyword">if</span> (!head) <span class="hljs-keyword">return</span>;<br>    <span class="hljs-type">time_t</span> cur = <span class="hljs-built_in">time</span>(<span class="hljs-literal">NULL</span>);<br>    timer *tmp = head;<br>    <span class="hljs-keyword">while</span> (tmp) &#123;<span class="hljs-comment">//从头依次检查</span><br>        <span class="hljs-keyword">if</span> (cur &lt; tmp-&gt;expire)<br>            <span class="hljs-keyword">break</span>;<br>        <span class="hljs-built_in">LOG_WRITE</span>(<span class="hljs-string">&quot;time out, client: &quot;</span> + <span class="hljs-built_in">to_string</span>(tmp-&gt;sockfd) + <span class="hljs-string">&quot; disconnect, usernum: &quot;</span> + <span class="hljs-built_in">to_string</span>(http::user_num));<br>        <span class="hljs-built_in">removefd</span>(timer_util::epollfd, tmp-&gt;sockfd);<br>        head = head-&gt;next;<br>        <span class="hljs-keyword">if</span> (head)<br>            head-&gt;prev = <span class="hljs-literal">NULL</span>;<br>        <span class="hljs-keyword">delete</span> tmp;<br>        tmp = head;<span class="hljs-comment">//这步让tmp-&gt;next指向了指向自身</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>以及我个人为了整合而写的一个工具类</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">class</span> <span class="hljs-title class_">timer_util</span>&#123;<span class="hljs-comment">//只是一堆工具函数的整合而已，你也可以不用放里面</span><br>    <span class="hljs-keyword">public</span>:<br>        <span class="hljs-type">static</span> timer_list timerlst;<span class="hljs-comment">//链表的具体实现</span><br><br>        <span class="hljs-built_in">timer_util</span>() &#123;&#125;;<br>        ~<span class="hljs-built_in">timer_util</span>() &#123;&#125;;<br>        <span class="hljs-type">static</span> <span class="hljs-type">int</span> *pipefd;<br>        <span class="hljs-function"><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title">sig_handler</span><span class="hljs-params">(<span class="hljs-type">int</span> sig)</span></span>;<span class="hljs-comment">//信号处理函数</span><br>        <span class="hljs-type">static</span> <span class="hljs-type">int</span> epollfd;<br>        <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">add_sig</span><span class="hljs-params">(<span class="hljs-type">int</span> sig, <span class="hljs-type">void</span>(handler)(<span class="hljs-type">int</span>), <span class="hljs-type">bool</span> restart = <span class="hljs-literal">true</span>)</span></span>;<span class="hljs-comment">//设置信号</span><br>        <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">timer_handler</span><span class="hljs-params">(<span class="hljs-type">bool</span> isout)</span></span>;<span class="hljs-comment">//定时处理</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">//工具类实现</span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">timer_util::sig_handler</span><span class="hljs-params">(<span class="hljs-type">int</span> sig)</span> </span>&#123;<span class="hljs-comment">//信号处理</span><br>    <span class="hljs-type">int</span> save_errno = errno;<span class="hljs-comment">//保证本函数中间如果产生errno也不会导致程序某错判断出错</span><br>    <span class="hljs-type">int</span> msg = sig;<br>    <span class="hljs-comment">//将信号值从管道写端写入，传输char</span><br>    <span class="hljs-built_in">send</span>(pipefd[<span class="hljs-number">1</span>], (<span class="hljs-type">char</span> *)&amp;msg, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>);<br>    errno = save_errno;<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">timer_util::add_sig</span><span class="hljs-params">(<span class="hljs-type">int</span> sig, <span class="hljs-type">void</span>(handler)(<span class="hljs-type">int</span>), <span class="hljs-type">bool</span> restart)</span> </span>&#123;<br>    <span class="hljs-comment">//创建sigaction结构体变量</span><br>    <span class="hljs-keyword">struct</span> <span class="hljs-title class_">sigaction</span> sa;<br>    <span class="hljs-built_in">memset</span>(&amp;sa, <span class="hljs-string">&#x27;\0&#x27;</span>, <span class="hljs-built_in">sizeof</span>(sa));<br><br>    <span class="hljs-comment">//信号处理函数中仅仅发送信号值，不做对应逻辑处理</span><br>    sa.sa_handler = handler;<br>    <span class="hljs-keyword">if</span> (restart)<br>        sa.sa_flags |= SA_RESTART;<br>    <span class="hljs-comment">//将所有信号添加到信号集中，即函数期间屏蔽所有信号</span><br>    <span class="hljs-built_in">sigfillset</span>(&amp;sa.sa_mask);<br><br>    <span class="hljs-comment">//执行sigaction函数</span><br>    <span class="hljs-built_in">assert</span>(<span class="hljs-built_in">sigaction</span>(sig, &amp;sa, <span class="hljs-literal">NULL</span>) != <span class="hljs-number">-1</span>);<br>&#125;<br><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">timer_util::timer_handler</span><span class="hljs-params">(<span class="hljs-type">bool</span> isout)</span> </span>&#123;<br>    <span class="hljs-keyword">if</span>(!isout) <span class="hljs-keyword">return</span>;<br>    timerlst.<span class="hljs-built_in">tick</span>();<br>    <span class="hljs-built_in">alarm</span>(TIMEOUT);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>然后就是将定时器加入webserver中了，这里加入的代码又多又杂，我就只挑关键的一些讲了</p>
+<blockquote>
+<p>直接看源码比较关键</p>
+</blockquote>
+<p>首先是中断相关的设置，这里的信号传递用一对套接字，因为webserver里面主要就是用epoll来监听套接字嘛，当时间点到了，就会触发 <code>sig_handler</code>函数，内部通过套接字发送信号，epoll听到信号并进行处理</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c++">timer_util::epollfd = epollfd;<br>timer_util::pipefd = pipefd;<br><span class="hljs-built_in">socketpair</span>(PF_UNIX, SOCK_STREAM, <span class="hljs-number">0</span>, pipefd);<span class="hljs-comment">//创建了一对连接好的套接字,0负责读</span><br><span class="hljs-built_in">setnonblocking</span>(pipefd[<span class="hljs-number">1</span>]);<br><span class="hljs-built_in">addfd</span>(epollfd, pipefd[<span class="hljs-number">0</span>], <span class="hljs-literal">false</span>);<br><span class="hljs-comment">//timeutil.add_sig(SIGPIPE, SIG_IGN);//信号加入</span><br>timeutil.<span class="hljs-built_in">add_sig</span>(SIGALRM, timeutil.sig_handler, <span class="hljs-literal">false</span>);<span class="hljs-comment">//信号产生就调用timeutil.sig_handler函数，套接字传送信号</span><br>timeutil.<span class="hljs-built_in">add_sig</span>(SIGTERM, timeutil.sig_handler, <span class="hljs-literal">false</span>);<br><span class="hljs-built_in">alarm</span>(TIMEOUT);<span class="hljs-comment">//设置时间</span><br></code></pre></td></tr></table></figure>
+
+<p>上面设置了两种信号，前者就是alarm触发的，后者是进程被kill掉会触发，但个人觉得后者删除应该也可以正常运行</p>
+<p>然后就是epoll处理多加一种</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ((sockfd == pipefd[<span class="hljs-number">0</span>]) &amp;&amp; (events[i].events &amp; EPOLLIN)) &#123; <span class="hljs-comment">//产生超时，进行处理</span><br>            <span class="hljs-built_in">dealtimer</span>();<br>        &#125;<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">webserver::dealtimer</span><span class="hljs-params">()</span> </span>&#123;<br>    <span class="hljs-type">int</span> sig;<br>    <span class="hljs-type">char</span> signals[<span class="hljs-number">1024</span>];<br><br>    <span class="hljs-type">int</span> ret = <span class="hljs-built_in">recv</span>(pipefd[<span class="hljs-number">0</span>], signals, <span class="hljs-built_in">sizeof</span>(signals), <span class="hljs-number">0</span>);<br>    <span class="hljs-keyword">if</span>(ret &lt;= <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span>;<br>    <span class="hljs-keyword">else</span> &#123;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; ret; ++i) &#123;<br>            <span class="hljs-keyword">switch</span> (signals[i])&#123;<br>                <span class="hljs-keyword">case</span> SIGALRM:<span class="hljs-comment">//到时间触发</span><br>                    time_out = <span class="hljs-literal">true</span>;<br>                    <span class="hljs-keyword">break</span>;<br>                <span class="hljs-keyword">case</span> SIGTERM:<span class="hljs-comment">//进程被kill会触发</span><br>                    server_run = <span class="hljs-literal">false</span>;<br>                    <span class="hljs-keyword">break</span>;<br>            &#125;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>在epoll的最后加上下面的代码，即如果alarm响，就检查一次定时器链表，查看是否有过期的</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++">timeutil.<span class="hljs-built_in">timer_handler</span>(time_out);<span class="hljs-comment">//删除链表内超时的定时器</span><br>        time_out = <span class="hljs-literal">false</span>;<br></code></pre></td></tr></table></figure>
+
+<p>但这样可能有个问题，即过期的定时器实际不能第一时间被去除</p>
+<p>但无伤大雅，定时器没必要要那么大的精度</p>
+<p>其实一个正常的服务器在这里就可以正常运行了，到这里也算正式完成了1.0版本，在压力测试下可以到4000左右的并发</p>
+
+    <figure class="figure-image">
+      <img src="/2023/05/16/webserver/20230516/1.png" alt loading="lazy" onload="loadImage()">
+      <figcaption></figcaption>
+    </figure>
+  
+
+<p>虽然不能到原项目那么高，但对我已经很不错了</p>
+<p>下面就是更好的服务器了，比如增加日志</p>
+<p>那么感谢您的阅读，请允许我先行搁笔</p>
+
+      </section>
+
+      
+      
+        <nav class="article-nav">
+          
+          
+            <div class="article-nav-item layout-padding">
+  <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
+    
+      <div class="card-cover" background-image-lazy data-img="https://raw.iqiq.io/waterkin0/images/main/blogs_images/http处理2.jpg"></div>
+    
+    <div class="card-text">
+      
+        <a href="/2023/05/15/webserver/20230515/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">webserver之4 http处理(下)</h2>
+        </a>
+      
+      <div class="card-text--row">Older</div>
+    </div>
+  </article>
+</div>
+          
+        </nav>
+      
+
+      <section class="page-message-container layout-padding">
+        
+
+
+  
+  
+
+  
+  
+
+
+      </section>
+    </div>
+    <div class="widget-info">
+      
+<section class="widget-toc widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-toc" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M134.50666666 767.46666668H460.8c27.73333333 0 50.24000001 22.50666668 50.24000001 50.23999999v50.13333333c0 27.73333333-22.50666668 50.24000001-50.24000001 50.24000001H134.50666666c-27.73333333 0-50.24000001-22.50666668-50.23999999-50.24000001v-50.13333333c0.10666668-27.73333333 22.50666668-50.24000001 50.24000001-50.24000001zM84.37333332 541.65333333h326.18666669c27.73333333 0 50.24000001 22.39999999 50.23999999 50.13333334v50.24000001c0 27.73333333-22.50666668 50.24000001-50.24000002 50.23999999H84.37333332c-27.73333333 0-50.24000001-22.50666668-50.23999999-50.23999999v-50.24000001c0-27.73333333 22.50666668-50.13333334 50.24000001-50.13333334zM134.50666666 315.83999999H460.8c27.73333333 0 50.24000001 22.50666668 50.24000001 50.24000001v50.24000001c0 27.73333333-22.50666668 50.13333334-50.24000001 50.13333333H134.50666666c-27.73333333 0-50.24000001-22.39999999-50.23999999-50.13333333v-50.24000001c0.10666668-27.84000001 22.50666668-50.24000001 50.24000001-50.23999999zM209.81333332 89.91999999h326.18666671c27.73333333 0 50.24000001 22.39999999 50.23999997 50.13333335v50.23999999c0 27.73333333-22.50666668 50.24000001-50.24000001 50.24000001H209.81333332c-27.73333333 0-50.24000001-22.50666668-50.23999999-50.24000001v-50.24000001c0-27.73333333 22.50666668-50.13333334 50.24000001-50.13333333zM692.05333333 623.36l274.66666669 176.00000002c23.36000001 14.93333333 30.08 45.97333334 15.14666666 69.33333332L954.77333334 910.93333333c-14.93333333 23.25333334-45.97333334 30.08-69.33333335 15.14666667l-274.66666666-176c-23.36000001-14.93333333-30.08-45.97333334-15.14666667-69.33333333l27.09333334-42.24000001c14.93333333-23.36000001 46.08000001-30.08 69.33333333-15.14666666z" fill="currentColor"></path>
+</svg>
+    <span>目录</span>
+  </div>
+  <div class="widget-body">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%AE%9A%E6%97%B6%E5%99%A8"><span class="toc-text">1.定时器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E4%BB%A3%E7%A0%81%E9%83%A8%E5%88%86"><span class="toc-text">2.代码部分</span></a></li></ol>
+  </div>
+</section>
+
+
+      <section class="widget-author widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-body">
+    
+      <img src="/touma2.jpg" class="soft-size--round soft-style--box" alt="水帝">
+    
+    
+      <h2>水帝</h2>
+    
+    
+      <p>啥也不是</p>
+    
+
+    <div class="count-box">
+      <div class="count-box--item">
+        <svg class="icon icon-article" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M240.51564747 647.74217627h196.07203239c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806V165.10332731c0-33.18142087-30.16492806-60.32985613-60.32985612-60.32985611H245.04038668C225.43318342 104.7734712 210.35071939 119.85593522 210.35071939 139.46313845V617.57724821c0 16.59071043 13.57421762 30.16492806 30.16492808 30.16492806z m663.62841731-452.47392089v482.63884894c0 33.18142087-27.14843525 60.32985613-60.32985612 60.32985613H180.18579134c-33.18142087 0-60.32985613-27.14843525-60.32985612-60.32985613V195.26825538c-49.77213131 0-90.49478418 40.72265287-90.49478417 90.49478417v452.4739209c0 49.77213131 40.72265287 90.49478418 90.49478417 90.49478417h286.56681657c16.59071043 0 30.16492806 13.57421762 30.16492807 30.16492807s13.57421762 30.16492806 30.16492805 30.16492806h90.49478418c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806s13.57421762-30.16492806 30.16492807-30.16492807h286.56681657c49.77213131 0 90.49478418-40.72265287 90.49478417-90.49478417V285.76303955c0-49.77213131-40.72265287-90.49478418-90.49478417-90.49478417zM587.41232014 647.74217627h191.54729318c19.60720323 0 34.68966726-15.08246403 34.68966729-34.68966727V134.93839925c0-16.59071043-13.57421762-30.16492806-30.16492808-30.16492805H617.57724821c-30.16492806 0-60.32985613 27.14843525-60.32985612 60.32985611v452.4739209c0 16.59071043 13.57421762 30.16492806 30.16492805 30.16492806z" fill="currentColor"></path>
+</svg>
+        <span>24</span>
+      </div>
+      <div class="count-box--item">
+        <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M900.3614811 257.09082106h-339.81629553l-67.96326003-101.9448889c-19.41807444-29.12711113-48.54518557-43.69066667-82.52681443-43.69066667H123.6385189c-53.39970333 0-97.09036999 43.69066667-97.09037113 97.09036999v582.54222222c0 53.39970333 43.69066667 97.09036999 97.09037113 97.09037002h776.7229622c53.39970333 0 97.09036999-43.69066667 97.09037113-97.09037002V354.18119104c0-53.39970333-43.69066667-97.09036999-97.09037113-97.09036998z m-97.09036999 242.72592554H220.72888889c-24.27259221 0-48.54518557-24.27259221-48.54518556-48.54518556s24.27259221-48.54518557 48.54518556-48.54518444h582.54222222c24.27259221 0 48.54518557 24.27259221 48.54518556 48.54518444s-24.27259221 48.54518557-48.54518556 48.54518556z" fill="currentColor"></path>
+</svg>
+        10
+      </div>
+      <div class="count-box--item">
+        <svg class="icon icon-tags" viewBox="0 0 1098 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M283.42180005 272q0-28.38857157-20.09142843-48.48000001t-48.47999998-20.09142842-48.48000002 20.09142842-20.09142846 48.48000001 20.09142846 48.48 48.48000002 20.09142843 48.47999998-20.09142843 20.09142843-48.48zM855.0332285 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.03999997 263.58857157q-20.9142853 19.81714313-48.75428534 19.81714312-28.38857157 0-48.20571468-19.81714312l-383.04-383.58857157q-20.36571468-19.81714313-34.55999999-54.10285688t-14.19428534-62.6742853l0-222.85714313q0-27.84000002 20.36571469-48.20571469t48.2057147-20.36571466l222.85714313 0q28.38857157 0 62.6742853 14.19428529t54.65142842 34.55999999l383.04000001 382.49142843q19.81714313 20.9142853 19.81714314 48.75428532zM1060.74751475 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.04 263.58857157q-20.9142853 19.81714313-48.75428531 19.81714312-19.26857155 0-31.61142843-7.47428531t-28.38857159-24.13714314l251.79428534-251.7942853q19.81714313-19.81714313 19.81714308-48.20571469 0-27.84000002-19.81714308-48.75428531l-383.04000001-382.49142845q-20.36571468-20.36571468-54.65142842-34.55999999t-62.67428532-14.19428534l120 0q28.38857157 0 62.67428532 14.19428534t54.65142842 34.55999999l383.03999998 382.49142845q19.81714313 20.9142853 19.81714314 48.75428531z" fill="currentColor"></path>
+</svg>
+        16
+      </div>
+    </div>
+  </div>
+</section>
+
+      
+<section class="widet-notice widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-notice" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M512 945.02305225v28.15620663a24.27259221 24.27259221 0 0 1-24.27259221 24.27259335H394.0352a48.54518557 48.54518557 0 0 1-41.74885888-23.78714112l-110.68302222-184.47170332a132.04290333 132.04290333 0 0 1-17.47626667-48.54518557h118.4502511a200.97706667 200.97706667 0 0 1 76.21594113 14.56355556l20.38897777 133.49925888a48.54518557 48.54518557 0 0 0 36.40888888 27.67075555l16.01991111 2.91271112a24.27259221 24.27259221 0 0 1 20.38897778 25.72894889zM997.45185223 463.45481443a194.18074112 194.18074112 0 0 1-38.8361489 116.50844445 24.75804445 24.75804445 0 0 1-36.4088889 0l-34.95253333-34.95253333a24.27259221 24.27259221 0 0 1-2.91271111-30.58346667 97.09036999 97.09036999 0 0 0 0-106.79940665 24.27259221 24.27259221 0 0 1 2.91271111-30.58346666l34.95253333-34.95253334a24.75804445 24.75804445 0 0 1 18.93262223-7.28177777 26.2144 26.2144 0 0 1 17.47626667 9.70903665A194.18074112 194.18074112 0 0 1 997.45185223 463.45481443z m-194.18074112-388.36148111v776.72296335a48.54518557 48.54518557 0 0 1-48.54518556 48.54518443h-28.64165888a48.54518557 48.54518557 0 0 1-33.98163001-14.07810332l-145.63555556-143.20829668A291.27111111 291.27111111 0 0 0 342.57730333 657.63555556H172.18370333a145.63555556 145.63555556 0 0 1-145.63555556-145.63555556v-97.09036999a145.63555556 145.63555556 0 0 1 145.63555556-145.63555556h170.3936a291.27111111 291.27111111 0 0 0 206.31703779-85.43952668l145.63555555-143.20829554a48.54518557 48.54518557 0 0 1 33.98162888-14.07810446H754.72592555a48.54518557 48.54518557 0 0 1 48.54518556 48.54518555z" fill="currentColor"></path>
+</svg>
+    <span>NOTICE</span>
+  </div>
+  <div class="widget-body">
+    <p>再次更改加速,部分js文件迭代更新</p>
+  </div>
+</section>
+
+
+      <section class="widget-categorys widget-item layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M900.3614811 257.09082106h-339.81629553l-67.96326003-101.9448889c-19.41807444-29.12711113-48.54518557-43.69066667-82.52681443-43.69066667H123.6385189c-53.39970333 0-97.09036999 43.69066667-97.09037113 97.09036999v582.54222222c0 53.39970333 43.69066667 97.09036999 97.09037113 97.09037002h776.7229622c53.39970333 0 97.09036999-43.69066667 97.09037113-97.09037002V354.18119104c0-53.39970333-43.69066667-97.09036999-97.09037113-97.09036998z m-97.09036999 242.72592554H220.72888889c-24.27259221 0-48.54518557-24.27259221-48.54518556-48.54518556s24.27259221-48.54518557 48.54518556-48.54518444h582.54222222c24.27259221 0 48.54518557 24.27259221 48.54518556 48.54518444s-24.27259221 48.54518557-48.54518556 48.54518556z" fill="currentColor"></path>
+</svg>
+    <span>CATEGORYS</span>
+  </div>
+  <div class="widget-body">
+    <ul class="categorys-list">
+      
+        <li class="categorys-list-item">
+          <a href="/categories/hexo%E4%B8%BB%E9%A2%98%E4%BC%98%E5%8C%96/">
+            hexo主题优化 (3)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
+          <a href="/categories/java/">
+            java (2)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
+          <a href="/categories/webserver/">
+            webserver (7)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
+          <a href="/categories/mysql-php/">
+            mysql+php (4)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
+          <a href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD%E5%AE%9E%E9%AA%8C/">
+            人工智能实验 (1)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
+          <a href="/categories/%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98/">
+            力扣刷题 (1)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
+          <a href="/categories/%E5%B0%8F%E7%A8%8B%E5%BA%8F/">
+            小程序 (1)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
+          <a href="/categories/%E6%99%BA%E8%83%BD%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/">
+            智能优化算法 (2)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
+          <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">
+            计算机网络 (1)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
+          <a href="/categories/%E9%9A%8F%E7%AC%94/">
+            随笔 (2)
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+</section>
+
+      <section class="widget-tags widget-item  layout-margin content-padding--primary soft-size--large soft-style--box">
+  <div class="widget-title">
+    <svg class="icon icon-tags" viewBox="0 0 1098 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M283.42180005 272q0-28.38857157-20.09142843-48.48000001t-48.47999998-20.09142842-48.48000002 20.09142842-20.09142846 48.48000001 20.09142846 48.48 48.48000002 20.09142843 48.47999998-20.09142843 20.09142843-48.48zM855.0332285 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.03999997 263.58857157q-20.9142853 19.81714313-48.75428534 19.81714312-28.38857157 0-48.20571468-19.81714312l-383.04-383.58857157q-20.36571468-19.81714313-34.55999999-54.10285688t-14.19428534-62.6742853l0-222.85714313q0-27.84000002 20.36571469-48.20571469t48.2057147-20.36571466l222.85714313 0q28.38857157 0 62.6742853 14.19428529t54.65142842 34.55999999l383.04000001 382.49142843q19.81714313 20.9142853 19.81714314 48.75428532zM1060.74751475 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.04 263.58857157q-20.9142853 19.81714313-48.75428531 19.81714312-19.26857155 0-31.61142843-7.47428531t-28.38857159-24.13714314l251.79428534-251.7942853q19.81714313-19.81714313 19.81714308-48.20571469 0-27.84000002-19.81714308-48.75428531l-383.04000001-382.49142845q-20.36571468-20.36571468-54.65142842-34.55999999t-62.67428532-14.19428534l120 0q28.38857157 0 62.67428532 14.19428534t54.65142842 34.55999999l383.03999998 382.49142845q19.81714313 20.9142853 19.81714314 48.75428531z" fill="currentColor"></path>
+</svg>
+    <span>TAGS</span>
+  </div>
+  <div class="widget-body">
+    <div class="tags-cloud">
+      <a href="/tags/c/" style="font-size: 10px;" class="tags-cloud-0">c</a> <a href="/tags/c/" style="font-size: 20px;" class="tags-cloud-10">c++</a> <a href="/tags/css/" style="font-size: 13.33px;" class="tags-cloud-3">css</a> <a href="/tags/hexo/" style="font-size: 13.33px;" class="tags-cloud-3">hexo</a> <a href="/tags/html/" style="font-size: 13.33px;" class="tags-cloud-3">html</a> <a href="/tags/js/" style="font-size: 10px;" class="tags-cloud-0">js</a> <a href="/tags/key-value/" style="font-size: 10px;" class="tags-cloud-0">key_value</a> <a href="/tags/mysql/" style="font-size: 13.33px;" class="tags-cloud-3">mysql</a> <a href="/tags/php/" style="font-size: 16.67px;" class="tags-cloud-7">php</a> <a href="/tags/py/" style="font-size: 13.33px;" class="tags-cloud-3">py</a> <a href="/tags/redis/" style="font-size: 10px;" class="tags-cloud-0">redis</a> <a href="/tags/springboot/" style="font-size: 10px;" class="tags-cloud-0">springboot</a> <a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="font-size: 10px;" class="tags-cloud-0">云服务器</a> <a href="/tags/%E5%B0%8F%E7%A8%8B%E5%BA%8F/" style="font-size: 10px;" class="tags-cloud-0">小程序</a> <a href="/tags/%E6%8A%A5%E9%94%99/" style="font-size: 10px;" class="tags-cloud-0">报错</a> <a href="/tags/%E7%AE%97%E6%B3%95/" style="font-size: 13.33px;" class="tags-cloud-3">算法</a>
+    </div>
+  </div>
+</section>
+    </div>
+  </article>
+</div>
+
+    <!-- footer container -->
+<footer id="footer" class="footer">
+  <div class="footer-container">
+    
+    <div class="social-icons">
+      
+        
+      
+        
+      
+        
+      
+        
+          <a href="https://github.com/waterkin0/" class="soft-size--primary soft-style--box" target="_blank" rel="noopener noreferrer">
+            <svg class="icon icon-github" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <path d="M64.6 512c0 195.6 125.4 361.9 300.1 422.9 23.5 5.9 19.9-10.8 19.9-22.2v-77.6c-135.8 15.9-141.3-74-150.5-89-18.5-31.5-61.9-39.5-49-54.5 31-15.9 62.5 4 98.9 58 26.4 39.1 77.9 32.5 104.1 26 5.7-23.5 17.9-44.5 34.7-60.9-140.7-25.2-199.4-111.1-199.4-213.3 0-49.5 16.4-95.1 48.4-131.8-20.4-60.6 1.9-112.4 4.9-120.1 58.2-5.2 118.5 41.6 123.3 45.3 33.1-8.9 70.8-13.7 112.9-13.7 42.4 0 80.3 4.9 113.5 13.9 11.3-8.6 67.3-48.8 121.4-43.9 2.9 7.7 24.7 58.3 5.5 118.1 32.5 36.8 49 82.8 49 132.4 0 102.3-59 188.3-200.2 213.2 23.5 23.3 38.1 55.5 38.1 91.1v112.7c0.8 9 0 17.9 15.1 17.9C832.7 877 960.4 709.4 960.4 512.1c0-247.5-200.6-447.9-447.9-447.9C265 64.1 64.6 264.5 64.6 512z"></path>
+</svg>
+          </a>
+        
+      
+        
+      
+    </div>
+     
+    <p>&copy; 2023 <a href="/" target="_blank">水帝</a></p>
+
+    
+
+    <p>Powered by <a href="https://hexo.io" target="_blank" rel="noopener noreferrer">Hexo</a> Theme - <a href="https://github.com/miiiku/flex-block" target="_blank" rel="noopener noreferrer author">flex-block</a></p>
+    <p>
+      <span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+      <script>
+        var now = new Date(); 
+        function createtime() { 
+            var grt= new Date("06/24/2022 20:26:16");//在此处修改你的建站时间，格式：月/日/年 时:分:秒
+            now.setTime(now.getTime()+250); 
+            days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days); 
+            hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours); 
+            if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum); 
+            mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;} 
+            seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum); 
+            snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;} 
+            document.getElementById("timeDate").innerHTML = "本站已运行 "+dnum+" 天 "; 
+            document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒"; 
+        } 
+      setInterval("createtime()",250);
+      </script>
+    </p>
+	  <p>已经记载了24篇文章</p>
+    <p>
+      <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+      浏览量：<span id="busuanzi_value_site_pv"><i class="fa fa-spinner fa-spin"></i></span>👀 | 访客数：<span id="busuanzi_value_site_uv"><i class="fa fa-spinner fa-spin"></i></span>👦
+    </p>
+    <p>
+      <a href="javascript:;" id="theme-light">🌞 光明</a>
+      <a href="javascript:;" id="theme-dark">🌛 黑暗</a>
+      <!-- <a href="javascript:;" id="theme-auto">🤖️ 自动</a> -->
+    </p>
+  </div>
+</footer>
+
+  </div>
+
+  <div class="back-to-top-fixed soft-size--round soft-style--box">
+    <svg class="icon icon-back-to-top" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+      <path d="M725.333333 426.666667c-12.8 0-21.333333-4.266667-29.866667-12.8l-213.333333-213.333333c-17.066667-17.066667-17.066667-42.666667 0-59.733333s42.666667-17.066667 59.733333 0l213.333333 213.333333c17.066667 17.066667 17.066667 42.666667 0 59.733333C746.666667 422.4 738.133333 426.666667 725.333333 426.666667z"></path>
+      <path d="M298.666667 426.666667c-12.8 0-21.333333-4.266667-29.866667-12.8-17.066667-17.066667-17.066667-42.666667 0-59.733333l213.333333-213.333333c17.066667-17.066667 42.666667-17.066667 59.733333 0s17.066667 42.666667 0 59.733333l-213.333333 213.333333C320 422.4 311.466667 426.666667 298.666667 426.666667z"></path>
+      <path d="M512 896c-25.6 0-42.666667-17.066667-42.666667-42.666667L469.333333 170.666667c0-25.6 17.066667-42.666667 42.666667-42.666667s42.666667 17.066667 42.666667 42.666667l0 682.666667C554.666667 878.933333 537.6 896 512 896z"></path>
+    </svg>
+  </div>
+
+  
+  <!-- aplayer -->
+
+
+<!-- dplayer -->
+
+
+
+
+  
+
+
+  
+
+
+  <!-- Baidu Analytics START -->
+  <script>
+    var _hmt = _hmt || [];
+    (function () {
+      if (window.location.hostname === "localhost" || window.location.hostname.startsWith("192.168")) {
+        return console.log("本地调试");
+      }
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?https://hm.baidu.com/hm.js?faa79fd1473d6ada0916813f7e10d6e9";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+  <!-- Baidu Analytics End -->
+
+  
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+  
+  <!-- 尾部用户自定义相关内容 -->
+<!-- 引入jquery -->
+<script type="text/javascript" src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<!-- 滚动条相关 -->
+<!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/inuyaksa/jquery.nicescroll@master/jquery.nicescroll.js"></script> -->
+<script type="text/javascript" src="/js/jquery.nicescroll.min.js"></script>
+<!-- <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery.nicescroll/3.7.6/jquery.nicescroll.js"></script> -->
+</body>
+</html>
