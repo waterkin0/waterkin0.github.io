@@ -93,8 +93,8 @@ window.addEventListener("DOMContentLoaded", function() {
     });
   });
 
-  var day = "background-image: url(https://raw.iqiq.io/waterkin0/images/main/blog_base/day.jpg)"
-  var night = "background-image: url(https://raw.iqiq.io/waterkin0/images/main/blog_base/night.jpg)"
+  var day = "background-image: url(https://ghproxy.com/https://raw.githubusercontent.com/waterkin0/images/main/blog_base/day.jpg)"
+  var night = "background-image: url(https://ghproxy.com/https://raw.githubusercontent.com/waterkin0/images/main/blog_base/night.jpg)"
   if(window.localStorage.getItem('theme') == 'theme-light')
     back_ground.setAttribute("style", day)
   else
