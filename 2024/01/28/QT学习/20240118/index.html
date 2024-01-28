@@ -137,8 +137,8 @@
             <time  class="article-date" datetime="2024-01-28T09:29:10.000Z" itemprop="datePublished">2024-01-28</time>
           </h2>
           <h2>
-              <span class="post-count">📖308字</span>
-              <span class="post-count">⏱1分</span>
+              <span class="post-count">📖548字</span>
+              <span class="post-count">⏱2分</span>
             <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
               👀<span id="busuanzi_value_page_pv"></span>次
           </h2>
@@ -212,6 +212,38 @@
 <blockquote>
 <p>实际上我是用了的，你可以把这个include移到cpp内，它检测到你用了就没这个警告了</p>
 </blockquote>
+<h2 id="番外篇：hexo部署失败"><a href="#番外篇：hexo部署失败" class="headerlink" title="番外篇：hexo部署失败"></a>番外篇：hexo部署失败</h2><blockquote>
+<p>这个错误好像不该放这，但暂时没地方放了，以后我可能会开个专栏啥的专门写这些奇奇怪怪的问题</p>
+</blockquote>
+<p>起因很简单，我像往常一样用hexo d去部署我新写的博客，但告诉我部署失败</p>
+
+    <figure class="figure-image">
+      <img src="/2024/01/28/QT%E5%AD%A6%E4%B9%A0/20240118/4.png" alt="怎么会是呢" loading="lazy" onload="loadImage()">
+      <figcaption>怎么会是呢</figcaption>
+    </figure>
+  
+
+<p>一开始我以为是魔法失效了，但是浏览器是正常的</p>
+<p>我去网上查说是ssh失效了，结果自己查了半天发现我的ssh是没有问题的</p>
+
+    <figure class="figure-image">
+      <img src="/2024/01/28/QT%E5%AD%A6%E4%B9%A0/20240118/4.png" alt="怎么会是呢" loading="lazy" onload="loadImage()">
+      <figcaption>怎么会是呢</figcaption>
+    </figure>
+  
+
+<p>然后用ssh -T <a href="mailto:&#x67;&#x69;&#116;&#x40;&#103;&#x69;&#x74;&#104;&#x75;&#x62;&#x2e;&#99;&#111;&#x6d;">&#x67;&#x69;&#116;&#x40;&#103;&#x69;&#x74;&#104;&#x75;&#x62;&#x2e;&#99;&#111;&#x6d;</a>来查看与Github的连接</p>
+
+    <figure class="figure-image">
+      <img src="/2024/01/28/QT%E5%AD%A6%E4%B9%A0/20240118/5.png" alt loading="lazy" onload="loadImage()">
+      <figcaption></figcaption>
+    </figure>
+  
+
+<p>然后仔细看报错：<strong>ssh: connect to host github.com port 22: Connection refused</strong></p>
+<p>22端口被拒绝了，然后顺着这个方向找到了<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/521340971">这篇文章</a></p>
+<p>那么把github的端口改成443端口就好了，进入ssh里，去config里设置就好</p>
+<p>这下一切正常了</p>
 
       </section>
 
@@ -262,7 +294,7 @@
     <span>目录</span>
   </div>
   <div class="widget-body">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-error-RC2175-resource-file-XXX-ico-is-not-in-3-00-format"><span class="toc-text">1.error: RC2175 : resource file XXX.ico is not in 3.00 format</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Included-header-string-h-is-not-used-directly-fix-available"><span class="toc-text">2.Included header string.h is not used directly (fix available)</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-error-RC2175-resource-file-XXX-ico-is-not-in-3-00-format"><span class="toc-text">1.error: RC2175 : resource file XXX.ico is not in 3.00 format</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Included-header-string-h-is-not-used-directly-fix-available"><span class="toc-text">2.Included header string.h is not used directly (fix available)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%95%AA%E5%A4%96%E7%AF%87%EF%BC%9Ahexo%E9%83%A8%E7%BD%B2%E5%A4%B1%E8%B4%A5"><span class="toc-text">番外篇：hexo部署失败</span></a></li></ol>
   </div>
 </section>
 
