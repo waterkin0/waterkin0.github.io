@@ -137,8 +137,8 @@
             <time  class="article-date" datetime="2024-01-28T09:29:10.000Z" itemprop="datePublished">2024-01-28</time>
           </h2>
           <h2>
-              <span class="post-count">📖872字</span>
-              <span class="post-count">⏱3分</span>
+              <span class="post-count">📖2k字</span>
+              <span class="post-count">⏱7分</span>
             <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
               👀<span id="busuanzi_value_page_pv"></span>次
           </h2>
@@ -225,7 +225,7 @@
     </figure>
   
 
-<p>然后用ssh -T <a href="mailto:&#x67;&#105;&#116;&#x40;&#103;&#105;&#x74;&#104;&#x75;&#x62;&#x2e;&#99;&#111;&#x6d;">&#x67;&#105;&#116;&#x40;&#103;&#105;&#x74;&#104;&#x75;&#x62;&#x2e;&#99;&#111;&#x6d;</a>来查看与Github的连接</p>
+<p>然后用ssh -T <a href="mailto:&#103;&#x69;&#116;&#64;&#103;&#105;&#x74;&#x68;&#x75;&#98;&#x2e;&#99;&#x6f;&#x6d;">&#103;&#x69;&#116;&#64;&#103;&#105;&#x74;&#x68;&#x75;&#98;&#x2e;&#99;&#x6f;&#x6d;</a>来查看与Github的连接</p>
 
     <figure class="figure-image">
       <img src="/2024/01/28/QT%E5%AD%A6%E4%B9%A0/20240118/5.jpg" alt loading="lazy" onload="loadImage()">
@@ -263,6 +263,43 @@
   
 
 <p>很神奇，暂时不知道为什么</p>
+<h2 id="6-QT-designer中的小问题：比例无法设置"><a href="#6-QT-designer中的小问题：比例无法设置" class="headerlink" title="6.QT designer中的小问题：比例无法设置"></a>6.QT designer中的小问题：比例无法设置</h2><p>这是我自己犯傻了，应该用lineedit输入的地方我用textedit了，但后者似乎有个minsize，在调整时不能再小了，而这个值有点大，导致在窗口较小时比例会出现错误，但这个minsize我无法再qtdesigner内设置，不知道能不能在代码里面设置</p>
+<h2 id="7-waitForConnected阻塞问题"><a href="#7-waitForConnected阻塞问题" class="headerlink" title="7.waitForConnected阻塞问题"></a>7.waitForConnected阻塞问题</h2><p>我这里客户端想用waitForConnected来等待三秒来连接，但是这个阻塞函数会导致前面的setText等和ui有关的操作也阻塞</p>
+<p>原因是因为和ui有关的操作要调用QWidget 的 paintEvent() 函数，而这个函数的自动调用是在程序main的主循环中进行</p>
+<p>也就是说一切和ui有关的操作都在该循环结束时才会进行，那这里在waitForConnected阻塞后ui操作也被阻塞自然也就能理解了</p>
+<p>一开始想用多线程，将waitForConnected放入新线程，防止阻塞，但太复杂了</p>
+<p>正如上面所说，最简单的就是手动更新当前的ui，即 <code>repaint()</code>即可</p>
+<p>但qt的主题是异步操作，不建议用阻塞函数，后续可能想办法用信号槽之类的优化吧</p>
+<blockquote>
+<p>参考文献：<a target="_blank" rel="noopener" href="https://ask.csdn.net/questions/7697934">qt5 TCP客户端 使用waitForConnected函数后，前面设置控件的代码不执行</a></p>
+</blockquote>
+<h2 id="8-还是中文编码问题"><a href="#8-还是中文编码问题" class="headerlink" title="8.还是中文编码问题"></a>8.还是中文编码问题</h2><p>我这里问题主要是服务端和客户端通信的时候，两边编码解码的问题</p>
+<p>简单总结就是以 <code>local8bit</code>来传递，在两端接收之后再解码即可</p>
+<p>服务端：<code>QString message = QString::fromLocal8Bit(socket-&gt;readAll());</code></p>
+<p>客户端：<code>const QByteArray message = ui-&gt;textEdit-&gt;toPlainText().toLocal8Bit();</code></p>
+<p>将上面的message进行传递即可</p>
+<h2 id="9-按键检测-监听-问题"><a href="#9-按键检测-监听-问题" class="headerlink" title="9.按键检测(监听)问题"></a>9.按键检测(监听)问题</h2><p>我想在textedit内编辑完后enter就可以直接调用某个函数，为此我需要一个办法来监听键盘</p>
+<p>首先能查到的是 <code>keyPressEvent</code>这个函数，他是QWidght内的一个虚函数，在键盘上有某个按键按下之后会自动调用这个函数</p>
+<p>但是这个函数扯到一个概念叫焦点，也就是说要用户的焦点在这个模块上，那么该函数才能被调用</p>
+<p>这个很好解决，把输入框设置为焦点就好了，这里就不多做介绍</p>
+<p>但实操发现还是不行，发现是textedit会劫持键盘上的事件，致使你在输入时所按的enter键会被识别为\n而不是触发上面那个函数</p>
+<p>那这个办法暂时行不通，于是又找到了另一个东西——事件</p>
+<p>QT很好的给了一个event事件供我们使用，当程序运行中，总是会触发各种事件，那么我们可以重写虚函数来过滤和处理我们想要的事件，很好的是，按键检测也在其中</p>
+<p>开始之前，我们要启动事件的监听：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++">QApplication::<span class="hljs-built_in">instance</span>()-&gt;<span class="hljs-built_in">installEventFilter</span>(<span class="hljs-keyword">this</span>);<br></code></pre></td></tr></table></figure>
+
+<p>然后就可以重写eventFilter函数，该函数是QWidght内的，那么你可以直接在你所创建的类内重写</p>
+<p>我这里给出一个例子：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">Youchat::eventFilter</span><span class="hljs-params">(QObject* object, QEvent* e)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">if</span> (e-&gt;<span class="hljs-built_in">type</span>() == QEvent::KeyPress &amp;&amp; ((QKeyEvent*)e)-&gt;<span class="hljs-built_in">key</span>() == Qt::Key_Enter) &#123;<br>	<span class="hljs-comment">//按下回车后进行处理</span><br>	<span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>所有事件在产生之后会首先发给这个函数，然后再进行后续处理</p>
+<p>可以看见这是一个bool类型的函数，返回值代表处理成功与否，如果返回true代表处理完毕，那么这次产生的事件不会继续传递至原来的地方，false则正常进行后续处理</p>
+<p>一个简单的例子是你可以设置为检测到KeyPress后就返回true，那么你在textEdit内的操作都会被这个函数处理，导致你无论怎么敲键盘TextEdit内都不会有内容</p>
+<p>但问题又来了，我按enter键似乎检测不到，不会进行处理</p>
+<p>经过一番排查发现，qt将键盘上的enter分为两个，一个叫return，位于字母键盘上，即我们常用的enter，另一个在数字键盘旁边，这个才被叫enter</p>
+<p>那在判断的时候就需要将两个都写入了</p>
+<p><code>e-&gt;type() == QEvent::KeyPress &amp;&amp; ((QKeyEvent*)e)-&gt;key() == Qt::Key_Enter || ((QKeyEvent*)e)-&gt;key() == Qt::Key_Return</code></p>
+<p>现在正常了</p>
 
       </section>
 
@@ -313,7 +350,7 @@
     <span>目录</span>
   </div>
   <div class="widget-body">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-error-RC2175-resource-file-XXX-ico-is-not-in-3-00-format"><span class="toc-text">1.error: RC2175 : resource file XXX.ico is not in 3.00 format</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Included-header-string-h-is-not-used-directly-fix-available"><span class="toc-text">2.Included header string.h is not used directly (fix available)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%95%AA%E5%A4%96%E7%AF%87%EF%BC%9Ahexo%E9%83%A8%E7%BD%B2%E5%A4%B1%E8%B4%A5"><span class="toc-text">番外篇：hexo部署失败</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%82%A3%E4%B9%88%E6%8A%8Agithub%E7%9A%84%E7%AB%AF%E5%8F%A3%E6%94%B9%E6%88%90443%E7%AB%AF%E5%8F%A3%E5%B0%B1%E5%A5%BD%E4%BA%86%EF%BC%8C%E8%BF%9B%E5%85%A5ssh%E9%87%8C%EF%BC%8C%E5%8E%BBconfig%E9%87%8C%E8%AE%BE%E7%BD%AE%E5%B0%B1%E5%A5%BD"><span class="toc-text">那么把github的端口改成443端口就好了，进入ssh里，去config里设置就好</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-qfile%E4%B8%ADis-open%E5%A7%8B%E7%BB%88%E4%B8%BA0"><span class="toc-text">3.qfile中is_open始终为0</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-socket%E6%97%B6connect%E5%92%8Caccpet%E5%85%A8%E6%98%AF-1"><span class="toc-text">4.socket时connect和accpet全是-1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98"><span class="toc-text">5.中文乱码问题</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-error-RC2175-resource-file-XXX-ico-is-not-in-3-00-format"><span class="toc-text">1.error: RC2175 : resource file XXX.ico is not in 3.00 format</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Included-header-string-h-is-not-used-directly-fix-available"><span class="toc-text">2.Included header string.h is not used directly (fix available)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%95%AA%E5%A4%96%E7%AF%87%EF%BC%9Ahexo%E9%83%A8%E7%BD%B2%E5%A4%B1%E8%B4%A5"><span class="toc-text">番外篇：hexo部署失败</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%82%A3%E4%B9%88%E6%8A%8Agithub%E7%9A%84%E7%AB%AF%E5%8F%A3%E6%94%B9%E6%88%90443%E7%AB%AF%E5%8F%A3%E5%B0%B1%E5%A5%BD%E4%BA%86%EF%BC%8C%E8%BF%9B%E5%85%A5ssh%E9%87%8C%EF%BC%8C%E5%8E%BBconfig%E9%87%8C%E8%AE%BE%E7%BD%AE%E5%B0%B1%E5%A5%BD"><span class="toc-text">那么把github的端口改成443端口就好了，进入ssh里，去config里设置就好</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-qfile%E4%B8%ADis-open%E5%A7%8B%E7%BB%88%E4%B8%BA0"><span class="toc-text">3.qfile中is_open始终为0</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-socket%E6%97%B6connect%E5%92%8Caccpet%E5%85%A8%E6%98%AF-1"><span class="toc-text">4.socket时connect和accpet全是-1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98"><span class="toc-text">5.中文乱码问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-QT-designer%E4%B8%AD%E7%9A%84%E5%B0%8F%E9%97%AE%E9%A2%98%EF%BC%9A%E6%AF%94%E4%BE%8B%E6%97%A0%E6%B3%95%E8%AE%BE%E7%BD%AE"><span class="toc-text">6.QT designer中的小问题：比例无法设置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-waitForConnected%E9%98%BB%E5%A1%9E%E9%97%AE%E9%A2%98"><span class="toc-text">7.waitForConnected阻塞问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E8%BF%98%E6%98%AF%E4%B8%AD%E6%96%87%E7%BC%96%E7%A0%81%E9%97%AE%E9%A2%98"><span class="toc-text">8.还是中文编码问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-%E6%8C%89%E9%94%AE%E6%A3%80%E6%B5%8B-%E7%9B%91%E5%90%AC-%E9%97%AE%E9%A2%98"><span class="toc-text">9.按键检测(监听)问题</span></a></li></ol>
   </div>
 </section>
 
