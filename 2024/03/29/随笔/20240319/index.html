@@ -137,8 +137,8 @@
             <time  class="article-date" datetime="2024-03-29T09:15:14.000Z" itemprop="datePublished">2024-03-29</time>
           </h2>
           <h2>
-              <span class="post-count">📖530字</span>
-              <span class="post-count">⏱1分</span>
+              <span class="post-count">📖1k字</span>
+              <span class="post-count">⏱3分</span>
             <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
               👀<span id="busuanzi_value_page_pv"></span>次
           </h2>
@@ -173,10 +173,15 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <p>最近在整春招的内容，系统的学了很多东西，自然也会有很多问题，大部分网上都有解答，但有一些没有，我就先吧问题和自己的想法写在这里，以后有空了再好好钻研一下</p>
-<h2 id="1-TCP四元组中目标IP可以写成广播地址吗"><a href="#1-TCP四元组中目标IP可以写成广播地址吗" class="headerlink" title="1.TCP四元组中目标IP可以写成广播地址吗"></a>1.TCP四元组中目标IP可以写成广播地址吗</h2><blockquote>
+        <p>最近在整春招的内容，系统的学了很多东西，自然也会有很多问题，大部分网上都有解答，但有一些没有</p>
+<blockquote>
+<p>是因为问题太蠢了吗…</p>
+</blockquote>
+<p>我就先吧问题和自己的想法写在这里，以后有空了再好好钻研一下</p>
+<h2 id="1-TCP四元组中目标IP可以写成广播地址吗"><a href="#1-TCP四元组中目标IP可以写成广播地址吗" class="headerlink" title="1. TCP四元组中目标IP可以写成广播地址吗"></a>1. TCP四元组中目标IP可以写成广播地址吗</h2><blockquote>
 <p>网上都搜不到这个问题的答案…</p>
 </blockquote>
+<p>UDP中可以实现一对多，其方法是将目标ip设为广播地址，那么TCP可以这样吗</p>
 <p>我自己是认为可以的，但是数据是无法正常到达的，因为tcp协议最后会确定该包的目标地址和自己地址是否相同，由于是广播地址所以一定不同，那么在接收端的缓冲区内就会被认为是无效数据包而被丢弃</p>
 <p>问了一下CHATGPT，他给我的回答和我想法类似，但他说可能在三个地方就导致该包被丢弃：</p>
 <blockquote>
@@ -188,7 +193,21 @@
 <li><strong>网络中的路由器或交换机处理</strong> ：即使数据包成功离开了本地主机并传输到网络中，路由器、交换机或其他中间设备也可能会丢弃尝试发送到广播地址的数据包。这是因为广播地址的数据包通常不是被设计用来在广域网中传输的，中间设备可能会有相应的安全策略或配置来防止这样的数据包被传播。</li>
 </ol>
 <p>等以后有空了我自己在家实验一下吧，估计要耗点时间了</p>
-<p>2024.3.29 以上</p>
+<h2 id="2-TCP在进入time-wait阶段后为什么需要等待2MSL"><a href="#2-TCP在进入time-wait阶段后为什么需要等待2MSL" class="headerlink" title="2. TCP在进入time_wait阶段后为什么需要等待2MSL"></a>2. TCP在进入time_wait阶段后为什么需要等待2MSL</h2><blockquote>
+<p>这个问题网上其实有比较确切的答案，但我还是有疑问</p>
+</blockquote>
+<p>其实这个问题在网上有两种说法</p>
+<blockquote>
+<p>以下A为主动断开端，B为被动</p>
+</blockquote>
+<ol>
+<li>为了保证服务端接收到ACK了，如果没接收到2MSL内一定会有FIN重新过来<br>然后我去搜这个2MSL是具体怎么算出的，基本没人给出，我自己也算不出<br>我认为这个值应该是B的timeout + B发送的最后一个FIN的传输时间 - B发送第一个FIN的传输时间<br>而B的timeout和MSL没有任何关系才对<blockquote>
+<p>当然如果B是理智的，他的timeout应该设置为B发送的第一个FIN的传输时间+A发送的ACK的传输时间，那么这个等待时间应该是(把b的timeout带入)B发送的最后一个FIN的传输时间 + A发送的ACK的传输时间，即最大为2MSL,如果是这样这个说法就是正确的，但这一段的前提是B设置的timeout是根据数据传输时间来的，但似乎没有文档能证明这一点</p>
+</blockquote>
+</li>
+<li>当需要等待的时候已经是客户端处理完数据了，（第三次握手结束），那么无论如何在一定时间之后两边都会关闭（超时关闭），那么2MSL取最坏情况，第四次挥手的ACK包的最大生存时长(MSL)+ACK刚到达后服务端重传的FIN包的最大生存时长(MSL)&#x3D;2MSL，保证前后两个使用相同四元组的连接不会干扰</li>
+</ol>
+<p>我比较相信第二种说法，但第一种说法也不是全无道理，等后续查查资料吧</p>
 
       </section>
 
@@ -239,7 +258,7 @@
     <span>目录</span>
   </div>
   <div class="widget-body">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-TCP%E5%9B%9B%E5%85%83%E7%BB%84%E4%B8%AD%E7%9B%AE%E6%A0%87IP%E5%8F%AF%E4%BB%A5%E5%86%99%E6%88%90%E5%B9%BF%E6%92%AD%E5%9C%B0%E5%9D%80%E5%90%97"><span class="toc-text">1.TCP四元组中目标IP可以写成广播地址吗</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-TCP%E5%9B%9B%E5%85%83%E7%BB%84%E4%B8%AD%E7%9B%AE%E6%A0%87IP%E5%8F%AF%E4%BB%A5%E5%86%99%E6%88%90%E5%B9%BF%E6%92%AD%E5%9C%B0%E5%9D%80%E5%90%97"><span class="toc-text">1. TCP四元组中目标IP可以写成广播地址吗</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-TCP%E5%9C%A8%E8%BF%9B%E5%85%A5time-wait%E9%98%B6%E6%AE%B5%E5%90%8E%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E7%AD%89%E5%BE%852MSL"><span class="toc-text">2. TCP在进入time_wait阶段后为什么需要等待2MSL</span></a></li></ol>
   </div>
 </section>
 
@@ -322,12 +341,6 @@
         </li>
       
         <li class="categorys-list-item">
-          <a href="/categories/mysql-php/">
-            mysql+php (4)
-          </a>
-        </li>
-      
-        <li class="categorys-list-item">
           <a href="/categories/webserver/">
             webserver (9)
           </a>
@@ -366,6 +379,12 @@
         <li class="categorys-list-item">
           <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">
             计算机网络 (1)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
+          <a href="/categories/mysqlAndphp/">
+            mysqlAndphp (4)
           </a>
         </li>
       
