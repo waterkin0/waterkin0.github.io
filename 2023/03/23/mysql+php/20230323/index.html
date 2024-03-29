@@ -31,7 +31,7 @@
 
   
 
-  <title>webserver之1 socket编程 | Touma</title>
+  <title>学习php过程中的一些问题 | Touma</title>
 
   
 
@@ -76,7 +76,7 @@
 <!-- header container -->
 <header class="header-container post">
   
-    <div class="post-image" style="background-image: url(https://cdn.waterkin.top/https://github.com/waterkin0/images/blob/main/blogs_images/socket编程.png)"></div>
+    <div class="post-image" style="background-image: url(https://cdn.waterkin.top/https://github.com/waterkin0/images/blob/main/blogs_images/学习php过程中的一些问题.jpg)"></div>
   
   
 
@@ -130,26 +130,26 @@
     <div class="header-content">
       <div class="post-text layout-block">
         <div class="layout-margin">
-          <h1 class="title-wrap">webserver之1 socket编程</h1>
+          <h1 class="title-wrap">学习php过程中的一些问题</h1>
           <h2 class="title-sub-wrap">
             <strong>水帝</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2023-04-25T09:34:35.000Z" itemprop="datePublished">2023-04-25</time>
+            <time  class="article-date" datetime="2023-03-23T08:57:39.000Z" itemprop="datePublished">2023-03-23</time>
           </h2>
           <h2>
-              <span class="post-count">📖1.8k字</span>
-              <span class="post-count">⏱6分</span>
+              <span class="post-count">📖291字</span>
+              <span class="post-count">⏱1分</span>
             <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
               👀<span id="busuanzi_value_page_pv"></span>次
           </h2>
           <ul class="wrap-list dark">
   
-    <li><a href="/categories/webserver/">📒 webserver</a></li>
+    <li><a href="/categories/mysql-php/">📒 mysql+php</a></li>
   
 </ul>
           <ul class="wrap-list dark">
   
-    <li><a href="/tags/c/">🏷️ c++</a></li>
+    <li><a href="/tags/%E6%8A%A5%E9%94%99/">🏷️ 报错</a></li>
   
 </ul>
         </div>
@@ -173,51 +173,31 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <p>准备开始写一个大一点的项目，因为上次被java拷打过，这次就决定还是回我的c++吧</p>
-<p>那么就决定写这么一个c++的webserver，因为之前没有相关基础，只学过计算机网络，当时的套接字编程也是用python写的</p>
-<p>源项目地址：<a target="_blank" rel="noopener" href="https://github.com/qinguoyi/TinyWebServer">https://github.com/qinguoyi/TinyWebServer</a></p>
-<p>本项目地址：<a target="_blank" rel="noopener" href="https://github.com/waterkin0/mywebserver">https://github.com/waterkin0/mywebserver</a></p>
-<p>这点可以在前面我<a target="_blank" rel="noopener" href="https://waterkin.top/2022/11/29/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/20221129/">某篇文章</a>看到</p>
-<p>那么本次首先就是对c++套接字编程的实现：</p>
-<blockquote>
-<p>注意本系列都是在linux下实现，window系统中可能有部分函数名称不同甚至不存在</p>
+        <blockquote>
+<p>（更新中）</p>
 </blockquote>
-<h2 id="1-客户端client"><a href="#1-客户端client" class="headerlink" title="1.客户端client"></a>1.客户端client</h2><p>之所以先写客户端是因为这会陪伴我们很长时间，后续的服务器测试一部分会用到，因为不复杂就直接贴代码了：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;arpa/inet.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/socket.h&gt;</span></span><br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>&#123;<br>    <span class="hljs-comment">//创建套接字</span><br>    <span class="hljs-type">int</span> sock = <span class="hljs-built_in">socket</span>(AF_INET, SOCK_STREAM, <span class="hljs-number">0</span>);<br><br>    <span class="hljs-comment">//向服务器（特定的IP和端口）发起请求</span><br>    <span class="hljs-keyword">struct</span> <span class="hljs-title class_">sockaddr_in</span> serv_addr; <span class="hljs-comment">//用sockaddr_in进行初始化，connect时转化为sockaddr</span><br>    <span class="hljs-comment">//memset(&amp;serv_addr, 0, sizeof(serv_addr));  //每个字节都用0填充</span><br>    <span class="hljs-built_in">bzero</span>(&amp;serv_addr, <span class="hljs-built_in">sizeof</span>(serv_addr));<br>    serv_addr.sin_family = AF_INET;  <span class="hljs-comment">//使用IPv4地址</span><br>    serv_addr.sin_addr.s_addr = <span class="hljs-built_in">inet_addr</span>(<span class="hljs-string">&quot;127.0.0.1&quot;</span>);  <span class="hljs-comment">//具体的IP地址 inet_addr()作用是将一个IP字符串转化为一个网络字节序的整数值，用于sockaddr_in.sin_addr.s_addr</span><br>    serv_addr.sin_port = <span class="hljs-built_in">htons</span>(<span class="hljs-number">1234</span>);  <span class="hljs-comment">//端口 htons()作用是将端口号由主机字节序转换为网络字节序的整数值</span><br>    <span class="hljs-built_in">connect</span>(sock, (<span class="hljs-keyword">struct</span> sockaddr*)&amp;serv_addr, <span class="hljs-built_in">sizeof</span>(serv_addr));<br>   <br>    <span class="hljs-comment">//读取服务器传回的数据</span><br>    <span class="hljs-type">char</span> buffer[<span class="hljs-number">40</span>];<br>    <span class="hljs-built_in">read</span>(sock, buffer, <span class="hljs-built_in">sizeof</span>(buffer)<span class="hljs-number">-1</span>);<br>    <span class="hljs-comment">//recv(sock, buffer, sizeof(buffer)-1, 0);</span><br>   <br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Message form server: %s\n&quot;</span>, buffer);<br>   <br>    <span class="hljs-comment">//关闭套接字</span><br>    <span class="hljs-built_in">close</span>(sock);<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>主要是写php遇到的问题</p>
+<h2 id="1-在form提交后防止刷新"><a href="#1-在form提交后防止刷新" class="headerlink" title="1.在form提交后防止刷新"></a>1.在form提交后防止刷新</h2><p>我这里是用ajax提交的，方便进行表单验证，错误就直接打印在当前页面，但是实际操作的时候发现提交后那个错误信息只会打印一瞬间</p>
+<p>其实这里是 <code>submit</code>提交后强制刷新页面，我就修改了一下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;button&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;mysql_login&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;登陆&quot;</span>&gt;</span><br></code></pre></td></tr></table></figure>
 
-<p>首先就是创建套接字，这是两端交流的基础</p>
-<p>然后定义了一个sockaddr_in，这是用来处理网络地址的结构，和其作用相同的还有sockaddr</p>
-<p>但后者把目标地址和端口信息混合在一起，不好定义，所以用sockaddr_in进行定义</p>
-<p>但connect还是要转换为sockaddr，为什么？他就是这么定义的</p>
-<p>上述代码可能有疑问的就是读取这个套接字传来的信息为啥是read</p>
-<p>注意这里是linux系统，linux系统有“万物皆文件”的说法，所以这里可以read，当然你用recv也可以，两者在这没有区别</p>
-<h2 id="2-服务端server"><a href="#2-服务端server" class="headerlink" title="2.服务端server"></a>2.服务端server</h2><p>还是直接上代码：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;arpa/inet.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/socket.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;netinet/in.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/epoll.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;fcntl.h&gt;</span></span><br><br><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>&#123;<br>    <span class="hljs-comment">//创建套接字</span><br>    <span class="hljs-type">int</span> listenfd = <span class="hljs-built_in">socket</span>(AF_INET, SOCK_STREAM, IPPROTO_TCP);<br>  	<span class="hljs-comment">// AF_INET :   表示使用 IPv4 地址		可选参数</span><br>    <span class="hljs-comment">// SOCK_STREAM 表示使用面向连接的数据传输方式，</span><br>    <span class="hljs-comment">// IPPROTO_TCP 表示使用 TCP 协议</span><br><br>    <span class="hljs-comment">//将套接字和IP、端口绑定</span><br>    <span class="hljs-keyword">struct</span> <span class="hljs-title class_">sockaddr_in</span> serv_addr; <span class="hljs-comment">//用sockaddr_in进行初始化，bind时转化为sockaddr</span><br>    <span class="hljs-built_in">memset</span>(&amp;serv_addr, <span class="hljs-number">0</span>, <span class="hljs-built_in">sizeof</span>(serv_addr));  <span class="hljs-comment">//每个字节都用0填充</span><br>    serv_addr.sin_family = AF_INET;  <span class="hljs-comment">//使用IPv4地址</span><br>    serv_addr.sin_addr.s_addr = <span class="hljs-built_in">inet_addr</span>(<span class="hljs-string">&quot;127.0.0.1&quot;</span>);  <span class="hljs-comment">//具体的IP地址 inet_addr()作用是将一个IP字符串转化为一个网络字节序的整数值，用于sockaddr_in.sin_addr.s_addr</span><br>    serv_addr.sin_port = <span class="hljs-built_in">htons</span>(<span class="hljs-number">1234</span>);  <span class="hljs-comment">//端口 htons()作用是将端口号由主机字节序转换为网络字节序的整数值</span><br>    <span class="hljs-type">int</span> flag = <span class="hljs-number">1</span>;<br>    <span class="hljs-built_in">setsockopt</span>(listenfd, SOL_SOCKET, SO_REUSEADDR, &amp;flag, <span class="hljs-built_in">sizeof</span>(flag));<span class="hljs-comment">/* SO_REUSEADDR 允许端口被重复使用 */</span><br>    <span class="hljs-built_in">bind</span>(listenfd, (<span class="hljs-keyword">struct</span> sockaddr*)&amp;serv_addr, <span class="hljs-built_in">sizeof</span>(serv_addr)); <span class="hljs-comment">/* 绑定socket和它的地址 */</span><br><br>    <span class="hljs-comment">//进入监听状态，等待用户发起请求</span><br>    <span class="hljs-built_in">listen</span>(listenfd, <span class="hljs-number">20</span>);<br><br>    <span class="hljs-keyword">struct</span> <span class="hljs-title class_">sockaddr_in</span> clnt_addr;<br>    <span class="hljs-type">socklen_t</span> clnt_addr_size = <span class="hljs-built_in">sizeof</span>(clnt_addr);<br>    <span class="hljs-type">int</span> clnt_sock = <span class="hljs-built_in">accept</span>(listenfd, (<span class="hljs-keyword">struct</span> sockaddr*)&amp;clnt_addr, &amp;clnt_addr_size);<br><br>    <span class="hljs-comment">//向客户端发送数据</span><br>    <span class="hljs-type">char</span> str[] = <span class="hljs-string">&quot;Hello World!&quot;</span>;<br>    <span class="hljs-built_in">write</span>(clnt_sock, str, <span class="hljs-built_in">sizeof</span>(str));<br>   <br>    <span class="hljs-comment">//关闭套接字</span><br>    <span class="hljs-built_in">close</span>(clnt_sock);<br>    <span class="hljs-built_in">close</span>(listenfd);<br><br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
-
+<p>把 <code>type</code>的 <code>sumbit</code>改为 <code>button</code>了，然后触发改为 <code>onclick</code>，因为实际的提交表单是由js完成的</p>
 <blockquote>
-<p>上面一堆头文件都是后续应该要用到的，干脆一起写了</p>
-</blockquote>
-<p>上面绑定地址和套接字就不重复了，直接从setsockopt开始</p>
-<p>关于这个函数可以自己搜，在这里是将这个端口改为可以复用，这主要是为了后续的复用，本篇其实没有用到，只是为了方便后续处理</p>
-<p>bind绑定地址和套接字，listen让这个套接字开始监听，后面的数字是请求队列的最大长度</p>
-<p>然后就是比较重要的accept函数，这是一个阻塞函数，这里是创建一个新的套接字，并让新来的链接连到这个新的上面，新老套接字内容几乎一样</p>
-<p>那为什么不能直接用之前定义好的套接字呢</p>
-<p>笔者测试过了，不写accept程序会直接运行完毕，除非你有能力让客户端和服务器端同时启动，否则这里会传送失败，总有一段没开</p>
-<p>所以需要accept函数来阻塞在这，等待客户端的链接</p>
-<p>当然其实更重要的原因是在服务器进入大量连接处理时，当个的套接字肯定处理不来，需要更多的套接字来并发处理，这是后话了</p>
-<p>如果上面的都写了下来保存了，先运行服务器，然后运行客户端，客户端就可以得到前者发来的消息</p>
-<p>你可能会说服务器怎么能运行一次就结束呢！</p>
-<p>你只需要在accept那一块加入while1，就可以让服务器一直运行下去了，可以不停的运行客户端来请求</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>)&#123;<br>    <span class="hljs-keyword">struct</span> <span class="hljs-title class_">sockaddr_in</span> clnt_addr;<br>    <span class="hljs-type">socklen_t</span> clnt_addr_size = <span class="hljs-built_in">sizeof</span>(clnt_addr);<br>    <span class="hljs-type">int</span> clnt_sock = <span class="hljs-built_in">accept</span>(listenfd, (<span class="hljs-keyword">struct</span> sockaddr*)&amp;clnt_addr, &amp;clnt_addr_size);<br><br>    <span class="hljs-comment">//向客户端发送数据</span><br>    <span class="hljs-type">char</span> str[] = <span class="hljs-string">&quot;Hello World!&quot;</span>;<br>    <span class="hljs-built_in">write</span>(clnt_sock, str, <span class="hljs-built_in">sizeof</span>(str));<br>    <span class="hljs-built_in">close</span>(clnt_sock);<br>&#125;<br><br><span class="hljs-comment">//关闭套接字</span><br><span class="hljs-built_in">close</span>(listenfd);<br></code></pre></td></tr></table></figure>
+<p>form内如果直接用button进行编写，如</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">button</span>&gt;</span>登陆<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span><br></code></pre></td></tr></table></figure>
 
-<p>很简单对吧！这样就实现了服务器和客户端的连接，然而真的这么简单吗</p>
-<h2 id="3-预告-多路复用epoll"><a href="#3-预告-多路复用epoll" class="headerlink" title="3.预告-多路复用epoll"></a>3.预告-多路复用epoll</h2><p>有个重要的问题，一个大型的服务器，可能有一瞬间涌入大量的连接需求，小小的accept还不能处理</p>
-<p>其次真正在使用的时候，不可能建立好一个链接后就发个数据就没了，这个连接可能会维持很长时间再关闭</p>
-<p>开个线程去处理不就好了！ 是可以这样，但一个线程处理一个连接是很浪费的一件事</p>
-<p>你打开网页，连接建立并发送了消息，你可能会在这个网页待上一个小时，对于这个连接，没有任何的信息交流，但却让一个线程活活这么空转了一个小时，那有没有什么办法可以让这个线程来处理多个连接呢</p>
-<p>值得庆幸的是，linux系统提供select，poll和epoll来进行IO多路复用，这让每个线程不那么闲，以增加效率</p>
-<p>系列的下一篇就要去看看select，poll和epoll是如何让线程这个打工人做更多的事了</p>
-<p>那么感谢您的阅读，请允许我先行搁笔</p>
+<p>也是不可以的，因为form内的button自带sumbit，当然加上 <code>type=&quot;button&quot;</code>后也是可以的</p>
+</blockquote>
+<h2 id="2-Compilation-failed-PCRE-does-not-support-L-l-N-P-p-U-u-or-X-at-…"><a href="#2-Compilation-failed-PCRE-does-not-support-L-l-N-P-p-U-u-or-X-at-…" class="headerlink" title="2.Compilation failed: PCRE does not support \L, \l, \N, \P, \p, \U, \u, or \X at …"></a>2.Compilation failed: PCRE does not support \L, \l, \N, \P, \p, \U, \u, or \X at …</h2><blockquote>
+<p>preg_match() [function.preg-match]: Compilation failed: PCRE does not support \L, \l, \N, \P, \p, \U, \u, or \X at …</p>
+</blockquote>
+<p>pcre自己的问题，中文匹配出错，要像下面这样更改：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">/^[\x&#123;4e00&#125;-\x&#123;9fa5&#125;A-Za-z0-9_]&#123;2,12&#125;$/<br></code></pre></td></tr></table></figure>
+
+<p>改为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">/^[\x&#123;4e00&#125;-\x&#123;9fa5&#125;A-Za-z0-9_]&#123;2,12&#125;$/u<br></code></pre></td></tr></table></figure>
+
+<p>即可</p>
 
       </section>
 
@@ -228,12 +208,12 @@
             <div class="article-nav-item layout-padding">
   <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
     
-      <div class="card-cover" background-image-lazy data-img="https://cdn.waterkin.top/https://github.com/waterkin0/images/blob/main/blogs_images/select,poll和epoll.jpg"></div>
+      <div class="card-cover" background-image-lazy data-img="https://cdn.waterkin.top/https://github.com/waterkin0/images/blob/main/blogs_images/cookie!session!token!.jpg"></div>
     
     <div class="card-text">
       
-        <a href="/2023/04/28/webserver/20230428/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">webserver之2 select,poll和epoll</h2>
+        <a href="/2023/04/05/mysql+php/20230405/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">cookie! session! token!</h2>
         </a>
       
       <div class="card-text--row">Newer</div>
@@ -245,12 +225,12 @@
             <div class="article-nav-item layout-padding">
   <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
     
-      <div class="card-cover" background-image-lazy data-img="https://cdn.waterkin.top/https://github.com/waterkin0/images/blob/main/blogs_images/水帝の绝赞推荐.png"></div>
+      <div class="card-cover" background-image-lazy data-img="https://cdn.waterkin.top/https://github.com/waterkin0/images/blob/main/blogs_images/力扣刷题遇到的报错.jpg"></div>
     
     <div class="card-text">
       
-        <a href="/2023/04/23/%E9%9A%8F%E7%AC%94/20230423/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">水帝の绝赞推荐</h2>
+        <a href="/2023/03/21/%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98/20230321/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">力扣刷题遇到的报错</h2>
         </a>
       
       <div class="card-text--row">Older</div>
@@ -284,7 +264,7 @@
     <span>目录</span>
   </div>
   <div class="widget-body">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%AE%A2%E6%88%B7%E7%AB%AFclient"><span class="toc-text">1.客户端client</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%9C%8D%E5%8A%A1%E7%AB%AFserver"><span class="toc-text">2.服务端server</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E9%A2%84%E5%91%8A-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8epoll"><span class="toc-text">3.预告-多路复用epoll</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%9C%A8form%E6%8F%90%E4%BA%A4%E5%90%8E%E9%98%B2%E6%AD%A2%E5%88%B7%E6%96%B0"><span class="toc-text">1.在form提交后防止刷新</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Compilation-failed-PCRE-does-not-support-L-l-N-P-p-U-u-or-X-at-%E2%80%A6"><span class="toc-text">2.Compilation failed: PCRE does not support \L, \l, \N, \P, \p, \U, \u, or \X at …</span></a></li></ol>
   </div>
 </section>
 
