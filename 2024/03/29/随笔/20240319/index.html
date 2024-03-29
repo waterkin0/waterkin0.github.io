@@ -31,7 +31,7 @@
 
   
 
-  <title>学习QT中遇到的错误 | Touma</title>
+  <title>待解决的问题 | Touma</title>
 
   
 
@@ -76,7 +76,7 @@
 <!-- header container -->
 <header class="header-container post">
   
-    <div class="post-image" style="background-image: url(https://cdn.waterkin.top/https://github.com/waterkin0/images/blob/main/blogs_images/学习QT中遇到的错误.jpg)"></div>
+    <div class="post-image" style="background-image: url(https://cdn.waterkin.top/https://github.com/waterkin0/images/blob/main/blogs_images/待解决的问题.jpg)"></div>
   
   
 
@@ -130,26 +130,26 @@
     <div class="header-content">
       <div class="post-text layout-block">
         <div class="layout-margin">
-          <h1 class="title-wrap">学习QT中遇到的错误</h1>
+          <h1 class="title-wrap">待解决的问题</h1>
           <h2 class="title-sub-wrap">
             <strong>水帝</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2024-01-28T09:29:10.000Z" itemprop="datePublished">2024-01-28</time>
+            <time  class="article-date" datetime="2024-03-29T09:15:14.000Z" itemprop="datePublished">2024-03-29</time>
           </h2>
           <h2>
-              <span class="post-count">📖2.2k字</span>
-              <span class="post-count">⏱8分</span>
+              <span class="post-count">📖530字</span>
+              <span class="post-count">⏱1分</span>
             <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
               👀<span id="busuanzi_value_page_pv"></span>次
           </h2>
           <ul class="wrap-list dark">
   
-    <li><a href="/categories/QT%E5%AD%A6%E4%B9%A0/">📒 QT学习</a></li>
+    <li><a href="/categories/%E9%9A%8F%E7%AC%94/">📒 随笔</a></li>
   
 </ul>
           <ul class="wrap-list dark">
   
-    <li><a href="/tags/C/">🏷️ C++</a></li>
+    <li><a href="/tags/%E9%9A%8F%E7%AC%94/">🏷️ 随笔</a></li>
   
 </ul>
         </div>
@@ -173,153 +173,29 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <blockquote>
-<p>封面是最近去洱海给朋友拍的照片，感觉还可以，就放在这了</p>
+        <p>最近在整春招的内容，系统的学了很多东西，自然也会有很多问题，大部分网上都有解答，但有一些没有，我就先吧问题和自己的想法写在这里，以后有空了再好好钻研一下</p>
+<h2 id="1-TCP四元组中目标IP可以写成广播地址吗"><a href="#1-TCP四元组中目标IP可以写成广播地址吗" class="headerlink" title="1.TCP四元组中目标IP可以写成广播地址吗"></a>1.TCP四元组中目标IP可以写成广播地址吗</h2><blockquote>
+<p>网上都搜不到这个问题的答案…</p>
 </blockquote>
-<p>最近在学QT，感觉挺有意思，因为可以真正写个应用来，所以可以写点有用的东西(虽然还没想好要写啥)，就按照教程写个简单的记事本，当然也遇到了不少错误，就放在下面一一记录了。</p>
-<h2 id="1-error-RC2175-resource-file-XXX-ico-is-not-in-3-00-format"><a href="#1-error-RC2175-resource-file-XXX-ico-is-not-in-3-00-format" class="headerlink" title="1.error: RC2175 : resource file XXX.ico is not in 3.00 format"></a>1.error: RC2175 : resource file XXX.ico is not in 3.00 format</h2><p>很奇怪的问题，网上说是加密的原因，可以在外面看你的文件，如果如下图：</p>
-
-    <figure class="figure-image">
-      <img src="/2024/01/28/QT%E5%AD%A6%E4%B9%A0/20240118/1.png" alt="啥也看不到，加密了" loading="lazy" onload="loadImage()">
-      <figcaption>啥也看不到，加密了</figcaption>
-    </figure>
-  
-
-<p>就说明是被加密了，随便找个网站改一下变成正常就行</p>
+<p>我自己是认为可以的，但是数据是无法正常到达的，因为tcp协议最后会确定该包的目标地址和自己地址是否相同，由于是广播地址所以一定不同，那么在接收端的缓冲区内就会被认为是无效数据包而被丢弃</p>
+<p>问了一下CHATGPT，他给我的回答和我想法类似，但他说可能在三个地方就导致该包被丢弃：</p>
 <blockquote>
-<p>知道你懒，<a target="_blank" rel="noopener" href="https://www.bitbug.net/">网站</a>在这</p>
+<p>我直接贴回答了</p>
 </blockquote>
-<blockquote>
-<p>加工后应该是这样</p>
-</blockquote>
-
-    <figure class="figure-image">
-      <img src="/2024/01/28/QT%E5%AD%A6%E4%B9%A0/20240118/2.png" alt="能看见图标了" loading="lazy" onload="loadImage()">
-      <figcaption>能看见图标了</figcaption>
-    </figure>
-  
-
-<p>这次报错消失了</p>
-<h2 id="2-Included-header-string-h-is-not-used-directly-fix-available"><a href="#2-Included-header-string-h-is-not-used-directly-fix-available" class="headerlink" title="2.Included header string.h is not used directly (fix available)"></a>2.Included header string.h is not used directly (fix available)</h2><p>这个警告不是很懂，因为我把头文件全放在.h内的，这里就报错了</p>
-
-    <figure class="figure-image">
-      <img src="/2024/01/28/QT%E5%AD%A6%E4%B9%A0/20240118/3.png" alt="奇怪的报错" loading="lazy" onload="loadImage()">
-      <figcaption>奇怪的报错</figcaption>
-    </figure>
-  
-
-<p>但事实这个警告不会影响什么，它只是检测到你没有用这个头文件而已</p>
-<blockquote>
-<p>实际上我是用了的，你可以把这个include移到cpp内，它检测到你用了就没这个警告了</p>
-</blockquote>
-<h2 id="番外篇：hexo部署失败"><a href="#番外篇：hexo部署失败" class="headerlink" title="番外篇：hexo部署失败"></a>番外篇：hexo部署失败</h2><blockquote>
-<p>这个错误好像不该放这，但暂时没地方放了，以后我可能会开个专栏啥的专门写这些奇奇怪怪的问题</p>
-</blockquote>
-<p>起因很简单，我像往常一样用hexo d去部署我新写的博客，但告诉我部署失败</p>
-<p>一开始我以为是魔法失效了，但是浏览器是正常的</p>
-<p>我去网上查说是ssh失效了，结果自己查了半天发现我的ssh是没有问题的</p>
-
-    <figure class="figure-image">
-      <img src="/2024/01/28/QT%E5%AD%A6%E4%B9%A0/20240118/4.jpg" alt="怎么会是呢" loading="lazy" onload="loadImage()">
-      <figcaption>怎么会是呢</figcaption>
-    </figure>
-  
-
-<p>然后用ssh -T <a href="mailto:&#103;&#x69;&#x74;&#64;&#x67;&#x69;&#116;&#x68;&#117;&#x62;&#x2e;&#x63;&#x6f;&#x6d;">&#103;&#x69;&#x74;&#64;&#x67;&#x69;&#116;&#x68;&#117;&#x62;&#x2e;&#x63;&#x6f;&#x6d;</a>来查看与Github的连接</p>
-
-    <figure class="figure-image">
-      <img src="/2024/01/28/QT%E5%AD%A6%E4%B9%A0/20240118/5.jpg" alt loading="lazy" onload="loadImage()">
-      <figcaption></figcaption>
-    </figure>
-  
-
-<p>然后仔细看报错：<strong>ssh: connect to host github.com port 22: Connection refused</strong></p>
-<p>22端口被拒绝了，然后顺着这个方向找到了<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/521340971">这篇文章</a></p>
-<h2 id="那么把github的端口改成443端口就好了，进入ssh里，去config里设置就好"><a href="#那么把github的端口改成443端口就好了，进入ssh里，去config里设置就好" class="headerlink" title="那么把github的端口改成443端口就好了，进入ssh里，去config里设置就好"></a>那么把github的端口改成443端口就好了，进入ssh里，去config里设置就好</h2><p>这下一切正常了</p>
-<h2 id="3-qfile中is-open始终为0"><a href="#3-qfile中is-open始终为0" class="headerlink" title="3.qfile中is_open始终为0"></a>3.qfile中is_open始终为0</h2><p>我这里用myfile.isOpen()去判断是否打开了该文件，如下</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function">QFile <span class="hljs-title">myfile</span><span class="hljs-params">(filename)</span></span>;<br>std::cout &lt;&lt; myfile.<span class="hljs-built_in">isOpen</span>() &lt;&lt; std::endl; <span class="hljs-comment">//后续正常打开，但这里为啥是0？</span><br><span class="hljs-keyword">if</span>(!myfile.<span class="hljs-built_in">open</span>(QIODevice::ReadWrite | QIODevice::Text))&#123;<br>    QMessageBox::<span class="hljs-built_in">warning</span>(<span class="hljs-keyword">this</span>, <span class="hljs-string">&quot;Waring&quot;</span>, <span class="hljs-string">&quot;can not open this file!&quot;</span> + myfile.<span class="hljs-built_in">errorString</span>());<br>    <span class="hljs-keyword">return</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<p>现在懂了，当创建qfile的时候不会打开该文件，只有执行open的时候才会，所以上述代码无论如何都是返回0，当然把那句判断放在最后，自然就全是一了</p>
-<h2 id="4-socket时connect和accpet全是-1"><a href="#4-socket时connect和accpet全是-1" class="headerlink" title="4.socket时connect和accpet全是-1"></a>4.socket时connect和accpet全是-1</h2><blockquote>
-<p>好吧这个问题也不该放在这</p>
-</blockquote>
-<p>win下如果要用socket编程要进行初始化，这个问题困扰了我好久，因为之前写webserver是linux上的</p>
-<p>初始化如下：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c++">WORD wVersionRequested;<br>WSADATA wsaData;<br>wVersionRequested = <span class="hljs-built_in">MAKEWORD</span>(<span class="hljs-number">2</span>, <span class="hljs-number">2</span>);<br><span class="hljs-type">int</span> err = <span class="hljs-built_in">WSAStartup</span>(wVersionRequested, &amp;wsaData);<br><span class="hljs-keyword">if</span> (err != <span class="hljs-number">0</span>) &#123;<br>	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;WSAStartup failed with error: %d\n&quot;</span>, err);<br>	<span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<h2 id="5-中文乱码问题"><a href="#5-中文乱码问题" class="headerlink" title="5.中文乱码问题"></a>5.中文乱码问题</h2><blockquote>
-<p>每学一个新东西必定要遇到的问题</p>
-</blockquote>
-<p>网上查了很多，什么改编码格式，头文件设置啥的对我都没有用</p>
-<p>就只有这个：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++">text = QString::<span class="hljs-built_in">fromLocal8Bit</span>(<span class="hljs-string">&quot;服务器关闭 \n&quot;</span>);<br></code></pre></td></tr></table></figure>
-
-<p>有用，注意前提是<strong>中文结束后要有个空格</strong>，不然还是会乱码：</p>
-
-    <figure class="figure-image">
-      <img src="/2024/01/28/QT%E5%AD%A6%E4%B9%A0/20240118/6.jpg" alt="不空格的下场" loading="lazy" onload="loadImage()">
-      <figcaption>不空格的下场</figcaption>
-    </figure>
-  
-
-<p>很神奇，暂时不知道为什么</p>
-<h2 id="6-QT-designer中的小问题：比例无法设置"><a href="#6-QT-designer中的小问题：比例无法设置" class="headerlink" title="6.QT designer中的小问题：比例无法设置"></a>6.QT designer中的小问题：比例无法设置</h2><p>这是我自己犯傻了，应该用lineedit输入的地方我用textedit了，但后者似乎有个minsize，在调整时不能再小了，而这个值有点大，导致在窗口较小时比例会出现错误，但这个minsize我无法再qtdesigner内设置，不知道能不能在代码里面设置</p>
-<h2 id="7-waitForConnected阻塞问题"><a href="#7-waitForConnected阻塞问题" class="headerlink" title="7.waitForConnected阻塞问题"></a>7.waitForConnected阻塞问题</h2><p>我这里客户端想用waitForConnected来等待三秒来连接，但是这个阻塞函数会导致前面的setText等和ui有关的操作也阻塞</p>
-<p>原因是因为和ui有关的操作要调用QWidget 的 paintEvent() 函数，而这个函数的自动调用是在程序main的主循环中进行</p>
-<p>也就是说一切和ui有关的操作都在该循环结束时才会进行，那这里在waitForConnected阻塞后ui操作也被阻塞自然也就能理解了</p>
-<p>一开始想用多线程，将waitForConnected放入新线程，防止阻塞，但太复杂了</p>
-<p>正如上面所说，最简单的就是手动更新当前的ui，即 <code>repaint()</code>即可</p>
-<p>但qt的主题是异步操作，不建议用阻塞函数，后续可能想办法用信号槽之类的优化吧</p>
-<blockquote>
-<p>参考文献：<a target="_blank" rel="noopener" href="https://ask.csdn.net/questions/7697934">qt5 TCP客户端 使用waitForConnected函数后，前面设置控件的代码不执行</a></p>
-</blockquote>
-<h2 id="8-还是中文编码问题"><a href="#8-还是中文编码问题" class="headerlink" title="8.还是中文编码问题"></a>8.还是中文编码问题</h2><p>我这里问题主要是服务端和客户端通信的时候，两边编码解码的问题</p>
-<p>简单总结就是以 <code>local8bit</code>来传递，在两端接收之后再解码即可</p>
-<p>服务端：<code>QString message = QString::fromLocal8Bit(socket-&gt;readAll());</code></p>
-<p>客户端：<code>const QByteArray message = ui-&gt;textEdit-&gt;toPlainText().toLocal8Bit();</code></p>
-<p>将上面的message进行传递即可</p>
-<h2 id="9-按键检测-监听-问题"><a href="#9-按键检测-监听-问题" class="headerlink" title="9.按键检测(监听)问题"></a>9.按键检测(监听)问题</h2><p>我想在textedit内编辑完后enter就可以直接调用某个函数，为此我需要一个办法来监听键盘</p>
-<p>首先能查到的是 <code>keyPressEvent</code>这个函数，他是QWidght内的一个虚函数，在键盘上有某个按键按下之后会自动调用这个函数</p>
-<p>但是这个函数扯到一个概念叫焦点，也就是说要用户的焦点在这个模块上，那么该函数才能被调用</p>
-<p>这个很好解决，把输入框设置为焦点就好了，这里就不多做介绍</p>
-<p>但实操发现还是不行，发现是textedit会劫持键盘上的事件，致使你在输入时所按的enter键会被识别为\n而不是触发上面那个函数</p>
-<p>那这个办法暂时行不通，于是又找到了另一个东西——事件</p>
-<p>QT很好的给了一个event事件供我们使用，当程序运行中，总是会触发各种事件，那么我们可以重写虚函数来过滤和处理我们想要的事件，很好的是，按键检测也在其中</p>
-<p>开始之前，我们要启动事件的监听：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++">QApplication::<span class="hljs-built_in">instance</span>()-&gt;<span class="hljs-built_in">installEventFilter</span>(<span class="hljs-keyword">this</span>);<br></code></pre></td></tr></table></figure>
-
-<p>然后就可以重写eventFilter函数，该函数是QWidght内的，那么你可以直接在你所创建的类内重写</p>
-<p>我这里给出一个例子：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">Youchat::eventFilter</span><span class="hljs-params">(QObject* object, QEvent* e)</span></span><br><span class="hljs-function"></span>&#123;<br>    <span class="hljs-keyword">if</span> (e-&gt;<span class="hljs-built_in">type</span>() == QEvent::KeyPress &amp;&amp; ((QKeyEvent*)e)-&gt;<span class="hljs-built_in">key</span>() == Qt::Key_Enter) &#123;<br>	<span class="hljs-comment">//按下回车后进行处理</span><br>	<span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<p>所有事件在产生之后会首先发给这个函数，然后再进行后续处理</p>
-<p>可以看见这是一个bool类型的函数，返回值代表处理成功与否，如果返回true代表处理完毕，那么这次产生的事件不会继续传递至原来的地方，false则正常进行后续处理</p>
-<p>一个简单的例子是你可以设置为检测到KeyPress后就返回true，那么你在textEdit内的操作都会被这个函数处理，导致你无论怎么敲键盘TextEdit内都不会有内容</p>
-<p>但问题又来了，我按enter键似乎检测不到，不会进行处理</p>
-<p>经过一番排查发现，qt将键盘上的enter分为两个，一个叫return，位于字母键盘上，即我们常用的enter，另一个在数字键盘旁边，这个才被叫enter</p>
-<p>那在判断的时候就需要将两个都写入了</p>
-<p><code>e-&gt;type() == QEvent::KeyPress &amp;&amp; ((QKeyEvent*)e)-&gt;key() == Qt::Key_Enter || ((QKeyEvent*)e)-&gt;key() == Qt::Key_Return</code></p>
-<p>现在正常了</p>
-<h2 id="10-QTdesigner内正常显示图片，到运行时无法显示"><a href="#10-QTdesigner内正常显示图片，到运行时无法显示" class="headerlink" title="10.QTdesigner内正常显示图片，到运行时无法显示"></a>10.QTdesigner内正常显示图片，到运行时无法显示</h2><p>我这里是创建了第二个ui，而且在ui的label那里插入图片</p>
-
-    <figure class="figure-image">
-      <img src="/2024/01/28/QT%E5%AD%A6%E4%B9%A0/20240118/7.jpg" alt="在这里进入后右上角选择图片就好" loading="lazy" onload="loadImage()">
-      <figcaption>在这里进入后右上角选择图片就好</figcaption>
-    </figure>
-  
-
-<p>点了之后进入资源页面让你选择资源，之前没创建这里刚好有我就直接在这创建了</p>
-<p>可能是因为我用的VS的原因，在这里创建资源的话VS在编译的时候是无法自动读取的，但这个资源确实创建了并且对于Qtdesigner来说是可以读取的</p>
-<p>这里VS和QT做的就不是很好，如果你在VS创建资源，Qtdesigner是不会自动读取到你创建的这个资源，你要手动导入qrc文件才行，反过来也是同理</p>
-<p>也就是你在任意一处创建好之后在另外一边导入qrc文件即可</p>
-<p>不知不觉都写了这么多了啊，10条一篇好了，一篇文章太多也不好</p>
-<p>那就请允许我先行搁笔</p>
+<ol>
+<li><strong>本地主机网络栈处理</strong> ：首先，操作系统的网络栈可能会检测到尝试发送到广播地址的数据包，并在本地丢弃它。这取决于操作系统的网络栈实现以及相关的网络配置。</li>
+<li><strong>本地网络设备处理</strong> ：如果数据包通过了本地主机的网络栈处理并被发送到网络接口，网络设备（如网卡）可能会进一步检测并丢弃数据包，因为它们可能不会转发广播数据包到网络上的其他主机。</li>
+<li><strong>网络中的路由器或交换机处理</strong> ：即使数据包成功离开了本地主机并传输到网络中，路由器、交换机或其他中间设备也可能会丢弃尝试发送到广播地址的数据包。这是因为广播地址的数据包通常不是被设计用来在广域网中传输的，中间设备可能会有相应的安全策略或配置来防止这样的数据包被传播。</li>
+</ol>
+<p>等以后有空了我自己在家实验一下吧，估计要耗点时间了</p>
+<p>2024.3.29 以上</p>
 
       </section>
 
       
       
         <nav class="article-nav">
+          
           
             <div class="article-nav-item layout-padding">
   <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
@@ -330,23 +206,6 @@
       
         <a href="/2024/02/10/QT%E5%AD%A6%E4%B9%A0/20240210/" itemprop="url">
           <h2 class="card-text--title text-ellipsis">学习QT中遇到的错误2</h2>
-        </a>
-      
-      <div class="card-text--row">Newer</div>
-    </div>
-  </article>
-</div>
-          
-          
-            <div class="article-nav-item layout-padding">
-  <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
-    
-      <div class="card-cover" background-image-lazy data-img="https://cdn.waterkin.top/https://github.com/waterkin0/images/blob/main/blogs_images/总结篇.png"></div>
-    
-    <div class="card-text">
-      
-        <a href="/2023/05/20/webserver/20230520/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">webserver之7 总结篇</h2>
         </a>
       
       <div class="card-text--row">Older</div>
@@ -380,7 +239,7 @@
     <span>目录</span>
   </div>
   <div class="widget-body">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-error-RC2175-resource-file-XXX-ico-is-not-in-3-00-format"><span class="toc-text">1.error: RC2175 : resource file XXX.ico is not in 3.00 format</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Included-header-string-h-is-not-used-directly-fix-available"><span class="toc-text">2.Included header string.h is not used directly (fix available)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%95%AA%E5%A4%96%E7%AF%87%EF%BC%9Ahexo%E9%83%A8%E7%BD%B2%E5%A4%B1%E8%B4%A5"><span class="toc-text">番外篇：hexo部署失败</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%82%A3%E4%B9%88%E6%8A%8Agithub%E7%9A%84%E7%AB%AF%E5%8F%A3%E6%94%B9%E6%88%90443%E7%AB%AF%E5%8F%A3%E5%B0%B1%E5%A5%BD%E4%BA%86%EF%BC%8C%E8%BF%9B%E5%85%A5ssh%E9%87%8C%EF%BC%8C%E5%8E%BBconfig%E9%87%8C%E8%AE%BE%E7%BD%AE%E5%B0%B1%E5%A5%BD"><span class="toc-text">那么把github的端口改成443端口就好了，进入ssh里，去config里设置就好</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-qfile%E4%B8%ADis-open%E5%A7%8B%E7%BB%88%E4%B8%BA0"><span class="toc-text">3.qfile中is_open始终为0</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-socket%E6%97%B6connect%E5%92%8Caccpet%E5%85%A8%E6%98%AF-1"><span class="toc-text">4.socket时connect和accpet全是-1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98"><span class="toc-text">5.中文乱码问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-QT-designer%E4%B8%AD%E7%9A%84%E5%B0%8F%E9%97%AE%E9%A2%98%EF%BC%9A%E6%AF%94%E4%BE%8B%E6%97%A0%E6%B3%95%E8%AE%BE%E7%BD%AE"><span class="toc-text">6.QT designer中的小问题：比例无法设置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-waitForConnected%E9%98%BB%E5%A1%9E%E9%97%AE%E9%A2%98"><span class="toc-text">7.waitForConnected阻塞问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E8%BF%98%E6%98%AF%E4%B8%AD%E6%96%87%E7%BC%96%E7%A0%81%E9%97%AE%E9%A2%98"><span class="toc-text">8.还是中文编码问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-%E6%8C%89%E9%94%AE%E6%A3%80%E6%B5%8B-%E7%9B%91%E5%90%AC-%E9%97%AE%E9%A2%98"><span class="toc-text">9.按键检测(监听)问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-QTdesigner%E5%86%85%E6%AD%A3%E5%B8%B8%E6%98%BE%E7%A4%BA%E5%9B%BE%E7%89%87%EF%BC%8C%E5%88%B0%E8%BF%90%E8%A1%8C%E6%97%B6%E6%97%A0%E6%B3%95%E6%98%BE%E7%A4%BA"><span class="toc-text">10.QTdesigner内正常显示图片，到运行时无法显示</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-TCP%E5%9B%9B%E5%85%83%E7%BB%84%E4%B8%AD%E7%9B%AE%E6%A0%87IP%E5%8F%AF%E4%BB%A5%E5%86%99%E6%88%90%E5%B9%BF%E6%92%AD%E5%9C%B0%E5%9D%80%E5%90%97"><span class="toc-text">1.TCP四元组中目标IP可以写成广播地址吗</span></a></li></ol>
   </div>
 </section>
 
