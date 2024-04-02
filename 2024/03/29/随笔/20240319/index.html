@@ -137,8 +137,8 @@
             <time  class="article-date" datetime="2024-03-29T09:15:14.000Z" itemprop="datePublished">2024-03-29</time>
           </h2>
           <h2>
-              <span class="post-count">📖1k字</span>
-              <span class="post-count">⏱3分</span>
+              <span class="post-count">📖1.3k字</span>
+              <span class="post-count">⏱4分</span>
             <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
               👀<span id="busuanzi_value_page_pv"></span>次
           </h2>
@@ -208,6 +208,29 @@
 <li>当需要等待的时候已经是客户端处理完数据了，（第三次握手结束），那么无论如何在一定时间之后两边都会关闭（超时关闭），那么2MSL取最坏情况，第四次挥手的ACK包的最大生存时长(MSL)+ACK刚到达后服务端重传的FIN包的最大生存时长(MSL)&#x3D;2MSL，保证前后两个使用相同四元组的连接不会干扰</li>
 </ol>
 <p>我比较相信第二种说法，但第一种说法也不是全无道理，等后续查查资料吧</p>
+<h2 id="3-EPOLL是异步还是同步"><a href="#3-EPOLL是异步还是同步" class="headerlink" title="3. EPOLL是异步还是同步"></a>3. EPOLL是异步还是同步</h2><blockquote>
+<p>这个问题对写代码没有任何帮助，不想纠结就不纠结了吧</p>
+</blockquote>
+<p>好吧我还是纠结了一下，结论也很简单，看你如何定义 异步还是同步</p>
+<p>参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/Jailman/article/details/78498193">关于epoll的IO模型是同步异步的一次纠结过程</a></p>
+<blockquote>
+<p>下面的概念定义并非来源权威，而是其他人找的定义</p>
+</blockquote>
+<ol>
+<li>POSIX对这两个术语的定义：</li>
+</ol>
+<ul>
+<li>同步I&#x2F;O操作：导致请求进程阻塞，直到I&#x2F;O操作完成；</li>
+<li>异步I&#x2F;O操作：不导致请求进程阻塞。</li>
+</ul>
+<p>那么从这里看由于epoll_wait是阻塞的，epoll自然也是同步IO</p>
+<ol start="2">
+<li>但如果用常规的同步异步定义，由于EPOLL用的mmap，使得内核的socket和应用层的socket共享，那么此时的阻塞结束更像一个通知，告知应用层可以处理了，那么感觉又像异步</li>
+</ol>
+<blockquote>
+<p>4.2更新，epoll貌似没有用mmap进行内存映射，我没看过源码，所以也不知道哪个是真的，留在这后续有机会看了源码再来解答</p>
+</blockquote>
+<p>总之，概念上有冲突的东西，没必要纠结啦</p>
 
       </section>
 
@@ -258,7 +281,7 @@
     <span>目录</span>
   </div>
   <div class="widget-body">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-TCP%E5%9B%9B%E5%85%83%E7%BB%84%E4%B8%AD%E7%9B%AE%E6%A0%87IP%E5%8F%AF%E4%BB%A5%E5%86%99%E6%88%90%E5%B9%BF%E6%92%AD%E5%9C%B0%E5%9D%80%E5%90%97"><span class="toc-text">1. TCP四元组中目标IP可以写成广播地址吗</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-TCP%E5%9C%A8%E8%BF%9B%E5%85%A5time-wait%E9%98%B6%E6%AE%B5%E5%90%8E%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E7%AD%89%E5%BE%852MSL"><span class="toc-text">2. TCP在进入time_wait阶段后为什么需要等待2MSL</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-TCP%E5%9B%9B%E5%85%83%E7%BB%84%E4%B8%AD%E7%9B%AE%E6%A0%87IP%E5%8F%AF%E4%BB%A5%E5%86%99%E6%88%90%E5%B9%BF%E6%92%AD%E5%9C%B0%E5%9D%80%E5%90%97"><span class="toc-text">1. TCP四元组中目标IP可以写成广播地址吗</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-TCP%E5%9C%A8%E8%BF%9B%E5%85%A5time-wait%E9%98%B6%E6%AE%B5%E5%90%8E%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E7%AD%89%E5%BE%852MSL"><span class="toc-text">2. TCP在进入time_wait阶段后为什么需要等待2MSL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-EPOLL%E6%98%AF%E5%BC%82%E6%AD%A5%E8%BF%98%E6%98%AF%E5%90%8C%E6%AD%A5"><span class="toc-text">3. EPOLL是异步还是同步</span></a></li></ol>
   </div>
 </section>
 
