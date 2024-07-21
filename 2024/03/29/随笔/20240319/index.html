@@ -137,8 +137,8 @@
             <time  class="article-date" datetime="2024-03-29T09:15:14.000Z" itemprop="datePublished">2024-03-29</time>
           </h2>
           <h2>
-              <span class="post-count">📖1.3k字</span>
-              <span class="post-count">⏱4分</span>
+              <span class="post-count">📖1.7k字</span>
+              <span class="post-count">⏱5分</span>
             <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
               👀<span id="busuanzi_value_page_pv"></span>次
           </h2>
@@ -149,7 +149,7 @@
 </ul>
           <ul class="wrap-list dark">
   
-    <li><a href="/tags/%E9%9A%8F%E7%AC%94/">🏷️ 随笔</a></li>
+    <li><a href="/tags/%E9%97%AE%E9%A2%98/">🏷️ 问题</a></li>
   
 </ul>
         </div>
@@ -231,12 +231,39 @@
 <p>4.2更新，epoll貌似没有用mmap进行内存映射，我没看过源码，所以也不知道哪个是真的，留在这后续有机会看了源码再来解答</p>
 </blockquote>
 <p>总之，概念上有冲突的东西，没必要纠结啦</p>
+<h2 id="4-TCP建立连接时如何知道对方的端口"><a href="#4-TCP建立连接时如何知道对方的端口" class="headerlink" title="4.TCP建立连接时如何知道对方的端口"></a>4.TCP建立连接时如何知道对方的端口</h2><p>TCP头部必须设置源和目标端口号，前者不必多说，那后者是如何在双方建立连接之前，即双方还未进行通信，就知道这个TCP头中的端口是多少呢，按道理端口号可以随机分配的</p>
+<blockquote>
+<p>下面是网上搜集的资料和我自己的想法</p>
+</blockquote>
+<p>首先几乎可以确定的是，这个端号一定由应用层提供</p>
+<ol>
+<li>针对https,http这类常用的应用层协议，其都有默认的端口号，http为80而https为443，那么TCP会选择这些已有的默认端口号，对方的服务器上如果不止一个webserver，那么对应的80和443端口所运行的应该是转发进程，负责转发到对应的server去</li>
+<li>针对某些端对端的应用，例如我的世界，泰拉瑞亚这种，你在输入其游戏服务器时是一定要输入端口的(当然泰拉其实默认是7777)</li>
+<li>针对QQ这类软件，由于需要先登陆，服务器自然知道登陆用户的端口，消息是先去了服务器再到达对方，双方的端口信息是存在服务器上的</li>
+</ol>
+<p>但似乎有没有服务端的端对端通信软件，其端口是随机分配的，也不需要填入对端端口，这我就不知道了</p>
 
       </section>
 
       
       
         <nav class="article-nav">
+          
+            <div class="article-nav-item layout-padding">
+  <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
+    
+      <div class="card-cover" background-image-lazy data-img="https://cdn.waterkin.top/https://github.com/waterkin0/images/blob/main/blogs_images/我曾拜访过的世界-「漫画篇」.jpg"></div>
+    
+    <div class="card-text">
+      
+        <a href="/2024/07/03/%E9%9A%8F%E7%AC%94/20240703/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">我曾拜访过的世界 -「漫画篇」</h2>
+        </a>
+      
+      <div class="card-text--row">Newer</div>
+    </div>
+  </article>
+</div>
           
           
             <div class="article-nav-item layout-padding">
@@ -281,7 +308,7 @@
     <span>目录</span>
   </div>
   <div class="widget-body">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-TCP%E5%9B%9B%E5%85%83%E7%BB%84%E4%B8%AD%E7%9B%AE%E6%A0%87IP%E5%8F%AF%E4%BB%A5%E5%86%99%E6%88%90%E5%B9%BF%E6%92%AD%E5%9C%B0%E5%9D%80%E5%90%97"><span class="toc-text">1. TCP四元组中目标IP可以写成广播地址吗</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-TCP%E5%9C%A8%E8%BF%9B%E5%85%A5time-wait%E9%98%B6%E6%AE%B5%E5%90%8E%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E7%AD%89%E5%BE%852MSL"><span class="toc-text">2. TCP在进入time_wait阶段后为什么需要等待2MSL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-EPOLL%E6%98%AF%E5%BC%82%E6%AD%A5%E8%BF%98%E6%98%AF%E5%90%8C%E6%AD%A5"><span class="toc-text">3. EPOLL是异步还是同步</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-TCP%E5%9B%9B%E5%85%83%E7%BB%84%E4%B8%AD%E7%9B%AE%E6%A0%87IP%E5%8F%AF%E4%BB%A5%E5%86%99%E6%88%90%E5%B9%BF%E6%92%AD%E5%9C%B0%E5%9D%80%E5%90%97"><span class="toc-text">1. TCP四元组中目标IP可以写成广播地址吗</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-TCP%E5%9C%A8%E8%BF%9B%E5%85%A5time-wait%E9%98%B6%E6%AE%B5%E5%90%8E%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E7%AD%89%E5%BE%852MSL"><span class="toc-text">2. TCP在进入time_wait阶段后为什么需要等待2MSL</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-EPOLL%E6%98%AF%E5%BC%82%E6%AD%A5%E8%BF%98%E6%98%AF%E5%90%8C%E6%AD%A5"><span class="toc-text">3. EPOLL是异步还是同步</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-TCP%E5%BB%BA%E7%AB%8B%E8%BF%9E%E6%8E%A5%E6%97%B6%E5%A6%82%E4%BD%95%E7%9F%A5%E9%81%93%E5%AF%B9%E6%96%B9%E7%9A%84%E7%AB%AF%E5%8F%A3"><span class="toc-text">4.TCP建立连接时如何知道对方的端口</span></a></li></ol>
   </div>
 </section>
 
@@ -303,19 +330,19 @@
         <svg class="icon icon-article" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M240.51564747 647.74217627h196.07203239c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806V165.10332731c0-33.18142087-30.16492806-60.32985613-60.32985612-60.32985611H245.04038668C225.43318342 104.7734712 210.35071939 119.85593522 210.35071939 139.46313845V617.57724821c0 16.59071043 13.57421762 30.16492806 30.16492808 30.16492806z m663.62841731-452.47392089v482.63884894c0 33.18142087-27.14843525 60.32985613-60.32985612 60.32985613H180.18579134c-33.18142087 0-60.32985613-27.14843525-60.32985612-60.32985613V195.26825538c-49.77213131 0-90.49478418 40.72265287-90.49478417 90.49478417v452.4739209c0 49.77213131 40.72265287 90.49478418 90.49478417 90.49478417h286.56681657c16.59071043 0 30.16492806 13.57421762 30.16492807 30.16492807s13.57421762 30.16492806 30.16492805 30.16492806h90.49478418c16.59071043 0 30.16492806-13.57421762 30.16492805-30.16492806s13.57421762-30.16492806 30.16492807-30.16492807h286.56681657c49.77213131 0 90.49478418-40.72265287 90.49478417-90.49478417V285.76303955c0-49.77213131-40.72265287-90.49478418-90.49478417-90.49478417zM587.41232014 647.74217627h191.54729318c19.60720323 0 34.68966726-15.08246403 34.68966729-34.68966727V134.93839925c0-16.59071043-13.57421762-30.16492806-30.16492808-30.16492805H617.57724821c-30.16492806 0-60.32985613 27.14843525-60.32985612 60.32985611v452.4739209c0 16.59071043 13.57421762 30.16492806 30.16492805 30.16492806z" fill="currentColor"></path>
 </svg>
-        <span>30</span>
+        <span>32</span>
       </div>
       <div class="count-box--item">
         <svg class="icon icon-categories" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M900.3614811 257.09082106h-339.81629553l-67.96326003-101.9448889c-19.41807444-29.12711113-48.54518557-43.69066667-82.52681443-43.69066667H123.6385189c-53.39970333 0-97.09036999 43.69066667-97.09037113 97.09036999v582.54222222c0 53.39970333 43.69066667 97.09036999 97.09037113 97.09037002h776.7229622c53.39970333 0 97.09036999-43.69066667 97.09037113-97.09037002V354.18119104c0-53.39970333-43.69066667-97.09036999-97.09037113-97.09036998z m-97.09036999 242.72592554H220.72888889c-24.27259221 0-48.54518557-24.27259221-48.54518556-48.54518556s24.27259221-48.54518557 48.54518556-48.54518444h582.54222222c24.27259221 0 48.54518557 24.27259221 48.54518556 48.54518444s-24.27259221 48.54518557-48.54518556 48.54518556z" fill="currentColor"></path>
 </svg>
-        12
+        13
       </div>
       <div class="count-box--item">
         <svg class="icon icon-tags" viewBox="0 0 1098 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <path d="M283.42180005 272q0-28.38857157-20.09142843-48.48000001t-48.47999998-20.09142842-48.48000002 20.09142842-20.09142846 48.48000001 20.09142846 48.48 48.48000002 20.09142843 48.47999998-20.09142843 20.09142843-48.48zM855.0332285 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.03999997 263.58857157q-20.9142853 19.81714313-48.75428534 19.81714312-28.38857157 0-48.20571468-19.81714312l-383.04-383.58857157q-20.36571468-19.81714313-34.55999999-54.10285688t-14.19428534-62.6742853l0-222.85714313q0-27.84000002 20.36571469-48.20571469t48.2057147-20.36571466l222.85714313 0q28.38857157 0 62.6742853 14.19428529t54.65142842 34.55999999l383.04000001 382.49142843q19.81714313 20.9142853 19.81714314 48.75428532zM1060.74751475 580.57142843q0 28.38857157-19.81714313 48.2057147l-263.04 263.58857157q-20.9142853 19.81714313-48.75428531 19.81714312-19.26857155 0-31.61142843-7.47428531t-28.38857159-24.13714314l251.79428534-251.7942853q19.81714313-19.81714313 19.81714308-48.20571469 0-27.84000002-19.81714308-48.75428531l-383.04000001-382.49142845q-20.36571468-20.36571468-54.65142842-34.55999999t-62.67428532-14.19428534l120 0q28.38857157 0 62.67428532 14.19428534t54.65142842 34.55999999l383.03999998 382.49142845q19.81714313 20.9142853 19.81714314 48.75428531z" fill="currentColor"></path>
 </svg>
-        16
+        18
       </div>
     </div>
   </div>
@@ -358,14 +385,20 @@
         </li>
       
         <li class="categorys-list-item">
+          <a href="/categories/hexo%E4%B8%BB%E9%A2%98%E4%BC%98%E5%8C%96/">
+            hexo主题优化 (3)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
           <a href="/categories/java/">
             java (2)
           </a>
         </li>
       
         <li class="categorys-list-item">
-          <a href="/categories/hexo%E4%B8%BB%E9%A2%98%E4%BC%98%E5%8C%96/">
-            hexo主题优化 (3)
+          <a href="/categories/mysqlAndphp/">
+            mysqlAndphp (4)
           </a>
         </li>
       
@@ -382,6 +415,18 @@
         </li>
       
         <li class="categorys-list-item">
+          <a href="/categories/%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98/">
+            力扣刷题 (1)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
+          <a href="/categories/%E5%9C%A8%E5%A7%9A%E5%BA%84%E7%9A%84%E6%97%A5%E5%AD%90/">
+            在姚庄的日子 (1)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
           <a href="/categories/%E5%B0%8F%E7%A8%8B%E5%BA%8F/">
             小程序 (1)
           </a>
@@ -394,26 +439,14 @@
         </li>
       
         <li class="categorys-list-item">
-          <a href="/categories/%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98/">
-            力扣刷题 (1)
-          </a>
-        </li>
-      
-        <li class="categorys-list-item">
-          <a href="/categories/%E9%9A%8F%E7%AC%94/">
-            随笔 (3)
-          </a>
-        </li>
-      
-        <li class="categorys-list-item">
           <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">
             计算机网络 (1)
           </a>
         </li>
       
         <li class="categorys-list-item">
-          <a href="/categories/mysqlAndphp/">
-            mysqlAndphp (4)
+          <a href="/categories/%E9%9A%8F%E7%AC%94/">
+            随笔 (4)
           </a>
         </li>
       
@@ -430,7 +463,7 @@
   </div>
   <div class="widget-body">
     <div class="tags-cloud">
-      <a href="/tags/TCP/" style="font-size: 10px;" class="tags-cloud-0">-TCP</a> <a href="/tags/C/" style="font-size: 12.5px;" class="tags-cloud-3">C++</a> <a href="/tags/c/" style="font-size: 20px;" class="tags-cloud-10">c++</a> <a href="/tags/cookie/" style="font-size: 10px;" class="tags-cloud-0">cookie</a> <a href="/tags/hexo/" style="font-size: 15px;" class="tags-cloud-5">hexo</a> <a href="/tags/js/" style="font-size: 10px;" class="tags-cloud-0">js</a> <a href="/tags/key-value/" style="font-size: 10px;" class="tags-cloud-0">key_value</a> <a href="/tags/redis/" style="font-size: 10px;" class="tags-cloud-0">redis</a> <a href="/tags/springboot/" style="font-size: 10px;" class="tags-cloud-0">springboot</a> <a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="font-size: 10px;" class="tags-cloud-0">云服务器</a> <a href="/tags/%E6%8A%A5%E9%94%99/" style="font-size: 17.5px;" class="tags-cloud-8">报错</a> <a href="/tags/%E6%8E%A8%E8%8D%90/" style="font-size: 10px;" class="tags-cloud-0">推荐</a> <a href="/tags/%E8%9A%81%E7%BE%A4%E7%AE%97%E6%B3%95/" style="font-size: 10px;" class="tags-cloud-0">蚁群算法</a> <a href="/tags/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95/" style="font-size: 12.5px;" class="tags-cloud-3">遗传算法</a> <a href="/tags/%E9%9A%8F%E7%AC%94/" style="font-size: 10px;" class="tags-cloud-0">随笔</a> <a href="/tags/%E9%9D%A2%E7%BB%8F/" style="font-size: 10px;" class="tags-cloud-0">面经</a>
+      <a href="/tags/TCP/" style="font-size: 10px;" class="tags-cloud-0">-TCP</a> <a href="/tags/C/" style="font-size: 12.5px;" class="tags-cloud-3">C++</a> <a href="/tags/c/" style="font-size: 20px;" class="tags-cloud-10">c++</a> <a href="/tags/cookie/" style="font-size: 10px;" class="tags-cloud-0">cookie</a> <a href="/tags/hexo/" style="font-size: 15px;" class="tags-cloud-5">hexo</a> <a href="/tags/js/" style="font-size: 10px;" class="tags-cloud-0">js</a> <a href="/tags/key-value/" style="font-size: 10px;" class="tags-cloud-0">key_value</a> <a href="/tags/redis/" style="font-size: 10px;" class="tags-cloud-0">redis</a> <a href="/tags/springboot/" style="font-size: 10px;" class="tags-cloud-0">springboot</a> <a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8/" style="font-size: 10px;" class="tags-cloud-0">云服务器</a> <a href="/tags/%E6%89%93%E5%B7%A5%E4%BA%BA/" style="font-size: 10px;" class="tags-cloud-0">打工人</a> <a href="/tags/%E6%8A%A5%E9%94%99/" style="font-size: 17.5px;" class="tags-cloud-8">报错</a> <a href="/tags/%E6%8E%A8%E8%8D%90/" style="font-size: 10px;" class="tags-cloud-0">推荐</a> <a href="/tags/%E6%BC%AB%E7%94%BB%E6%8E%A8%E8%8D%90/" style="font-size: 10px;" class="tags-cloud-0">漫画推荐</a> <a href="/tags/%E8%9A%81%E7%BE%A4%E7%AE%97%E6%B3%95/" style="font-size: 10px;" class="tags-cloud-0">蚁群算法</a> <a href="/tags/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95/" style="font-size: 12.5px;" class="tags-cloud-3">遗传算法</a> <a href="/tags/%E9%97%AE%E9%A2%98/" style="font-size: 10px;" class="tags-cloud-0">问题</a> <a href="/tags/%E9%9D%A2%E7%BB%8F/" style="font-size: 10px;" class="tags-cloud-0">面经</a>
     </div>
   </div>
 </section>
@@ -486,7 +519,7 @@
       setInterval("createtime()",250);
       </script>
     </p>
-	  <p>已经记载了30篇文章</p>
+	  <p>已经记载了32篇文章</p>
     <p>
       <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
       浏览量：<span id="busuanzi_value_site_pv"><i class="fa fa-spinner fa-spin"></i></span>👀 | 访客数：<span id="busuanzi_value_site_uv"><i class="fa fa-spinner fa-spin"></i></span>👦
