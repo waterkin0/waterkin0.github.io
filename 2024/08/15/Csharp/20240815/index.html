@@ -175,12 +175,12 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <blockquote>
+        <div class="aplayer-box" data-url="/music/LOVE2000/LOVE2000.mp3" data-name="LOVE2000" data-artist="遠野ひかる" data-cover="/music/LOVE2000/LOVE2000.jpg" data-lrc="/music/LOVE2000/LOVE2000.lrc" data-lrctype="3"></div>
+
+<blockquote>
 <p>特别感谢<a target="_blank" rel="noopener" href="https://blog.csdn.net/life_is_crazy/article/details/78206166">C# 委托(delegate)和事件(event)详解</a>,之前一直没怎么搞懂的东西因为这个很快解决了</p>
 </blockquote>
 <p>最近因为项目的原因，所以开始学C#相关的东西了，这里面有个东西挺有趣，叫事件与委托，有点类似与观察者模式，于是就记录在这里了</p>
-<div class="aplayer-box" data-url="/music/LOVE2000/LOVE2000.mp3" data-name="LOVE2000" data-artist="遠野ひかる" data-cover="/music/LOVE2000/LOVE2000.jpg" data-lrc="/music/LOVE2000/LOVE2000.lrc" data-lrctype="3"></div>
-
 <h2 id="1-委托"><a href="#1-委托" class="headerlink" title="1.委托"></a>1.委托</h2><p>委托由<strong>delegate</strong>关键字定义，放在函数前面，代表该函数为委托，而非一般函数，例如</p>
 <figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs C#"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-built_in">delegate</span> <span class="hljs-keyword">void</span> <span class="hljs-title">GreetingDelegate</span>(<span class="hljs-params"><span class="hljs-built_in">string</span> name</span>)</span>;<br></code></pre></td></tr></table></figure>
 
@@ -377,14 +377,14 @@
         </li>
       
         <li class="categorys-list-item">
-          <a href="/categories/2024%E6%98%A5%E6%8B%9B%E8%AE%B0%E5%BD%95/">
-            2024春招记录 (1)
+          <a href="/categories/Csharp/">
+            Csharp (2)
           </a>
         </li>
       
         <li class="categorys-list-item">
-          <a href="/categories/Csharp/">
-            Csharp (2)
+          <a href="/categories/2024%E6%98%A5%E6%8B%9B%E8%AE%B0%E5%BD%95/">
+            2024春招记录 (1)
           </a>
         </li>
       
@@ -395,14 +395,14 @@
         </li>
       
         <li class="categorys-list-item">
-          <a href="/categories/java/">
-            java (2)
+          <a href="/categories/mysqlAndphp/">
+            mysqlAndphp (4)
           </a>
         </li>
       
         <li class="categorys-list-item">
-          <a href="/categories/mysqlAndphp/">
-            mysqlAndphp (4)
+          <a href="/categories/java/">
+            java (2)
           </a>
         </li>
       
@@ -415,12 +415,6 @@
         <li class="categorys-list-item">
           <a href="/categories/webserver/">
             webserver (9)
-          </a>
-        </li>
-      
-        <li class="categorys-list-item">
-          <a href="/categories/%E5%9C%A8%E5%A7%9A%E5%BA%84%E7%9A%84%E6%97%A5%E5%AD%90/">
-            在姚庄的日子 (1)
           </a>
         </li>
       
@@ -439,6 +433,12 @@
         <li class="categorys-list-item">
           <a href="/categories/%E6%99%BA%E8%83%BD%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/">
             智能优化算法 (2)
+          </a>
+        </li>
+      
+        <li class="categorys-list-item">
+          <a href="/categories/%E5%9C%A8%E5%A7%9A%E5%BA%84%E7%9A%84%E6%97%A5%E5%AD%90/">
+            在姚庄的日子 (1)
           </a>
         </li>
       
@@ -548,6 +548,34 @@
 
   
   <!-- aplayer -->
+
+
+  <!-- aplayer 音频 start -->
+  <link rel="stylesheet" href="https://unpkg.com/aplayer@1.10.1/dist/APlayer.min.css">
+  <script type="text/javascript" src="https://unpkg.com/aplayer@1.10.1/dist/APlayer.min.js"></script>
+  <script type="text/javascript">
+    const aplayer = document.querySelectorAll(".aplayer-box");
+    aplayer && initaplayer(aplayer);
+    function initaplayer(els) {
+      let elsArr = Array.from(els);
+      elsArr.forEach(el => {
+        let params = {
+          container: el,
+          audio: { ...el.dataset },
+          theme: "#b7daff",
+          autoplay: false,
+          loop: false,
+          mutex: true,
+        }
+        if (el.dataset.lrc) {
+          params['lrcType'] = 3
+        }
+        new APlayer(params);
+      });
+    }
+  </script>
+  <!-- aplayer 音频 end -->
+  
 
 
 <!-- dplayer -->
