@@ -12,6 +12,9 @@ window.addEventListener("DOMContentLoaded", function() {
   const back_ground     = document.querySelector(".root-container");
   const headerr         = document.querySelector(".header-content");
   let lastTop           = 0;
+  let lastRefreshTime   = 0;
+  let frameCount        = 0;
+  let refreshRate       = 0;
   let localtheme        = window.localStorage.getItem('theme') || '';
 
   localtheme && html.classList.add(localtheme)
@@ -53,10 +56,29 @@ window.addEventListener("DOMContentLoaded", function() {
     endLoading()
   },5000);
   
+
+  /**
+   * 初始化刷新率估计
+   */
+  const estimateRefreshRate = () => {
+      const currentTime = performance.now();
+      if (currentTime - lastRefreshTime >= 1000) { // fps
+          refreshRate = frameCount;
+          frameCount = 0;
+          lastRefreshTime = currentTime;
+      } else {
+          frameCount++;
+      }
+      requestAnimationFrame(estimateRefreshRate);
+  }
+  
+  estimateRefreshRate();
+
   const goScrollTop = () => {
     let currentTop = getScrollTop()
-    let speed = Math.floor(-currentTop / 10)
-    if (currentTop > lastTop) {
+    let speed = Math.floor(-currentTop / (refreshRate / 6))
+    if (currentTop > lastTop + 0.5 || currentTop < lastTop - 0.5 ) {
+      // interrupt the animation
       return lastTop = 0
     }
     let distance = currentTop + speed;
