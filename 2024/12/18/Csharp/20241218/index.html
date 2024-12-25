@@ -31,7 +31,7 @@
 
   
 
-  <title>力扣刷题遇到的报错 | Touma</title>
+  <title>有关C#内存管理的探讨 | Touma</title>
 
   
 
@@ -78,7 +78,7 @@
 <!-- header container -->
 <header class="header-container post">
   
-    <div class="post-image" style="background-image: url(https://waterkinimage-1312676136.cos.ap-chengdu.myqcloud.com/githubimages/blogs_images/力扣刷题遇到的报错.jpg)"></div>
+    <div class="post-image" style="background-image: url(https://waterkinimage-1312676136.cos.ap-chengdu.myqcloud.com/githubimages/blogs_images/有关Csharp内存管理的探讨.jpg)"></div>
   
   
 
@@ -134,33 +134,33 @@
     <div class="header-content">
       <div class="post-text layout-block">
         <div class="layout-margin">
-          <h1 class="title-wrap">力扣刷题遇到的报错</h1>
+          <h1 class="title-wrap">有关C#内存管理的探讨</h1>
           <h2 class="title-sub-wrap">
             <strong>水帝</strong>
             <span>发布于</span>
-            <time  class="article-date" datetime="2023-03-21T06:46:04.000Z" itemprop="datePublished">2023-03-21</time>
+            <time  class="article-date" datetime="2024-12-17T16:14:34.000Z" itemprop="datePublished">2024-12-18</time>
           </h2>
           <h2>
-              <span class="post-count">📖207字</span>
-              <span class="post-count">⏱1分</span>
+              <span class="post-count">📖1k字</span>
+              <span class="post-count">⏱3分</span>
             <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
               👀<span id="busuanzi_value_page_pv"></span>次
           </h2>
           
             <h2 class="last-time">
               <span>最后更新于</span>
-              <time  class="article-updated" datetime="2024-02-10T09:01:41.000Z" itemprop="dateUpdated">2024-02-10</time>
+              <time  class="article-updated" datetime="2024-12-25T16:16:33.370Z" itemprop="dateUpdated">2024-12-26</time>
             </h2>
           
           
           <ul class="wrap-list dark">
   
-    <li><a href="/categories/%E5%8A%9B%E6%89%A3%E5%88%B7%E9%A2%98/">📒 力扣刷题</a></li>
+    <li><a href="/categories/Csharp/">📒 Csharp</a></li>
     
 </ul>
           <ul class="wrap-list dark">
   
-    <li><a href="/tags/%E6%8A%A5%E9%94%99/">🏷️ 报错</a></li>
+    <li><a href="/tags/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">🏷️ 内存管理</a></li>
   
 </ul>
         </div>
@@ -184,18 +184,42 @@
       
       
       <section class="article-entry markdown-body layout-margin content-padding--large soft-size--large soft-style--box">
-        <blockquote>
-<p>（更新中）</p>
+        <p>与C++不同的是，C#这一由微软封装的很好的语言几乎不需要自己进行内存管理，垃圾回收器会自动处理所有的内存清理工作，但这并不意味着我们不需要去理解其底层内存管理原理，我认为了解其底层无论如何都是对未来大有好处的</p>
+<blockquote>
+<p>尽管C#没有指针，但本文还是用了大量指针的概念，以方便理解</p>
 </blockquote>
-<p>最近在力扣刷题，还是遇到了一些报错，记录在这里了：</p>
-<h2 id="1-heap-buffer-overflow-on-address"><a href="#1-heap-buffer-overflow-on-address" class="headerlink" title="1.heap-buffer-overflow on address"></a>1.heap-buffer-overflow on address</h2><p>很简单，一般情况下是数组越界访问或者数组的下标错误造成的</p>
-<h2 id="2-Line-16-Char-29-error-expected-unqualified-id"><a href="#2-Line-16-Char-29-error-expected-unqualified-id" class="headerlink" title="2.Line 16: Char 29: error: expected unqualified-id"></a>2.Line 16: Char 29: error: expected unqualified-id</h2><p>我比较笨，这里是for的第一个分号里面定义了两个值，例如</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>,<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; i &lt; n; i++)<br></code></pre></td></tr></table></figure>
-
-<p>于是我就改外面去了</p>
-<p>但我搜了一下，c++支持这样写，那就不是很清楚了，可能是力扣的问题吧</p>
-<h2 id="3-AddressSanitizer-heap-buffer-overflow-on-address"><a href="#3-AddressSanitizer-heap-buffer-overflow-on-address" class="headerlink" title="3.AddressSanitizer: heap-buffer-overflow on address"></a>3.AddressSanitizer: heap-buffer-overflow on address</h2><p>非法越界，大概率是指针，看看循环里面那里，是不是循环结束的判断条件出错了</p>
-<h2 id="4-invalid-operands-to-binary-expression"><a href="#4-invalid-operands-to-binary-expression" class="headerlink" title="4.invalid operands to binary expression"></a>4.invalid operands to binary expression</h2><p>往往是比较出错了，两者的数据类型不同，不能比较</p>
+<h2 id="1-堆栈"><a href="#1-堆栈" class="headerlink" title="1. 堆栈"></a>1. 堆栈</h2><p>以32位机器举例，其能为每个进程分配4gb的虚拟内存，这个4GB的内存包含了程序的所有部分（包括可执行代码、代码加载的所有DLL、程序运行时使用的所有变量的内容），而64位的虚拟内存高达16tb</p>
+<p>与C++一致(或者说与几乎所有编程语言类似)，其内存管理的核心仍然是堆栈，栈从高向低填充，堆反之,两者顶部都有一个指针</p>
+<p>对于每个线程，都有一个独立的栈，而堆是所有线程共享的</p>
+<blockquote>
+<p>与数据结构的栈一样，内存栈也是先进后出(FIFO)，所以会优先释放后声明的变量</p>
+</blockquote>
+<p>在C#内数据被分为值类型和引用类型，在C++内叫作值和指针，C#内指针管理被其自动托管，尽管我们看不到指针，但他仍然存在于该语言中</p>
+<p>值类型往往占用较小的空间，他们往往是C#预定义的数据类型，例如int(4字节),double(8字节)等，而引用类型一般会占用较大的空间，例如自定义的类或者list等</p>
+<blockquote>
+<p>在C#内值类型不能为空(除非用？，例如int? a，这回让其默认为null)，而引用可以为空</p>
+</blockquote>
+<p>值类型存在与栈中，而引用类型本身存在于栈中，其引用的真正实例被分配在托管堆上</p>
+<p>当需要存数据在堆内时，系统会搜索整个堆以找到连续的能够容纳该数据对象的内存块，然后存入</p>
+<p>而在进行垃圾回收的操作之后(删除堆内已经没有被引用的数据)，系统会重新对堆内数据进行排序并重新从堆顶排列</p>
+<p>栈内元素在使用完后立刻释放，而堆内则交给了垃圾回收GC</p>
+<h2 id="2-垃圾回收GC"><a href="#2-垃圾回收GC" class="headerlink" title="2. 垃圾回收GC"></a>2. 垃圾回收GC</h2><p>垃圾回收的时机由系统决定，在C#内由system.GC管理，必要时可以用System.GC.Collect()强制调用垃圾回收</p>
+<blockquote>
+<p>但注意，垃圾回收是降低进程的性能，因为其在运行时会暂停所有线程的运行</p>
+</blockquote>
+<p>一般堆会分为两部分，GC垃圾回收堆和加载堆：</p>
+<ol>
+<li>垃圾回收堆(GC)：采用的是世代垃圾回收，分为0&#x2F;1&#x2F;2代三个部分，当0代满了之后会触发垃圾回收并将剩余的数据放入1代内，以此类推，它唯一的目的就是提升应用程序的性能，因为回收部分的性能明显优于回收整个堆，每一代的内存大小由系统自动分配</li>
+<li>大对象堆(Large Object Heap，或者说加载堆)：大于85000字节的大对象会分配到这个区域，这个区域的主要特点就是：不会轻易被回收；就是回收了也不会被压缩（因为对象太大，移动复制的成本太高了）</li>
+</ol>
+<h2 id="3-值类型和引用类型"><a href="#3-值类型和引用类型" class="headerlink" title="3. 值类型和引用类型"></a>3. 值类型和引用类型</h2><p>两者可以总结为以下几点：</p>
+<ol>
+<li>值类型：在C#中，继承自System.ValueType的类型被称为值类型，bool byte char decimal double enum float int long sbyte short struct uint ulong ushort&#96;</li>
+<li>引用类型：继承自System.Object， class interface delegate object string</li>
+</ol>
+<h2 id="4-最后"><a href="#4-最后" class="headerlink" title="4.最后"></a>4.最后</h2><p>经典三分钟热度，先写这么多吧</p>
+<p>那么请允许我先行搁笔</p>
+<p>本文参考：<br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/yejianyong/p/7396154.html">C#内存管理解析</a><br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/ljdong7/p/12021321.html">.NET面试题解析(06)-GC与内存管理</a><br><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/dotnet/standard/design-guidelines/">微软框架设计准则</a></p>
 
       </section>
 
@@ -203,32 +227,16 @@
       
         <nav class="article-nav">
           
-            <div class="article-nav-item layout-padding">
-  <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
-    
-      <div class="card-cover" background-image-lazy data-img="https://waterkinimage-1312676136.cos.ap-chengdu.myqcloud.com/githubimages/blogs_images/学习php过程中的一些问题.jpg"></div>
-    
-    <div class="card-text">
-      
-        <a href="/2023/03/23/mysqlAndphp/20230323/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">学习php过程中的一些问题</h2>
-        </a>
-      
-      <div class="card-text--row">Newer</div>
-    </div>
-  </article>
-</div>
-          
           
             <div class="article-nav-item layout-padding">
   <article class="card-container article-nav-card content-padding--primary soft-size--large soft-style--box">
     
-      <div class="card-cover" background-image-lazy data-img="https://waterkinimage-1312676136.cos.ap-chengdu.myqcloud.com/githubimages/blogs_images/学习mysql过程中的一些报错.png"></div>
+      <div class="card-cover" background-image-lazy data-img="https://waterkinimage-1312676136.cos.ap-chengdu.myqcloud.com/githubimages/blogs_images/Owinwebapi中如何开启https.jpg"></div>
     
     <div class="card-text">
       
-        <a href="/2023/03/08/mysqlAndphp/20230308/" itemprop="url">
-          <h2 class="card-text--title text-ellipsis">学习mysql过程中的一些报错</h2>
+        <a href="/2024/10/22/Csharp/20241022/" itemprop="url">
+          <h2 class="card-text--title text-ellipsis">Owin(webapi)中如何开启https</h2>
         </a>
       
       <div class="card-text--row">Older</div>
@@ -262,7 +270,7 @@
     <span>目录</span>
   </div>
   <div class="widget-body">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-heap-buffer-overflow-on-address"><span class="toc-text">1.heap-buffer-overflow on address</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Line-16-Char-29-error-expected-unqualified-id"><span class="toc-text">2.Line 16: Char 29: error: expected unqualified-id</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-AddressSanitizer-heap-buffer-overflow-on-address"><span class="toc-text">3.AddressSanitizer: heap-buffer-overflow on address</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-invalid-operands-to-binary-expression"><span class="toc-text">4.invalid operands to binary expression</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%A0%86%E6%A0%88"><span class="toc-text">1. 堆栈</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6GC"><span class="toc-text">2. 垃圾回收GC</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%80%BC%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B"><span class="toc-text">3. 值类型和引用类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E6%9C%80%E5%90%8E"><span class="toc-text">4.最后</span></a></li></ol>
   </div>
 </section>
 
